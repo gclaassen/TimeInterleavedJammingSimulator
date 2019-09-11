@@ -9,6 +9,8 @@ def main():
     pf = plf.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     #init threats (mulitple instances of threat class)
     th =  threats.convertThreatJsonToClass(jsonParser.parseJsonFile(common.THREATDIR))
+
+    pass
     
 
 

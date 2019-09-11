@@ -3,8 +3,8 @@ import math
 RET_ERROR = 0xF0C
 RET_WARNING = 0xBAD
 
-THREATDIR   = '../PyTIJ/threats.json'
-PLATFORMDIR = '../PyTIJ/platform.json'
+THREATDIR   = '../Time-Interleaved-Jamming/threats.json'
+PLATFORMDIR = '../Time-Interleaved-Jamming/platform.json'
 
 # Global Values
 STERADIANS = 4*math.pi

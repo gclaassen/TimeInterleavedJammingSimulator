@@ -8,7 +8,7 @@
             "name": "Python: Time Interleaved Jamming",
             "type": "python",
             "request": "launch",
-            "program": "D:/ws/masters/ws/PyTIJ/pyTIJ.py",
+            "program": "D:/ws/Time-Interleaved-Jamming/pyTIJ.py",
             "console": "integratedTerminal"
         }
     ]
