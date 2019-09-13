@@ -1,9 +1,9 @@
 import numpy as np
-from common import *
+import common
 import jsonParser
 
-class TIJController:
 
+class TIJController:
 
     def __init__(self, parameter_list):
         raise NotImplementedError

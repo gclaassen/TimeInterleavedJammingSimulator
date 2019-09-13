@@ -3,8 +3,8 @@ import math
 RET_ERROR = 0xF0C
 RET_WARNING = 0xBAD
 
-THREATDIR   = '../Time-Interleaved-Jamming/threats.json'
-PLATFORMDIR = '../Time-Interleaved-Jamming/platform.json'
+THREATDIR   = '../Time-Interleaved-Jamming-Simulator/threats.json'
+PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
 
 # Global Values
 STERADIANS = 4*math.pi
@@ -31,20 +31,19 @@ THREAT_THREATS             = 'threats'
 THREAT_ID                   = 'radar_id'
 
 THREAT_EMITTERS             = 'emitters'
-THREAT_EMITTER_ID           = 'emitter_id'
-
 THREAT_MODES                = 'modes'
-THREAT_MODES_SIZE           = 10
-THREAT_ERP                  = "erp"
-THREAT_FREQ                 = 'frequency_MHz'
-THREAT_GAIN                 = 'gain'
-THREAT_ISERP                = 'isERP'
+THREAT_EMITTERMODES_SIZE    = 10
+THREAT_EMITTER_ID           = 'emitter_id'
 THREAT_MODEID               = 'mode_id'
+THREAT_TYPE                 = 'type'
+THREAT_ERP                  = "erp"
 THREAT_PEAKPOWER            = 'power_peak_W'
+THREAT_GAIN                 = 'gain'
+THREAT_FREQ                 = 'frequency_MHz'
 THREAT_PRF                  = 'prf_Hz'
 THREAT_PW                   = 'pulse_width_us'
 THREAT_RANGE                = 'range_max_m'
-THREAT_TYPE                 = 'type'
+THREAT_ISERP                = 'isERP'
 
 THREAT_LOCATION             = 'location'
 THREAT_LOCATION_SIZE        = 3
