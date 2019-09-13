@@ -6,4 +6,4 @@ import jsonParser
 class TIJController:
 
     def __init__(self, parameter_list):
-        raise NotImplementedError
+        pass
