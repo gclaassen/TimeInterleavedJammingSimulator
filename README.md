@@ -13,5 +13,5 @@ Time Interleaved Jamming Simulator
 ## Threat Ranking
 *BACKLOG*
 
-## Jamming Sequence
+## Adaptive Jamming Scheduler
 *BACKLOG*
