@@ -2,5 +2,6 @@
     "workbench.colorCustomizations": {
         "tab.unfocusedActiveBorder": "#fff0"
     },
-    "python.pythonPath": "D:\\Anaconda\\python.exe"
+    "python.pythonPath": "D:\\Anaconda\\python.exe",
+    "cSpell.enabled": false
 }
