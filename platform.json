@@ -5,29 +5,29 @@
             {
                 "X_coord"           : 0,
                 "Y_coord"           : 0,
-                "Z_coord"           : 1000,
+                "Z_coord"           : 10000,
                 "velocity_ms"       : 50
             },
             {
                 "X_coord"           : 0,
-                "Y_coord"           : 50,
-                "Z_coord"           : 2000,
+                "Y_coord"           : 5000,
+                "Z_coord"           : 20000,
                 "velocity_ms"       : 55
             },
             {
-                "X_coord"           : 50,
-                "Y_coord"           : 50,
-                "Z_coord"           : 2200,
+                "X_coord"           : 5000,
+                "Y_coord"           : 500,
+                "Z_coord"           : 22000,
                 "velocity_ms"       : 60
             },
             {
-                "X_coord"           : 50,
-                "Y_coord"           : 100,
+                "X_coord"           : 5000,
+                "Y_coord"           : 1000,
                 "Z_coord"           : 2500,
                 "velocity_ms"       : 80
             },
             {
-                "X_coord"           : 100,
+                "X_coord"           : 1000,
                 "Y_coord"           : 0,
                 "Z_coord"           : 3000,
                 "velocity_ms"       : 100

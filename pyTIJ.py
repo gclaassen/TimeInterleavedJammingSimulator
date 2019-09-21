@@ -2,7 +2,7 @@ import threats
 import plf
 import common
 import jsonParser
-import scenarioCreator
+import visualize
 
 def main():
     # Initialize
@@ -11,6 +11,10 @@ def main():
     # init threats (mulitple instances of threat class)
     th = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
+    
+    # visualize the world
+    visualize.worldview(pf, th)
+    
 
 
     pass
