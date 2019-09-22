@@ -18,10 +18,22 @@
                         "frequency_MHz": 1300,
                         "pulse_width_us": 2,
                         "prf_Hz": 360,
-                        "range_max_m": 930
+                        "range_max_m": 9500
                     },
                     {
                         "mode_id": 1,
+                        "type": "ACQ",
+                        "isERP": false,
+                        "power_peak_W": 1000000,
+                        "gain": 35,
+                        "erp": 0,
+                        "frequency_MHz": 9000,
+                        "pulse_width_us": 0.5,
+                        "prf_Hz": 1000,
+                        "range_max_m": 8700
+                    },
+                    {
+                        "mode_id": 2,
                         "type": "TRACK",
                         "isERP": false,
                         "power_peak_W": 1000000,
@@ -30,7 +42,19 @@
                         "frequency_MHz": 9000,
                         "pulse_width_us": 0.5,
                         "prf_Hz": 1000,
-                        "range_max_m": 400
+                        "range_max_m": 6500
+                    },
+                    {
+                        "mode_id": 3,
+                        "type": "FIRECONTROL",
+                        "isERP": false,
+                        "power_peak_W": 1000000,
+                        "gain": 35,
+                        "erp": 0,
+                        "frequency_MHz": 9000,
+                        "pulse_width_us": 0.5,
+                        "prf_Hz": 1000,
+                        "range_max_m": 6000
                     }
                 ]
             }
@@ -38,8 +62,8 @@
         {
             "radar_id": 1,
             "location": {
-                "X_coord": 5000,
-                "Y_coord": 500,
+                "X_coord": 10000,
+                "Y_coord": 15000,
                 "Z_coord": 0
             },
             "emitters": {
@@ -54,7 +78,7 @@
                     "frequency_MHz": 2000,
                     "pulse_width_us": 2,
                     "prf_Hz": 360,
-                    "range_max_m": 500
+                    "range_max_m": 9000
                 }
             }
         }

@@ -3,34 +3,34 @@
         "rcs"               : 2,
         "flightpath" : [
             {
-                "X_coord"           : 0,
+                "X_coord"           : -9000,
                 "Y_coord"           : 0,
-                "Z_coord"           : 10000,
-                "velocity_ms"       : 50
+                "Z_coord"           : 5000,
+                "velocity_ms"       : 500
             },
             {
                 "X_coord"           : 0,
                 "Y_coord"           : 5000,
-                "Z_coord"           : 20000,
-                "velocity_ms"       : 55
+                "Z_coord"           : 2000,
+                "velocity_ms"       : 550
             },
             {
                 "X_coord"           : 5000,
-                "Y_coord"           : 500,
-                "Z_coord"           : 22000,
-                "velocity_ms"       : 60
+                "Y_coord"           : 15000,
+                "Z_coord"           : 5000,
+                "velocity_ms"       : 600
             },
             {
                 "X_coord"           : 5000,
                 "Y_coord"           : 1000,
-                "Z_coord"           : 2500,
-                "velocity_ms"       : 80
+                "Z_coord"           : 6000,
+                "velocity_ms"       : 800
             },
             {
                 "X_coord"           : 1000,
                 "Y_coord"           : 0,
                 "Z_coord"           : 3000,
-                "velocity_ms"       : 100
+                "velocity_ms"       : 600
             }
         ]
     }

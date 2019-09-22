@@ -14,7 +14,6 @@ SEARCH              = 0
 ACQUISITION         = 1
 TRACKING            = 2
 FIRE_CONTROL        = 3
-MISSILE_GUIDANCE    = 4
 
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'
