@@ -30,4 +30,4 @@ Time Interleaved Jamming Simulator
 - pycuda
 
 ## Hardware
-- Nvidia 1060 Graphics Card
+- NVIDIA ASUS GeForce GTX 1060 Dual OC 6GB GDDR5 1280 Cuda Core
