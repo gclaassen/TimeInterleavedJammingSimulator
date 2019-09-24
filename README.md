@@ -29,5 +29,8 @@ Time Interleaved Jamming Simulator
 - mpl_toolkits
 - pycuda
 
-## Hardware
-- NVIDIA ASUS GeForce GTX 1060 Dual OC 6GB GDDR5 1280 Cuda Core
+## PC
+- OS: Windows 10 64 bit
+- CPU: Intel I5-3750K
+- RAM: 8GB
+- GPU: NVIDIA ASUS GeForce GTX 1060 Dual OC 6GB GDDR5 1280 Cuda Core
