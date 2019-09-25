@@ -10,7 +10,7 @@
                 "emitter_id": 0,
                 "modes": [{
                         "mode_id": 0,
-                        "type": "SEARCH",
+                        "type": "S",
                         "isERP": false,
                         "power_peak_W": 500000,
                         "gain": 35,
@@ -22,7 +22,7 @@
                     },
                     {
                         "mode_id": 1,
-                        "type": "ACQ",
+                        "type": "TA",
                         "isERP": false,
                         "power_peak_W": 1000000,
                         "gain": 35,
@@ -34,7 +34,7 @@
                     },
                     {
                         "mode_id": 2,
-                        "type": "TRACK",
+                        "type": "TT",
                         "isERP": false,
                         "power_peak_W": 1000000,
                         "gain": 35,
@@ -46,7 +46,7 @@
                     },
                     {
                         "mode_id": 3,
-                        "type": "FIRECONTROL",
+                        "type": "TI",
                         "isERP": false,
                         "power_peak_W": 1000000,
                         "gain": 35,
@@ -70,7 +70,7 @@
                 "emitter_id": 0,
                 "modes": {
                     "mode_id": 0,
-                    "type": "SEARCH",
+                    "type": "S",
                     "isERP": false,
                     "power_peak_W": 500000,
                     "gain": 35,
