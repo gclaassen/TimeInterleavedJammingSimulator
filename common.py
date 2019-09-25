@@ -10,10 +10,11 @@ PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
 STERADIANS = 4*math.pi
 
 # Radar Types
-SEARCH              = 0
-ACQUISITION         = 1
-TRACKING            = 2
-FIRE_CONTROL        = 3
+SEARCH              = 0 # S
+ACQUISITION         = 1 # TA
+TRACKING            = 2 # TT
+TARGET_ILLUMINATE   = 3 # TI
+MISSILE_GUIDANCE    = 4 # MG
 
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'
