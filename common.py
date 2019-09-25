@@ -10,11 +10,11 @@ PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
 STERADIANS = 4*math.pi
 
 #string Radar Modes
-sSEARCH              = S
-sACQUISITION         = TA
-sTRACKING            = TT
-sTARGET_ILLUMINATE   = TI
-sMISSILE_GUIDANCE    = MG
+sSEARCH              = 'S'
+sACQUISITION         = 'TA'
+sTRACKING            = 'TT'
+sTARGET_ILLUMINATE   = 'TI'
+sMISSILE_GUIDANCE    = 'MG'
 
 #numeric Radar Modes
 SEARCH              = 0 # S
