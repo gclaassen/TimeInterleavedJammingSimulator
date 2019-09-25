@@ -66,5 +66,7 @@ def domeColor(modeType):
         return 'y'
     elif(modeType == common.TRACKING):
         return 'r'
-    elif(modeType == common.FIRE_CONTROL):
+    elif(modeType == common.TARGET_ILLUMINATE):
+        return 'crimson'
+    elif(modeType == common.MISSILE_GUIDANCE):
         return 'k'
