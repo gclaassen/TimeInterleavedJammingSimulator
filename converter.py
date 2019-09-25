@@ -12,14 +12,16 @@ def convertPowerdBmToWatt(power_dBm):
 
 
 def convertRadarTypeStringToInt(sRadarType):
-    if sRadarType == 'SEARCH':
+    if sRadarType == 'SS':
         return common.SEARCH
-    elif sRadarType == 'ACQ':
+    elif sRadarType == 'TA':
         return common.ACQUISITION
-    elif sRadarType == 'TRACK':
+    elif sRadarType == 'TT':
         return common.TRACKING
-    elif sRadarType == 'FIRECONTROL':
-        return common.FIRE_CONTROL
+    elif sRadarType == 'TI':
+        return common.TARGET_ILLUMINATE
+    elif sRadarType == 'MG':
+        return common.MISSILE_GUIDANCE
     else:
         return None
 
