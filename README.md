@@ -16,6 +16,13 @@ Time Interleaved Jamming Simulator
 ## Adaptive Jamming Scheduler
 *BACKLOG*
 
+## Argument List
+
+| Command | Description                                      | Example        |
+| ------- | ------------------------------------------------ | -------------- |
+| -v      | set visualization to true                        | -v             |
+
+
 # Requirements
 *note: these were the software and hardware that I used to develop and run the TIJ simulator*
 ## Software
