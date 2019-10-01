@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "D:/ws/Time-Interleaved-Jamming-Simulator/pyTIJ.py",
-        "args": [],
+        "args": ["-v"],
         "console": "integratedTerminal"
     }]
 }

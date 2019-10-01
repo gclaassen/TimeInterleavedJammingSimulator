@@ -22,7 +22,7 @@ def argumentExtraction(argv):
             setViz = True
             print('Visualization set to True')
 
-    return [setViz]
+    return setViz
 
 
 def helpPrints():
