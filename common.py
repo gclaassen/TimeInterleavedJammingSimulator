@@ -39,7 +39,7 @@ THREAT_ID                   = 'radar_id'
 
 THREAT_EMITTERS             = 'emitters'
 THREAT_MODES                = 'modes'
-THREAT_EMITTERMODES_SIZE    = 10
+THREAT_EMITTERMODES_SIZE    = 11
 THREAT_EMITTER_ID           = 'emitter_id'
 THREAT_MODEID               = 'mode_id'
 THREAT_TYPE                 = 'type'
@@ -50,6 +50,7 @@ THREAT_FREQ                 = 'frequency_MHz'
 THREAT_PRF                  = 'prf_Hz'
 THREAT_PW                   = 'pulse_width_us'
 THREAT_RANGE                = 'range_max_m'
+THREAT_ALT                  = 'altitude_max_m'
 THREAT_ISERP                = 'isERP'
 
 THREAT_LOCATION             = 'location'

@@ -61,7 +61,8 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                 modeNode[common.THREAT_FREQ],
                 modeNode[common.THREAT_PRF],
                 modeNode[common.THREAT_PW],
-                modeNode[common.THREAT_RANGE]
+                modeNode[common.THREAT_RANGE],
+                modeNode[common.THREAT_ALT]
             ]
 
     return emitters

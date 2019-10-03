@@ -18,7 +18,8 @@
                         "frequency_MHz": 1300,
                         "pulse_width_us": 2,
                         "prf_Hz": 360,
-                        "range_max_m": 9500
+                        "range_max_m": 15000,
+                        "altitude_max_m": 15000
                     },
                     {
                         "mode_id": 1,
@@ -30,7 +31,8 @@
                         "frequency_MHz": 9000,
                         "pulse_width_us": 0.5,
                         "prf_Hz": 1000,
-                        "range_max_m": 8700
+                        "range_max_m": 12000,
+                        "altitude_max_m": 12000
                     },
                     {
                         "mode_id": 2,
@@ -42,7 +44,8 @@
                         "frequency_MHz": 9000,
                         "pulse_width_us": 0.5,
                         "prf_Hz": 1000,
-                        "range_max_m": 6500
+                        "range_max_m": 9000,
+                        "altitude_max_m": 9000
                     },
                     {
                         "mode_id": 3,
@@ -54,7 +57,8 @@
                         "frequency_MHz": 9000,
                         "pulse_width_us": 0.5,
                         "prf_Hz": 1000,
-                        "range_max_m": 6000
+                        "range_max_m": 8700,
+                        "altitude_max_m": 9000
                     }
                 ]
             }
@@ -78,7 +82,8 @@
                     "frequency_MHz": 2000,
                     "pulse_width_us": 2,
                     "prf_Hz": 360,
-                    "range_max_m": 9000
+                    "range_max_m": 9000,
+                    "altitude_max_m": 9000
                 }
             }
         }
