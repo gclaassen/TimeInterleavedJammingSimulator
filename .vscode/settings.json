@@ -1,7 +1,16 @@
 {
     "workbench.colorCustomizations": {
-        "tab.unfocusedActiveBorder": "#fff0"
+        "activityBar.background": "#a36471",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#91b887",
+        "activityBarBadge.foreground": "#15202b",
+        "panel.border": "#a36471",
+        "sideBar.border": "#a36471",
+        "editorGroup.border": "#a36471",
+        "tab.activeBorder": "#a36471"
     },
+    "peacock.color": "#854f5a",
     "python.pythonPath": "D:\\Anaconda\\python.exe",
     "cSpell.enabled": false
 }
