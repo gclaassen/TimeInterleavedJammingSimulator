@@ -4,6 +4,7 @@ import plf
 import common
 import jsonParser
 import visualize
+import signalProcessing as signal
 
 def argumentExtraction(argv):
     setViz = False
@@ -30,8 +31,8 @@ def helpPrints():
     print('~~~ARGUMENT LIST~~~\n')
     print('-v:\tvisualize\n')
 
-
 def main(argv):
+
     doViz = False
     
     doViz = argumentExtraction(argv)
@@ -47,6 +48,11 @@ def main(argv):
     if(doViz == True):
         visualize.worldview(pf, th)
 
+    snrRange = [1, 2, 4, 8, 12, 16, 20]
+    PfaRange = [1e-9, 1e-3]
+    numPoints = 1001
+    intergration = 0
+    Pd = signal.rocsnr(snrRange, PfaRange, numPoints, intergration)
 
     pass
 
