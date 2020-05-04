@@ -48,11 +48,13 @@ def main(argv):
     if(doViz == True):
         visualize.worldview(pf, th)
 
-    snrRange = [1, 2, 4, 6, 8, 9, 10, 11, 12, 14, 16, 17, 19, 20]
-    PfaRange = [1e-9, 1e-0]
-    numPoints = 1001
-    intergration = 0
-    [Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, numPoints, intergration)
+    # snrRange = [4, 8, 10, 11, 12, 13, 15]
+    snrRange = [3, 6, 9, 12]
+    PfaRange = [1e-10, 1]
+    numPoints = 101
+    integration = 'CI'
+    totalPulses = 1
+    [Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, totalPulses, numPoints, integration)
     pass
 
 
