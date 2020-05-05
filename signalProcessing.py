@@ -34,14 +34,23 @@ def rocsnr(snrRange, PfaRange, numPulses, numPoints, integration):
         for far in Pfa:
             PdMatrix[snrPoint, pfaPoint] = Pd(far, snrPow, numPulses, integration)
             pfaPoint = pfaPoint + 1
-        plt.plot(Pfa, PdMatrix[snrPoint,:], label=str(snr))
         snrPoint = snrPoint + 1
+    return Pfa, PdMatrix
+
+def rocSNRplot(snrRange, Pd, Pfa):
+    snrPoint = 0
+    for snr in snrRange:
+            plt.semilogx(Pfa, Pd[snrPoint,:], label=str(snr))
+            snrPoint = snrPoint + 1
 
     labelLines(plt.gca().get_lines(),zorder=2.5)
-    PfaXaxisStep = (maxPfa - minPfa)/numPoints*0.02
-    # plt.xticks(np.arange(PfaRange[0], PfaRange[1], PfaXaxisStep))
-    plt.xticks([1e-10, 1e-6, 1e-3, 1], ['1e-10', '1e-6', '1e-3', '1'])
-    plt.yticks([0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.87, 0.9, 0.91, 0.93, 0.95, 0.97, 0.99, 1])
+    plt.title('Receiver Operating Characteristics (ROC) Curves')
+    plt.ylabel('Probability of Detection')
+    plt.xlabel('Probability of False Alarm')
+    plt.xticks([1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1])
+    plt.yticks([0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.87, 0.9, 0.93, 0.95, 0.98, 1])
     plt.grid(True)
     plt.show()
-    return Pfa, PdMatrix
+    
+# def rocPFAplot(snrRange, Pd, Pfa, reqPfa):
+    
