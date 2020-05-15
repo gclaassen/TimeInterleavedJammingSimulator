@@ -1,8 +1,9 @@
-SNRdB = [3 6 9 12];
-[Pd,Pfa] = rocsnr(SNRdB,'SignalType','NonfluctuatingCoherent');
+SNRdB = [-5,-3,0,3,5];
+NumPulses = 16;
+[Pd,Pfa] = rocsnr(SNRdB,'SignalType','NonfluctuatingNonCoherent', 'NumPulses',NumPulses);
 semilogx(Pfa,Pd)
 grid on
 xlabel('P_{fa}')
 ylabel('P_d')
-legend('SNR 3 dB','SNR 6 dB','SNR 9 dB','SNR 12 dB',  'location','northwest')
+legend('SNR -5 dB', 'SNR -3 dB', 'SNR 0 dB', 'SNR 3 dB', 'SNR 5 dB', 'location','northwest')
 title('Receiver Operating Characteristic (ROC) Curves')
