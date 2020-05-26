@@ -10,18 +10,18 @@ def Pd(Pfa, SNR, N, integration):
     if integration is 'CI':
         return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(SNR*N))
     elif integration is 'NCI':
-        # T = -np.log(Pfa)
-        # T = np.real(sp_spec.gammaincinv(1-Pfa,N))
-        # Nx = N*SNR
-        # marcumVal = sp_stats.ncx2(np.sqrt(2*Nx), np.sqrt(2*T))
-        # expVal = np.exp(-(T+Nx))
-        # sumBesselVal = 0
-        # pulseRange = np.arange(2, N, 1)
-        # for r in pulseRange:
-        #     sumBesselValTemp = np.power(T/Nx,(r-1)/2)*sp_spec.jv(r-1 , 2*np.sqrt(Nx*T))
-        #     sumBesselVal = sum([sumBesselVal,sumBesselValTemp])
-        # return marcumVal + expVal * sumBesselVal
-
+    #     T = -np.log(Pfa)
+    #     T = np.real(sp_spec.gammaincinv(1-Pfa,N))
+    #     Nx = N*SNR
+    #     marcumVal = 0.5*sp_spec.erfc(np.sqrt(2*Nx), np.sqrt(2*T))
+    #     expVal = np.exp(-(T+Nx))
+    #     sumBesselVal = 0
+    #     pulseRange = np.arange(2, N, 1)
+    #     for r in pulseRange:
+    #         sumBesselValTemp = np.power(T/Nx,(r-1)/2)*sp_spec.jv(r-1 , 2*np.sqrt(Nx*T))
+    #         sumBesselVal = sum([sumBesselVal,sumBesselValTemp])
+    #     return marcumVal + expVal * sumBesselVal
+    # elif integration is 'NCI_ALB':
         # Albersheims Equation Estimation
         return albersheimsPd(spectrum.pow2db(SNR), Pfa, N)
 

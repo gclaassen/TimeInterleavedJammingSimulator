@@ -49,7 +49,7 @@ def main(argv):
     if(doViz == True):
         visualize.worldview(pf, th)
         
-    # signal.Rayleigh(0,1)
+    signal.Rayleigh(0,1)
 
     snrRange = [-5, -3, -1, 0, 3, 5]
     PfaRange = [1e-10, 1]
