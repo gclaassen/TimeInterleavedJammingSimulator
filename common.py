@@ -10,18 +10,16 @@ PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
 STERADIANS = 4*math.pi
 
 #string Radar Modes
-sSEARCH              = 'S'
+sSEARCH              = 'TS'
 sACQUISITION         = 'TA'
 sTRACKING            = 'TT'
-sTARGET_ILLUMINATE   = 'TI'
 sMISSILE_GUIDANCE    = 'MG'
 
 #numeric Radar Modes
 SEARCH              = 0 # S
 ACQUISITION         = 1 # TA
 TRACKING            = 2 # TT
-TARGET_ILLUMINATE   = 3 # TI
-MISSILE_GUIDANCE    = 4 # MG
+MISSILE_GUIDANCE    = 3 # MG
 
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'
@@ -34,7 +32,7 @@ PLF_ZCOORD                  = "Z_coord"
 PLF_SPEED                   = "velocity_ms"
 
 # Threat JSON key values
-THREAT_THREATS             = 'threats'
+THREAT_THREATS              = 'threats'
 THREAT_ID                   = 'radar_id'
 
 THREAT_EMITTERS             = 'emitters'
@@ -47,7 +45,7 @@ THREAT_ERP                  = "erp"
 THREAT_PEAKPOWER            = 'power_peak_W'
 THREAT_GAIN                 = 'gain'
 THREAT_FREQ                 = 'frequency_MHz'
-THREAT_PRF                  = 'prf_Hz'
+THREAT_PRF                  = 'pri_us'
 THREAT_PW                   = 'pulse_width_us'
 THREAT_RANGE                = 'range_max_m'
 THREAT_ALT                  = 'altitude_max_m'

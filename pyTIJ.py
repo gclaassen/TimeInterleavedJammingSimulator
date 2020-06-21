@@ -10,7 +10,7 @@ def argumentExtraction(argv):
     setViz = False
 
     try:
-        [opts, argv] = getopt.getopt(
+        [opts, argv] = getopt.getopt( 
             argv, "h:v", ["help", "visualize"])
     except getopt.GetoptError:
         helpPrints()
@@ -48,11 +48,11 @@ def main(argv):
     if(doViz == True):
         visualize.worldview(pf, th)
 
-    snrRange = [1, 2, 4, 8, 12, 16, 20]
-    PfaRange = [1e-9, 1e-3]
-    numPoints = 1001
-    intergration = 0
-    Pd = signal.rocsnr(snrRange, PfaRange, numPoints, intergration)
+    # snrRange = [1, 2, 4, 8, 12, 16, 20]
+    # PfaRange = [1e-9, 1e-3]
+    # numPoints = 1001
+    # intergration = 0
+    # Pd = signal.rocsnr(snrRange, PfaRange, numPoints, intergration)
 
     pass
 

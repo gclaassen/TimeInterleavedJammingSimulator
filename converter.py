@@ -18,8 +18,6 @@ def convertRadarTypeStringToInt(sRadarType):
         return common.ACQUISITION
     elif sRadarType == common.sTRACKING:
         return common.TRACKING
-    elif sRadarType == common.sTARGET_ILLUMINATE:
-        return common.TARGET_ILLUMINATE
     elif sRadarType == common.sMISSILE_GUIDANCE:
         return common.MISSILE_GUIDANCE
     else:
