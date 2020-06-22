@@ -1,10 +1,11 @@
 import math
 
-RET_ERROR = 0xF0C
-RET_WARNING = 0xBAD
+RET_ERROR = 0x0F0C
+RET_WARNING = 0x0BAD
 
 THREATDIR   = '../Time-Interleaved-Jamming-Simulator/threats.json'
 PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
+JAMMERDIR   = '../Time-Interleaved-Jamming-Simulator/jammer.json'
 
 # Global Values
 STERADIANS = 4*math.pi
@@ -16,7 +17,7 @@ sTRACKING            = 'TT'
 sMISSILE_GUIDANCE    = 'MG'
 
 #numeric Radar Modes
-SEARCH              = 0 # S
+SEARCH              = 0 # TS
 ACQUISITION         = 1 # TA
 TRACKING            = 2 # TT
 MISSILE_GUIDANCE    = 3 # MG
@@ -45,7 +46,7 @@ THREAT_ERP                  = "erp"
 THREAT_PEAKPOWER            = 'power_peak_W'
 THREAT_GAIN                 = 'gain'
 THREAT_FREQ                 = 'frequency_MHz'
-THREAT_PRF                  = 'pri_us'
+THREAT_PRI                  = 'pri_us'
 THREAT_PW                   = 'pulse_width_us'
 THREAT_RANGE                = 'range_max_m'
 THREAT_ALT                  = 'altitude_max_m'
@@ -57,3 +58,9 @@ THREAT_XCOORD               = "X_coord"
 THREAT_YCOORD               = "Y_coord"
 THREAT_ZCOORD               = "Z_coord"
 
+JAMMER_CHANNEL              = "channels"
+JAMMER_CHANNEL_RANGE        = "channel_range"
+JAMMER_CHANNEL_START        = "channel_start_MHz"
+JAMMER_CHANNEL_STOP         = "channel_stop_MHz"
+JAMMER_TIME_INTERVAL        = "interval_time_s"
+JAMMER_CHANNEL_RANGE_SIZE   = 2 #start, stop

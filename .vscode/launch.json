@@ -7,9 +7,9 @@
         "name": "Python: Time Interleaved Jamming",
         "type": "python",
         "request": "launch",
-        // "program": "D:/ws/Time-Interleaved-Jamming-Simulator/pyTIJ.py",
-        "program": "pyTIJ.py",
-        // "args": ["-v"],
+        "program": "D:/ws/Time-Interleaved-Jamming-Simulator/pyTIJ.py",
+        //"program": "pyTIJ.py",
+        //"args": ["-v"],
         "console": "integratedTerminal"
     }]
 }

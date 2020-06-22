@@ -15,9 +15,10 @@ class Platform:
 
 
 def convertPlatformJsonToArray(jsonPlatformDict):
-    fpArr = np.empty(shape=(jsonPlatformDict.__len__(),
-                            common.PLF_FLIGHTPATH_SIZE), dtype=int, order='C')
+    fpArr = np.empty(shape=(jsonPlatformDict.__len__()), dtype=[(common.PLF_XCOORD,int),(common.PLF_YCOORD,int),(common.PLF_ZCOORD,int),(common.PLF_SPEED,int)], order='C')
     for idx, fp in enumerate(jsonPlatformDict):
-        fpArr[idx] = [fp[common.PLF_XCOORD], fp[common.PLF_YCOORD],
-                      fp[common.PLF_ZCOORD], fp[common.PLF_SPEED]]
+        fpArr[idx][common.PLF_XCOORD] = fp[common.PLF_XCOORD]
+        fpArr[idx][common.PLF_YCOORD] = fp[common.PLF_YCOORD]
+        fpArr[idx][common.PLF_ZCOORD] = fp[common.PLF_ZCOORD]
+        fpArr[idx][common.PLF_SPEED] = fp[common.PLF_SPEED]
     return fpArr

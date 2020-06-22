@@ -13,11 +13,7 @@
         "activityBar.activeBorder": "#91b887"
     },
     "peacock.color": "#854f5a",
-<<<<<<< HEAD
-    "python.pythonPath": "/bin/python3.7",
-=======
     "python.pythonPath": "D:\\Anaconda\\python.exe",
->>>>>>> 7d1d3cad8396c69ecf25ecc0e02df05a51029770
     "cSpell.enabled": false,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true

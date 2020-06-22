@@ -1,19 +1,19 @@
 {
-    "threats": 
+    "threats":
     [
         {
             "radar_id": 0,
             "radar_name": "SA-8",
-            "location": 
+            "location":
             {
                 "X_coord": 2000,
                 "Y_coord": 1000,
                 "Z_coord": 0
             },
-            "emitters": 
+            "emitters":
             {
                 "emitter_id": 0,
-                "modes": 
+                "modes":
                 [
                     {
                         "mode_id": 0,
@@ -73,16 +73,16 @@
         {
             "radar_id": 1,
             "radar_name":"SA-6",
-            "location": 
+            "location":
             {
                 "X_coord": 10000,
                 "Y_coord": 15000,
                 "Z_coord": 0
             },
-            "emitters": 
+            "emitters":
             {
                 "emitter_id": 0,
-                "modes": 
+                "modes":
                 [
                     {
                         "mode_id": 0,
@@ -116,16 +116,16 @@
         {
             "radar_id": 2,
             "radar_name":"FLAPWHEEL",
-            "location": 
+            "location":
             {
                 "X_coord": 7000,
                 "Y_coord": 15000,
                 "Z_coord": 0
             },
-            "emitters": 
+            "emitters":
             {
                 "emitter_id": 0,
-                "modes": 
+                "modes":
                 [
                     {
                         "mode_id": 0,
@@ -166,9 +166,8 @@
                         "range_max_m": 10000,
                         "altitude_max_m": 5000
                     }
-                
                 ]
-            }   
+            }
         }
     ]
 }

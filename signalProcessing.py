@@ -6,6 +6,8 @@ from labellines import labelLine, labelLines
 import spectrum
 import scipy.stats as sp_stats
 
+
+# PULSE INTEGRATION
 def Pd(Pfa, SNR, N, integration):
     if integration is 'CI':
         return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(SNR*N))

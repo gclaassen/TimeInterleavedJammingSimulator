@@ -1,6 +1,7 @@
 import os, getopt, sys
 import threats
-import plf
+import pltf
+import jammer
 import common
 import jsonParser
 import visualize
@@ -40,34 +41,30 @@ def main(argv):
     
     # Initialize
     # init platform class instance
-    pf = plf.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
+    cPlatform = pltf.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
-    th = threats.convertThreatJsonToClass(
+    cThreatList = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
+    
+    cJammer = jammer.Jammer(jsonParser.parseJsonFile(common.JAMMERDIR))
     
     # visualize the world
     if(doViz == True):
-        visualize.worldview(pf, th)
-        
-    signal.Rayleigh(0,1)
+        visualize.worldview(cPlatform, cThreatList)
 
-<<<<<<< HEAD
-    # snrRange = [1, 2, 4, 8, 12, 16, 20]
-    # PfaRange = [1e-9, 1e-3]
-    # numPoints = 1001
-    # intergration = 0
-    # Pd = signal.rocsnr(snrRange, PfaRange, numPoints, intergration)
-=======
-    snrRange = [-5, -3, -1, 0, 3, 5]
-    PfaRange = [1e-10, 1]
-    numPoints = 101
-    integration = 'CI'
-    pulsesForIntegration = 16
-    [Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, pulsesForIntegration, numPoints, integration)
-    # signal.rocPFAplot(snrRange, Pd, Pfa, 1e-6)
-    signal.rocSNRplot(snrRange, Pd, Pfa, pulsesForIntegration, integration)
-    alberSnr = signal.albersheimsSnr(0.95, 10e-6, pulsesForIntegration)
->>>>>>> 7d1d3cad8396c69ecf25ecc0e02df05a51029770
+    # profile creator
+    
+    
+    # signal.Rayleigh(0,1)
+    # snrRange = [-5, -3, -1, 0, 3, 5]
+    # PfaRange = [1e-10, 1]
+    # numPoints = 101
+    # integration = 'CI'
+    # pulsesForIntegration = 16
+    # [Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, pulsesForIntegration, numPoints, integration)
+    # # signal.rocPFAplot(snrRange, Pd, Pfa, 1e-6)
+    # signal.rocSNRplot(snrRange, Pd, Pfa, pulsesForIntegration, integration)
+    # alberSnr = signal.albersheimsSnr(0.95, 10e-6, pulsesForIntegration)
 
     # thresholdRange = np.linspace(0,5,50)
     # noiseStdev = 1

@@ -1,7 +1,8 @@
 {
     "platform" :{
-        "rcs"               : 2,
-        "flightpath" : [
+        "rcs"           : 2,
+        "flightpath"    :
+        [
             {
                 "X_coord"           : -9000,
                 "Y_coord"           : 0,

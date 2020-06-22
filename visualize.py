@@ -4,11 +4,9 @@ import numpy as np
 import common
 
 def worldview(pf, th):
-    
-    
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    
+
     #flight path
     pfColor = 'b'
     totalFpNodePoints,_ = pf.flight_path.shape
@@ -21,11 +19,11 @@ def worldview(pf, th):
             ax.scatter(pf.flight_path[node][0], pf.flight_path[node][1], pf.flight_path[node][2], c=pfColor, marker='X', s=30)
         else:
             ax.scatter(pf.flight_path[node][0], pf.flight_path[node][1], pf.flight_path[node][2], c=pfColor, marker='>', s=30)
-        
+
         ##lines
         if node is not 0:
             ax.plot([pf.flight_path[node-1][0], pf.flight_path[node][0]],[pf.flight_path[node-1][1], pf.flight_path[node][1]],zs=[pf.flight_path[node-1][2], pf.flight_path[node][2]], c=pfColor)
-        
+
     #threats
     thColor = 'r'
     totalThreatNodePoints = th.__len__()
@@ -41,15 +39,15 @@ def worldview(pf, th):
             [x,y,z] = domeCreate(th[0].emitters[0][mode][9], th[0].emitters[0][mode][9],th[thNode].location[0],th[thNode].location[1],th[thNode].location[2])
             modeColor = domeColor(th[0].emitters[0][mode][2])
 
-            ax.plot_wireframe(x, y, z, rstride = 3, cstride = 3, linewidth = 1, color = modeColor)
-    
+            ax.plot_wireframe(x, y, z, rstride = 3, cstride = 3, linewidth = 1, color = modeColor, alpha=0.5)
+
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
     ax.view_init(azim=30)
 
     plt.show()
-    
+
 def domeCreate(range, altitude, locX,locY,locz):
     u, v = np.mgrid[0:0.5*np.pi:50j, 0:2*np.pi:50j]
 
@@ -66,7 +64,5 @@ def domeColor(modeType):
         return 'y'
     elif(modeType == common.TRACKING):
         return 'r'
-    elif(modeType == common.TARGET_ILLUMINATE):
-        return 'darkslategrey'
     elif(modeType == common.MISSILE_GUIDANCE):
         return 'k'
