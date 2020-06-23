@@ -9,20 +9,20 @@ def worldview(pf, th):
 
     #flight path
     pfColor = 'b'
-    totalFpNodePoints,_ = pf.flight_path.shape
+    totalFpNodePoints =  pf.flight_path.size
 
     for node in range(totalFpNodePoints):
         ##nodes
         if(node == 0):
-            ax.scatter(pf.flight_path[node][0], pf.flight_path[node][1], pf.flight_path[node][2], c=pfColor, marker='o', s=30)
+            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='o', s=30)
         elif(node == totalFpNodePoints-1):
-            ax.scatter(pf.flight_path[node][0], pf.flight_path[node][1], pf.flight_path[node][2], c=pfColor, marker='X', s=30)
+            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='X', s=30)
         else:
-            ax.scatter(pf.flight_path[node][0], pf.flight_path[node][1], pf.flight_path[node][2], c=pfColor, marker='>', s=30)
+            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='>', s=30)
 
         ##lines
         if node is not 0:
-            ax.plot([pf.flight_path[node-1][0], pf.flight_path[node][0]],[pf.flight_path[node-1][1], pf.flight_path[node][1]],zs=[pf.flight_path[node-1][2], pf.flight_path[node][2]], c=pfColor)
+            ax.plot([pf.flight_path[node-1][common.XCOORD], pf.flight_path[node][common.XCOORD]],[pf.flight_path[node-1][common.YCOORD], pf.flight_path[node][common.YCOORD]],zs=[pf.flight_path[node-1][common.ZCOORD], pf.flight_path[node][common.ZCOORD]], c=pfColor)
 
     #threats
     thColor = 'r'
@@ -30,13 +30,13 @@ def worldview(pf, th):
 
     for thNode in range(totalThreatNodePoints):
     #nodes
-        ax.scatter(th[thNode].location[0], th[thNode].location[1], th[thNode].location[2], c=thColor, marker='*', s=150)
+        ax.scatter(th[thNode].location[common.XCOORD], th[thNode].location[common.YCOORD], th[thNode].location[common.ZCOORD], c=thColor, marker='*', s=150)
     #areas
-        totalModes,_ = th[thNode].emitters[0].shape
+        totalModes = th[thNode].emitters[0].size
         for mode in range(totalModes):
             modeColor = None
 
-            [x,y,z] = domeCreate(th[0].emitters[0][mode][9], th[0].emitters[0][mode][9],th[thNode].location[0],th[thNode].location[1],th[thNode].location[2])
+            [x,y,z] = domeCreate(th[0].emitters[0][mode][common.THREAT_RANGE], th[0].emitters[0][mode][common.THREAT_ALT], th[thNode].location[common.XCOORD], th[thNode].location[common.YCOORD], th[thNode].location[common.ZCOORD])
             modeColor = domeColor(th[0].emitters[0][mode][2])
 
             ax.plot_wireframe(x, y, z, rstride = 3, cstride = 3, linewidth = 1, color = modeColor, alpha=0.5)

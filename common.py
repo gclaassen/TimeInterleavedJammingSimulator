@@ -22,14 +22,15 @@ ACQUISITION         = 1 # TA
 TRACKING            = 2 # TT
 MISSILE_GUIDANCE    = 3 # MG
 
+XCOORD                  = "X_coord"
+YCOORD                  = "Y_coord"
+ZCOORD                  = "Z_coord"
+
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'
 PLF_RCS                     = 'rcs'
 PLF_FLIGHTPATH              = 'flightpath'
 PLF_FLIGHTPATH_SIZE         = 4 #x, y, z, speed
-PLF_XCOORD                  = "X_coord"
-PLF_YCOORD                  = "Y_coord"
-PLF_ZCOORD                  = "Z_coord"
 PLF_SPEED                   = "velocity_ms"
 
 # Threat JSON key values
@@ -54,9 +55,6 @@ THREAT_ISERP                = 'isERP'
 
 THREAT_LOCATION             = 'location'
 THREAT_LOCATION_SIZE        = 3
-THREAT_XCOORD               = "X_coord"
-THREAT_YCOORD               = "Y_coord"
-THREAT_ZCOORD               = "Z_coord"
 
 JAMMER_CHANNEL              = "channels"
 JAMMER_CHANNEL_RANGE        = "channel_range"

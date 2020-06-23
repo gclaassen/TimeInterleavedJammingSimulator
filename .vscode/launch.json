@@ -9,7 +9,7 @@
         "request": "launch",
         "program": "D:/ws/Time-Interleaved-Jamming-Simulator/pyTIJ.py",
         //"program": "pyTIJ.py",
-        //"args": ["-v"],
+        // "args": ["-v"],
         "console": "integratedTerminal"
     }]
 }
