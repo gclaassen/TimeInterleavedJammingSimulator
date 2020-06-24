@@ -20,21 +20,22 @@ Time Interleaved Jamming Simulator
 
 | Command | Description                                      | Example        |
 | ------- | ------------------------------------------------ | -------------- |
-| -v      | set visualization to true                        | -v             |
+| -v      | Set visualize to true                            | -v             |
 
 
 # Requirements
 *note: these were the software and hardware that I used to develop and run the TIJ simulator*
 ## Software
-- Python 3.7.3 64-bit
+- Python 3.8.3 64-bit
 ### Pyton Modules
 - math
 - json
 - numpy
 - ast
+- scipy
 - matplotlib
-- mpl_toolkits
-- pycuda
+- matplotlib-label-lines
+- spectrum
 
 ## PC
 - OS: Windows 10 64 bit

@@ -24,3 +24,6 @@ def convertJammerChannelsJsonToArray(jsonJammerChansDict):
         jcArr[idx][common.JAMMER_CHANNEL_STOP] = jc[common.JAMMER_CHANNEL_STOP]
     return jcArr
 
+def profileCreatorJammingThreat():
+    pass
+

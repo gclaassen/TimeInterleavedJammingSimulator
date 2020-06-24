@@ -43,14 +43,14 @@ def main(argv):
     # init platform class instance
     cPlatform = pltf.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
-    cThreatList = threats.convertThreatJsonToClass(
+    cThreatLibrary = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
     
     cJammer = jammer.Jammer(jsonParser.parseJsonFile(common.JAMMERDIR))
     
     # visualize the world
-    if(doViz == True):
-        visualize.worldview(cPlatform, cThreatList)
+    if doViz:
+        visualize.worldview(cPlatform, cThreatLibrary)
 
     # profile creator
     
@@ -75,3 +75,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+    

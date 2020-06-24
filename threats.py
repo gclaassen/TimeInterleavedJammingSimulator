@@ -1,6 +1,7 @@
 import numpy as np
 import common
 import converter
+import math
 
 
 class Threat:
@@ -9,11 +10,11 @@ class Threat:
     emitters = None
     emitter_current = None
     mode_current = None
+    detect: None
+    jammer: None
     za: float=0
     ma: float=0
     Pj: float=0
-    profiles = None
-    profile_current = None
 
     def __init__(self, threatList):
         emitterSize = None
@@ -64,7 +65,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_PRI, float),
                                             (common.THREAT_PW, float),
                                             (common.THREAT_RANGE, int),
-                                            (common.THREAT_ALT, int)
+                                            (common.THREAT_ALT, int),
                                         ], order='C')
         for modeIndex in range(0, modeSize):
             if(isMultipleModes == True):
@@ -95,3 +96,10 @@ def convertThreatJsonToClass(jsonThreatDict):
         threatClass[idx] = Threat(jsonThreat)
 
     return threatClass
+
+def PriTimeRange(Tstart_ns, Tstop_ns, PRI):
+    PriStart = [(Tstart_us//PRI)*PRI] + PRI
+    PriStop = [(Tstop_us//PRI)*PRI] + PRI
+    totalPulses = math.ceil((PriStop - PriStart)/PRI)
+    
+    return [PriStart, PriStop, totalPulses]

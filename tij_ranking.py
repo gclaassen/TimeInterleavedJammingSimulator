@@ -5,4 +5,8 @@ def rankingTest1(categoriesList, p):
         sgn(xk)*np.pow()
 
 
-def rankingTestWeigthed(categoriesList, weightList, p):
+def rankingTest1Weigthed(categoriesList, weightList, p):
+    pass
+
+def profileCreatorInterval():
+    pass

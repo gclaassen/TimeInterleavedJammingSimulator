@@ -3,12 +3,12 @@ import common
 
 # RADAR EQUATION
 def convertERPdBm(power_W, gain):
- return convertPower_WtodBm(power_W) + convertGain_dBm(gain)
+ return convertPowerWtodBm(power_W) + convertGaindBm(gain)
 
-def convertPower_WtodBm(power_W):
+def convertPowerWtodBm(power_W):
   return 10*math.log10(power_W)
 
-def convertGain_dBm(gain):
+def convertGaindBm(gain):
   return 10*math.log10(gain)
 
 def skinReturnPower(Threat_Tx_ERP, Threat_Tx_Fc,  Threat_Rx_GaindBm, Platform_RCS, Range, Range_losses):
