@@ -101,5 +101,5 @@ def PriTimeRange(Tstart_ns, Tstop_ns, PRI):
     PriStart = [(Tstart_us//PRI)*PRI] + PRI
     PriStop = [(Tstop_us//PRI)*PRI] + PRI
     totalPulses = math.ceil((PriStop - PriStart)/PRI)
-    
+
     return [PriStart, PriStop, totalPulses]

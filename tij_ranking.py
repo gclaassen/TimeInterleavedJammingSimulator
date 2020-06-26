@@ -3,6 +3,7 @@ import numpy as np
 def ranking(threatCategoriesList, p):
     sumVal = 0
     n = threatCategoriesList.__len__()
+
     for xk in threatCategoriesList:
         sumVal += sgn(xk)*np.abs(xk)**(1/p)
     return ((1/n)*sumVal)**p
@@ -17,6 +18,27 @@ def rankingWeigthed(threatCategoriesList, weights, p):
         sumVal += weights[idx]*sgn(xk)*np.abs(xk)**(1/p)
 
     return ((1/weigthVal)*sumVal)**p
+
+def sumParam(threatParamList):
+    return sum(threatParamList)
+
+def normalizedParam(ThreatList, sumVal, index):
+    for idx, threat in enumerate(ThreatList):
+        ThreatList[idx,index] = threat[index]/sumVal
+    return ThreatList[:,index]
+
+def normalizeThreat(threatList, threatListShape):
+    normalizedThreatList = np.zeros(shape=threatListShape)
+    
+    sumMa = sumParam(threatList[:,0])
+    sumPj = sumParam(threatList[:,1])
+    sumReqJamming = sumParam(threatList[:,2])
+    
+    normalizedThreatList[:,0] = normalizedParam(threatList,sumMa,0)
+    normalizedThreatList[:,1] = normalizedParam(threatList,sumPj,1)
+    normalizedThreatList[:,2] = normalizedParam(threatList,sumReqJamming,2)
+    
+    return normalizedThreatList
 
 def sgn(x):
     if x<0:
