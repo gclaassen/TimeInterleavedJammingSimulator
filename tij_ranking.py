@@ -1,4 +1,5 @@
 import numpy as np
+from numba import vectorize
 
 def ranking(threatCategoriesList, p):
     sumVal = 0
@@ -28,7 +29,7 @@ def normalizedParam(ThreatList, sumVal, index):
     return ThreatList[:,index]
 
 def normalizeThreat(threatList, threatListShape):
-    normalizedThreatList = np.zeros(shape=threatListShape)
+    normalizedThreatList = np.empty_like(threatListShape, dtype=threatListShape.dtype)
     
     sumMa = sumParam(threatList[:,0])
     sumPj = sumParam(threatList[:,1])
@@ -49,4 +50,6 @@ def sgn(x):
         return 1
 
 def profileCreatorInterval():
+    # best to do it in parallel -> GPU programming
+    # how do we do this with the amount of info available
     pass

@@ -36,6 +36,7 @@ Time Interleaved Jamming Simulator
 - matplotlib
 - matplotlib-label-lines
 - spectrum
+- numba
 
 ## PC
 - OS: Windows 10 64 bit
