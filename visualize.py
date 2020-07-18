@@ -5,6 +5,44 @@ import matplotlib.pyplot as plt
 import numpy as np
 import common
 
+def topview(pf, th):
+    fig, ax = plt.subplots(1)
+
+    #flight path
+    pfColor = 'b'
+    totalFpNodePoints =  pf.flight_path.size
+
+    for node in range(totalFpNodePoints):
+        ##nodes
+        if(node == 0):
+            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='o')
+        elif(node == totalFpNodePoints-1):
+            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='X')
+        else:
+            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='>')
+
+        ##lines
+        if node != 0:
+            ax.plot([pf.flight_path[node-1][common.XCOORD], pf.flight_path[node][common.XCOORD]],[pf.flight_path[node-1][common.YCOORD], pf.flight_path[node][common.YCOORD]], linewidth=2, c=pfColor, linestyle='dashed')
+
+    #threats
+    for thNode in th:
+        # for emNode in thNode.emitters:
+            # for modeNode in emNode:
+                # modeColor = domeColor(modeNode[common.THREAT_TYPE])
+                # plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color=modeColor, s=thNode.location[common.THREAT_RANGE], alpha=0.5)
+                # ax.add_artist(plt.Circle((thNode.location[common.XCOORD], thNode.location[common.YCOORD]), thNode.location[common.THREAT_RANGE], color=modeColor, linewidth=3,  linestyle='dashed', fill=False))
+        plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color = 'r', marker = 'x', linewidth=3, s = 50)
+        ax.annotate(thNode.radar_id, (thNode.location[common.XCOORD], thNode.location[common.YCOORD]+300))
+                # ax.annotate(thNode.radar_name, (thNode.location[common.XCOORD]+500, thNode.location[common.YCOORD]+200))
+
+    ax.set_xlabel('Cartesian X coordinate')
+    ax.set_ylabel('Cartesian Y coordinate')
+    fig.tight_layout(pad=0.1)
+    ax.set_aspect(1)
+    plt.show()
+    # plt.savefig('simulation.pdf', bbox_inches='tight')
+
 def worldview(pf, th):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -23,7 +61,7 @@ def worldview(pf, th):
             ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='>', s=30)
 
         ##lines
-        if node is not 0:
+        if node != 0:
             ax.plot([pf.flight_path[node-1][common.XCOORD], pf.flight_path[node][common.XCOORD]],[pf.flight_path[node-1][common.YCOORD], pf.flight_path[node][common.YCOORD]],zs=[pf.flight_path[node-1][common.ZCOORD], pf.flight_path[node][common.ZCOORD]], c=pfColor)
 
     #threats

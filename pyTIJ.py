@@ -12,7 +12,7 @@ def argumentExtraction(argv):
     setViz = False
 
     try:
-        [opts, argv] = getopt.getopt( 
+        [opts, argv] = getopt.getopt(
             argv, "h:v", ["help", "visualize"])
     except getopt.GetoptError:
         helpPrints()
@@ -50,7 +50,8 @@ def main(argv):
     
     # visualize the world
     if doViz:
-        visualize.worldview(cPlatform, cThreatLibrary)
+        # visualize.worldview(cPlatform, cThreatLibrary)
+        visualize.topview(cPlatform, cThreatLibrary)
 
     # profile creator
     

@@ -28,16 +28,21 @@ def normalizedParam(ThreatList, sumVal, index):
         ThreatList[idx,index] = threat[index]/sumVal
     return ThreatList[:,index]
 
+def normalizedMA(ThreatList, maxVal, index):
+    for idx,threat in enumerate(ThreatList):
+        ThreatList[idx, index] = threat[index]/maxVal
+    return ThreatList[:,index]
+
 def normalizeThreat(threatList, threatListShape):
-    normalizedThreatList = np.empty_like(threatListShape, dtype=threatListShape.dtype)
+    normalizedThreatList = np.empty_like(threatList, dtype=threatList.dtype)
     
-    sumMa = sumParam(threatList[:,0])
+    # sumMa = sumParam(threatList[:,0])
     sumPj = sumParam(threatList[:,1])
-    sumReqJamming = sumParam(threatList[:,2])
+    # sumReqJamming = sumParam(threatList[:,2])
     
-    normalizedThreatList[:,0] = normalizedParam(threatList,sumMa,0)
+    normalizedThreatList[:,0] = normalizedMA(threatList,4,0)
     normalizedThreatList[:,1] = normalizedParam(threatList,sumPj,1)
-    normalizedThreatList[:,2] = normalizedParam(threatList,sumReqJamming,2)
+    normalizedThreatList[:,2] = threatList[:,2]
     
     return normalizedThreatList
 

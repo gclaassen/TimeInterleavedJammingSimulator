@@ -6,6 +6,7 @@ import math
 
 class Threat:
     radar_id: int = 0
+    radar_name = None
     location: None
     emitters = None
     emitter_current = None
@@ -20,12 +21,21 @@ class Threat:
         emitterSize = None
 
         self.radar_id = threatList[common.THREAT_ID]
-        self.location = np.array((threatList[common.THREAT_LOCATION][common.XCOORD], threatList[common.THREAT_LOCATION]
-                                [common.YCOORD], threatList[common.THREAT_LOCATION][common.ZCOORD]), dtype=[
-                                    (common.XCOORD,int),
-                                    (common.YCOORD,int),
-                                    (common.ZCOORD,int)
-                                ], order='C')
+        self.radar_name = threatList[common.THREAT_NAME]
+        self.location = np.array((
+            threatList[common.THREAT_LOCATION][common.XCOORD],
+            threatList[common.THREAT_LOCATION][common.YCOORD],
+            threatList[common.THREAT_LOCATION][common.ZCOORD],
+            threatList[common.THREAT_LOCATION][common.THREAT_RANGE],
+            threatList[common.THREAT_LOCATION][common.THREAT_ALT]
+            ), dtype=
+                    [
+                        (common.XCOORD,int),
+                        (common.YCOORD,int),
+                        (common.ZCOORD,int),
+                        (common.THREAT_RANGE, int),
+                        (common.THREAT_ALT, int)
+                    ], order='C')
         isMultipleEmitters = isinstance(
             threatList[common.THREAT_EMITTERS], list)
         if(isMultipleEmitters == True):
@@ -63,9 +73,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_ERP, int),
                                             (common.THREAT_FREQ, int),
                                             (common.THREAT_PRI, float),
-                                            (common.THREAT_PW, float),
-                                            (common.THREAT_RANGE, int),
-                                            (common.THREAT_ALT, int),
+                                            (common.THREAT_PW, float)
                                         ], order='C')
         for modeIndex in range(0, modeSize):
             if(isMultipleModes == True):
@@ -82,8 +90,6 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_FREQ] = modeNode[common.THREAT_FREQ]
             emitters[emmiterIndex][modeIndex][common.THREAT_PRI] = modeNode[common.THREAT_PRI]
             emitters[emmiterIndex][modeIndex][common.THREAT_PW] = modeNode[common.THREAT_PW]
-            emitters[emmiterIndex][modeIndex][common.THREAT_RANGE] = modeNode[common.THREAT_RANGE]
-            emitters[emmiterIndex][modeIndex][common.THREAT_ALT] = modeNode[common.THREAT_ALT]
 
     return emitters
 

@@ -17,13 +17,13 @@
             },
             {
                 "X_coord"           : 5000,
-                "Y_coord"           : 15000,
+                "Y_coord"           : 9000,
                 "Z_coord"           : 5000,
                 "velocity_ms"       : 600
             },
             {
-                "X_coord"           : 5000,
-                "Y_coord"           : 1000,
+                "X_coord"           : 7000,
+                "Y_coord"           : 2000,
                 "Z_coord"           : 6000,
                 "velocity_ms"       : 800
             },

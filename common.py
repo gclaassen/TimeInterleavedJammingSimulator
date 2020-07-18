@@ -36,7 +36,7 @@ PLF_SPEED                   = "velocity_ms"
 # Threat JSON key values
 THREAT_THREATS              = 'threats'
 THREAT_ID                   = 'radar_id'
-
+THREAT_NAME                 = 'radar_name'
 THREAT_EMITTERS             = 'emitters'
 THREAT_MODES                = 'modes'
 THREAT_EMITTERMODES_SIZE    = 11
