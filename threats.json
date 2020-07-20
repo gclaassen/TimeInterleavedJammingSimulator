@@ -1,7 +1,7 @@
 {
   "threats": [
     {
-      "radar_id": 0,
+      "radar_id": 1,
       "radar_name": "SA-8",
       "location": {
         "X_coord": -3500,
@@ -28,7 +28,7 @@
       }
     },
     {
-      "radar_id": 1,
+      "radar_id": 2,
       "radar_name": "SA-8",
       "location": {
         "X_coord": -2500,
@@ -50,33 +50,6 @@
             "frequency_MHz": 1000,
             "pulse_width_us": 2,
             "pri_us": 500
-          }
-        ]
-      }
-    },
-    {
-      "radar_id": 2,
-      "radar_name": "SA-8",
-      "location": {
-        "X_coord": 2500,
-        "Y_coord": 3000,
-        "Z_coord": 0,
-        "range_max_m": 3000,
-        "altitude_max_m": 9000
-      },
-      "emitters": {
-        "emitter_id": 0,
-        "modes": [
-          {
-            "mode_id": 2,
-            "type": "TS",
-            "isERP": false,
-            "power_peak_W": 1000000,
-            "gain": 35,
-            "erp_db": 0,
-            "frequency_MHz": 9000,
-            "pulse_width_us": 0.25,
-            "pri_us": 407
           }
         ]
       }
@@ -110,60 +83,33 @@
     },
     {
       "radar_id": 4,
-      "radar_name": "SA-6",
+      "radar_name": "SA-8",
       "location": {
         "X_coord": 2500,
-        "Y_coord": 15000,
+        "Y_coord": 3000,
         "Z_coord": 0,
-        "range_max_m": 8000,
+        "range_max_m": 3000,
         "altitude_max_m": 9000
       },
       "emitters": {
         "emitter_id": 0,
         "modes": [
           {
-            "mode_id": 1,
+            "mode_id": 2,
             "type": "TS",
             "isERP": false,
-            "power_peak_W": 500000,
+            "power_peak_W": 1000000,
             "gain": 35,
             "erp_db": 0,
-            "frequency_MHz": 5100,
-            "pulse_width_us": 0.5,
-            "pri_us": 566
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.25,
+            "pri_us": 407
           }
         ]
       }
     },
     {
       "radar_id": 5,
-      "radar_name": "SA-6",
-      "location": {
-        "X_coord": 11500,
-        "Y_coord": 15000,
-        "Z_coord": 0,
-        "range_max_m": 8500,
-        "altitude_max_m": 9000
-      },
-      "emitters": {
-        "emitter_id": 0,
-        "modes": [
-          {
-            "mode_id": 0,
-            "type": "TS",
-            "isERP": false,
-            "power_peak_W": 500000,
-            "gain": 35,
-            "erp_db": 0,
-            "frequency_MHz": 5000,
-            "pulse_width_us": 0.5,
-            "pri_us": 500
-          }
-        ]
-      }
-    },
-    {
-      "radar_id": 6,
       "radar_name": "FLAPWHEEL",
       "location": {
         "X_coord": 7000,
@@ -190,61 +136,7 @@
       }
     },
     {
-      "radar_id": 7,
-      "radar_name": "FLAPWHEEL",
-      "location": {
-        "X_coord": 13000,
-        "Y_coord": -1100,
-        "Z_coord": 0,
-        "range_max_m": 4500,
-        "altitude_max_m": 5000
-      },
-      "emitters": {
-        "emitter_id": 0,
-        "modes": [
-          {
-            "mode_id": 1,
-            "type": "TS",
-            "isERP": false,
-            "power_peak_W": 500000,
-            "gain": 35,
-            "erp_db": 0,
-            "frequency_MHz": 9200,
-            "pulse_width_us": 0.337,
-            "pri_us": 503
-          }
-        ]
-      }
-    },
-    {
-      "radar_id": 8,
-      "radar_name": "FLAPWHEEL",
-      "location": {
-        "X_coord": 7000,
-        "Y_coord": -5500,
-        "Z_coord": 0,
-        "range_max_m": 4000,
-        "altitude_max_m": 5000
-      },
-      "emitters": {
-        "emitter_id": 0,
-        "modes": [
-          {
-            "mode_id": 2,
-            "type": "TS",
-            "isERP": false,
-            "power_peak_W": 500000,
-            "gain": 35,
-            "erp_db": 0,
-            "frequency_MHz": 9200,
-            "pulse_width_us": 0.337,
-            "pri_us": 573
-          }
-        ]
-      }
-    },
-    {
-      "radar_id": 9,
+      "radar_id": 6,
       "radar_name": "SA-6",
       "location": {
         "X_coord": 5500,
@@ -271,7 +163,115 @@
       }
     },
     {
+      "radar_id": 7,
+      "radar_name": "SA-6",
+      "location": {
+        "X_coord": 2500,
+        "Y_coord": 15000,
+        "Z_coord": 0,
+        "range_max_m": 8000,
+        "altitude_max_m": 9000
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "modes": [
+          {
+            "mode_id": 1,
+            "type": "TS",
+            "isERP": false,
+            "power_peak_W": 500000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 5100,
+            "pulse_width_us": 0.5,
+            "pri_us": 566
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 8,
+      "radar_name": "SA-6",
+      "location": {
+        "X_coord": 11500,
+        "Y_coord": 15000,
+        "Z_coord": 0,
+        "range_max_m": 8500,
+        "altitude_max_m": 9000
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": "TS",
+            "isERP": false,
+            "power_peak_W": 500000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 0.5,
+            "pri_us": 500
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 9,
+      "radar_name": "FLAPWHEEL",
+      "location": {
+        "X_coord": 13000,
+        "Y_coord": -1100,
+        "Z_coord": 0,
+        "range_max_m": 4500,
+        "altitude_max_m": 5000
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "modes": [
+          {
+            "mode_id": 1,
+            "type": "TS",
+            "isERP": false,
+            "power_peak_W": 500000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 9200,
+            "pulse_width_us": 0.337,
+            "pri_us": 503
+          }
+        ]
+      }
+    },
+    {
       "radar_id": 10,
+      "radar_name": "FLAPWHEEL",
+      "location": {
+        "X_coord": 7000,
+        "Y_coord": -5500,
+        "Z_coord": 0,
+        "range_max_m": 4000,
+        "altitude_max_m": 5000
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "modes": [
+          {
+            "mode_id": 2,
+            "type": "TS",
+            "isERP": false,
+            "power_peak_W": 500000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 9200,
+            "pulse_width_us": 0.337,
+            "pri_us": 573
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 11,
       "radar_name": "SA-6",
       "location": {
         "X_coord": -5500,
