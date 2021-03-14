@@ -7,7 +7,7 @@
         "name": "Python: Time Interleaved Jamming",
         "type": "python",
         "request": "launch",
-        "program": "pyTIJ.py",
+        "program": "2_code/pyTIJ.py",
         // "program": "tester.py",
         "args": ["-v"],
         "console": "integratedTerminal"

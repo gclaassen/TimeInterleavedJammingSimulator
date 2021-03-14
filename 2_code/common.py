@@ -3,9 +3,9 @@ import math
 RET_ERROR = 0x0F0C
 RET_WARNING = 0x0BAD
 
-THREATDIR   = '../Time-Interleaved-Jamming-Simulator/threats.json'
-PLATFORMDIR = '../Time-Interleaved-Jamming-Simulator/platform.json'
-JAMMERDIR   = '../Time-Interleaved-Jamming-Simulator/jammer.json'
+THREATDIR   = '1_datastore/0_manual/jammer.json'
+PLATFORMDIR = '1_datastore/0_manual/platform.json'
+JAMMERDIR   = '1_datastore/0_manual/jammer.json'
 
 # Global Values
 STERADIANS = 4*math.pi
@@ -25,6 +25,9 @@ MISSILE_GUIDANCE    = 3 # MG
 XCOORD                  = "X_coord"
 YCOORD                  = "Y_coord"
 ZCOORD                  = "Z_coord"
+
+TIME                    = "time"
+DISTANCE                = "distance"
 
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'

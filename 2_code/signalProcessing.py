@@ -9,9 +9,9 @@ import scipy.stats as sp_stats
 
 # PULSE INTEGRATION
 def Pd(Pfa, SNR, N, integration):
-    if integration is 'CI':
+    if integration == 'CI':
         return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(SNR*N))
-    elif integration is 'NCI':
+    elif integration == 'NCI':
     #     T = -np.log(Pfa)
     #     T = np.real(sp_spec.gammaincinv(1-Pfa,N))
     #     Nx = N*SNR
@@ -52,10 +52,10 @@ def rocSNRplot(snrRange, Pd, Pfa, NumPulses, integration):
         plt.semilogx(Pfa, Pd[snrPoint,:], label=str(snrLabel))
         snrPoint = snrPoint + 1
 
-    labelLines(plt.gca().get_lines(),zorder=2.5)
-    if(integration is 'CI'):
+    labelLines(plt.gca().get_lines(), zorder = 2.5)
+    if(integration == 'CI'):
         plt.title('Receiver Operating Characteristics (ROC) Curves for Coherent Integration of ' + str(NumPulses) + ' pulses')
-    elif(integration is 'NCI'):
+    elif(integration == 'NCI'):
         plt.title('Receiver Operating Characteristics (ROC) Curves for Non-Coherent Integration of ' + str(NumPulses) + ' pulses')
     plt.ylabel('Probability of Detection')
     plt.xlabel('Probability of False Alarm')

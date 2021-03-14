@@ -10,20 +10,20 @@ def topview(pf, th):
 
     #flight path
     pfColor = 'b'
-    totalFpNodePoints =  pf.flight_path.size
+    totalFpNodePoints =  pf.flightPath.size
 
     for node in range(totalFpNodePoints):
         ##nodes
         if(node == 0):
-            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='o')
+            ax.plot(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], c=pfColor, marker='o')
         elif(node == totalFpNodePoints-1):
-            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='X')
+            ax.plot(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], c=pfColor, marker='X')
         else:
-            ax.plot(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], c=pfColor, marker='>')
+            ax.plot(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], c=pfColor, marker='>')
 
         ##lines
         if node != 0:
-            ax.plot([pf.flight_path[node-1][common.XCOORD], pf.flight_path[node][common.XCOORD]],[pf.flight_path[node-1][common.YCOORD], pf.flight_path[node][common.YCOORD]], linewidth=2, c=pfColor, linestyle='dashed')
+            ax.plot([pf.flightPath[node-1][common.XCOORD], pf.flightPath[node][common.XCOORD]],[pf.flightPath[node-1][common.YCOORD], pf.flightPath[node][common.YCOORD]], linewidth=2, c=pfColor, linestyle='dashed')
 
     #threats
     for thNode in th:
@@ -49,20 +49,20 @@ def worldview(pf, th):
 
     #flight path
     pfColor = 'b'
-    totalFpNodePoints =  pf.flight_path.size
+    totalFpNodePoints =  pf.flightPath.size
 
     for node in range(totalFpNodePoints):
         ##nodes
         if(node == 0):
-            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='o', s=30)
+            ax.scatter(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], pf.flightPath[node][common.ZCOORD], c=pfColor, marker='o', s=30)
         elif(node == totalFpNodePoints-1):
-            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='X', s=30)
+            ax.scatter(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], pf.flightPath[node][common.ZCOORD], c=pfColor, marker='X', s=30)
         else:
-            ax.scatter(pf.flight_path[node][common.XCOORD], pf.flight_path[node][common.YCOORD], pf.flight_path[node][common.ZCOORD], c=pfColor, marker='>', s=30)
+            ax.scatter(pf.flightPath[node][common.XCOORD], pf.flightPath[node][common.YCOORD], pf.flightPath[node][common.ZCOORD], c=pfColor, marker='>', s=30)
 
         ##lines
         if node != 0:
-            ax.plot([pf.flight_path[node-1][common.XCOORD], pf.flight_path[node][common.XCOORD]],[pf.flight_path[node-1][common.YCOORD], pf.flight_path[node][common.YCOORD]],zs=[pf.flight_path[node-1][common.ZCOORD], pf.flight_path[node][common.ZCOORD]], c=pfColor)
+            ax.plot([pf.flightPath[node-1][common.XCOORD], pf.flightPath[node][common.XCOORD]],[pf.flightPath[node-1][common.YCOORD], pf.flightPath[node][common.YCOORD]],zs=[pf.flightPath[node-1][common.ZCOORD], pf.flightPath[node][common.ZCOORD]], c=pfColor)
 
     #threats
     thColor = 'r'
