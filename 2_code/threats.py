@@ -66,14 +66,16 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
         emitters[emmiterIndex] = np.zeros(modeSize, dtype=
                                         [
                                             (common.THREAT_EMITTER_ID,int),
-                                            (common.THREAT_MODEID,int),
+                                            (common.THREAT_MODE_ID,int),
                                             (common.THREAT_TYPE,int),
                                             (common.THREAT_PEAKPOWER, int),
                                             (common.THREAT_GAIN, int),
                                             (common.THREAT_ERP, int),
                                             (common.THREAT_FREQ, int),
                                             (common.THREAT_PRI, float),
-                                            (common.THREAT_PW, float)
+                                            (common.THREAT_PW, float),
+                                            (common.THREAT_CPI, int),
+                                            (common.THREAT_PERCENTAGEJAMMING, float)
                                         ], order='C')
         for modeIndex in range(0, modeSize):
             if(isMultipleModes == True):
@@ -82,7 +84,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                 modeNode = emitterNode[common.THREAT_MODES]
 
             emitters[emmiterIndex][modeIndex][common.THREAT_EMITTER_ID] = emitterNode[common.THREAT_EMITTER_ID]
-            emitters[emmiterIndex][modeIndex][common.THREAT_MODEID] = modeNode[common.THREAT_MODEID]
+            emitters[emmiterIndex][modeIndex][common.THREAT_MODE_ID] = modeNode[common.THREAT_MODE_ID]
             emitters[emmiterIndex][modeIndex][common.THREAT_TYPE] = converter.convertRadarTypeStringToInt(modeNode[common.THREAT_TYPE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER] = modeNode[common.THREAT_PEAKPOWER]
             emitters[emmiterIndex][modeIndex][common.THREAT_GAIN] = modeNode[common.THREAT_GAIN]
@@ -90,6 +92,8 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_FREQ] = modeNode[common.THREAT_FREQ]
             emitters[emmiterIndex][modeIndex][common.THREAT_PRI] = modeNode[common.THREAT_PRI]
             emitters[emmiterIndex][modeIndex][common.THREAT_PW] = modeNode[common.THREAT_PW]
+            emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
+            emitters[emmiterIndex][modeIndex][common.THREAT_PERCENTAGEJAMMING] = modeNode[common.THREAT_PERCENTAGEJAMMING]
 
     return emitters
 

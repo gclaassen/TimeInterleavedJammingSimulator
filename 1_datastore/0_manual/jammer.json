@@ -1,5 +1,6 @@
 {
-    "interval_time_s": 5,
+    "esm_time_ms": 3000,
+    "oecm_time_ms": 4000,
     "channels" : 3,
     "channel_range":
     [

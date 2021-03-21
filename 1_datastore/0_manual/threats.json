@@ -22,7 +22,9 @@
             "erp_db": 0,
             "frequency_MHz": 7400,
             "pulse_width_us": 0.313,
-            "pri_us": 357
+            "pri_us": 357,
+            "cpi": 16,
+            "percentage_jamming": 0.5
           }
         ]
       }
@@ -49,7 +51,9 @@
             "erp_db": 0,
             "frequency_MHz": 1000,
             "pulse_width_us": 2,
-            "pri_us": 500
+            "pri_us": 500,
+            "cpi": 8,
+            "percentage_jamming": 0.7
           }
         ]
       }
@@ -76,7 +80,9 @@
             "erp_db": 0,
             "frequency_MHz": 9000,
             "pulse_width_us": 0.587,
-            "pri_us": 1507
+            "pri_us": 1507,
+            "cpi": 16,
+            "percentage_jamming": 0.7
           }
         ]
       }
@@ -103,7 +109,9 @@
             "erp_db": 0,
             "frequency_MHz": 9000,
             "pulse_width_us": 0.25,
-            "pri_us": 407
+            "pri_us": 407,
+            "cpi": 16,
+            "percentage_jamming": 0.6
           }
         ]
       }
@@ -130,7 +138,9 @@
             "erp_db": 0,
             "frequency_MHz": 9200,
             "pulse_width_us": 0.337,
-            "pri_us": 503
+            "pri_us": 503,
+            "cpi": 8,
+            "percentage_jamming": 0.8
           }
         ]
       }
@@ -157,7 +167,9 @@
             "erp_db": 0,
             "frequency_MHz": 7800,
             "pulse_width_us": 0.5,
-            "pri_us": 566
+            "pri_us": 566,
+            "cpi": 8,
+            "percentage_jamming": 0.5
           }
         ]
       }
@@ -184,7 +196,9 @@
             "erp_db": 0,
             "frequency_MHz": 5100,
             "pulse_width_us": 0.5,
-            "pri_us": 566
+            "pri_us": 566,
+            "cpi": 32,
+            "percentage_jamming": 0.9
           }
         ]
       }
@@ -211,7 +225,9 @@
             "erp_db": 0,
             "frequency_MHz": 5000,
             "pulse_width_us": 0.5,
-            "pri_us": 500
+            "pri_us": 500,
+            "cpi": 32,
+            "percentage_jamming": 0.9
           }
         ]
       }
@@ -238,7 +254,9 @@
             "erp_db": 0,
             "frequency_MHz": 9200,
             "pulse_width_us": 0.337,
-            "pri_us": 503
+            "pri_us": 503,
+            "cpi": 32,
+            "percentage_jamming": 0.5
           }
         ]
       }
@@ -265,7 +283,9 @@
             "erp_db": 0,
             "frequency_MHz": 9200,
             "pulse_width_us": 0.337,
-            "pri_us": 573
+            "pri_us": 573,
+            "cpi": 64,
+            "percentage_jamming": 0.5
           }
         ]
       }
@@ -292,7 +312,9 @@
             "erp_db": 0,
             "frequency_MHz": 6900,
             "pulse_width_us": 6.4,
-            "pri_us": 17
+            "pri_us": 17,
+            "cpi": 32,
+            "percentage_jamming": 0.9
           }
         ]
       }

@@ -3,7 +3,7 @@ import math
 RET_ERROR = 0x0F0C
 RET_WARNING = 0x0BAD
 
-THREATDIR   = '1_datastore/0_manual/jammer.json'
+THREATDIR   = '1_datastore/0_manual/threats.json'
 PLATFORMDIR = '1_datastore/0_manual/platform.json'
 JAMMERDIR   = '1_datastore/0_manual/jammer.json'
 
@@ -44,7 +44,7 @@ THREAT_EMITTERS             = 'emitters'
 THREAT_MODES                = 'modes'
 THREAT_EMITTERMODES_SIZE    = 11
 THREAT_EMITTER_ID           = 'emitter_id'
-THREAT_MODEID               = 'mode_id'
+THREAT_MODE_ID               = 'mode_id'
 THREAT_TYPE                 = 'type'
 THREAT_ERP                  = "erp"
 THREAT_PEAKPOWER            = 'power_peak_W'
@@ -55,13 +55,15 @@ THREAT_PW                   = 'pulse_width_us'
 THREAT_RANGE                = 'range_max_m'
 THREAT_ALT                  = 'altitude_max_m'
 THREAT_ISERP                = 'isERP'
-
 THREAT_LOCATION             = 'location'
+THREAT_CPI                  = 'cpi'
+THREAT_PERCENTAGEJAMMING    = 'percentage_jamming'
 THREAT_LOCATION_SIZE        = 3
 
 JAMMER_CHANNEL              = "channels"
 JAMMER_CHANNEL_RANGE        = "channel_range"
 JAMMER_CHANNEL_START        = "channel_start_MHz"
 JAMMER_CHANNEL_STOP         = "channel_stop_MHz"
-JAMMER_TIME_INTERVAL        = "interval_time_s"
+JAMMER_JAMMING_TIME         = "oecm_time_ms"
+JAMMER_LOOKTHROUGH_TIME     = "esm_time_ms"
 JAMMER_CHANNEL_RANGE_SIZE   = 2 #start, stop

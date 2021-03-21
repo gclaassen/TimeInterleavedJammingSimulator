@@ -4,14 +4,18 @@ import jsonParser
 
 
 class Jammer:
-    interval_time: int=0
+    oecm_time: int=0
+    esm_time: int=0
+    interval_time: int = 0
     channels: int=0
     channel_ranges = None
     current_profiles = None
     jammer_profile = None
 
     def __init__(self, jammerList):
-        self.interval_time = jammerList[common.JAMMER_TIME_INTERVAL]
+        self.oecm_time = jammerList[common.JAMMER_JAMMING_TIME]
+        self.esm_time = jammerList[common.JAMMER_LOOKTHROUGH_TIME]
+        self.interval_time = self.oecm_time + self.esm_time
         self.channels = jammerList[common.JAMMER_CHANNEL]
         self.channel_ranges = convertJammerChannelsJsonToArray(
             jammerList[common.JAMMER_CHANNEL_RANGE])

@@ -36,8 +36,8 @@ def topview(pf, th):
         ax.annotate(thNode.radar_id, (thNode.location[common.XCOORD], thNode.location[common.YCOORD]+300))
                 # ax.annotate(thNode.radar_name, (thNode.location[common.XCOORD]+500, thNode.location[common.YCOORD]+200))
 
-    ax.set_xlabel('Cartesian X coordinate')
-    ax.set_ylabel('Cartesian Y coordinate')
+    ax.set_xlabel('X coordinate [m]')
+    ax.set_ylabel('Y coordinate [m]')
     fig.tight_layout(pad=0.1)
     ax.set_aspect(1)
     plt.show()
