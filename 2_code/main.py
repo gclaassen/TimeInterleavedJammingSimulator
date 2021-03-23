@@ -1,11 +1,10 @@
-import os, getopt, sys
+import os, getopt, sys, traceback
 import threats
-import pltf
+import pltf as platform
 import jammer
 import common
 import jsonParser
 import visualize
-import signalProcessing as signal
 import numpy as np
 
 def argumentExtraction(argv):
@@ -27,7 +26,6 @@ def argumentExtraction(argv):
 
     return setViz
 
-
 def helpPrints():
     print('\npyTIJ.py <arguments> \n')
     print('~~~ARGUMENT LIST~~~\n')
@@ -41,36 +39,22 @@ def main(argv):
     
     # Initialize
     # init platform class instance
-    cPlatform = pltf.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
+    oPlatform = platform.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
-    cThreatLibrary = threats.convertThreatJsonToClass(
+    oThreats = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
     
-    cJammer = jammer.Jammer(jsonParser.parseJsonFile(common.JAMMERDIR))
+    oJammer = jammer.Jammer(jsonParser.parseJsonFile(common.JAMMERDIR))
+    
+    # profile creator
+    
     
     # visualize the world
     if doViz:
         # visualize.worldview(cPlatform, cThreatLibrary)
-        visualize.topview(cPlatform, cThreatLibrary)
-
-    # profile creator
+        visualize.topview(oPlatform, oThreats)
     
-    
-    # signal.Rayleigh(0,1)
-    # snrRange = [-5, -3, -1, 0, 3, 5]
-    # PfaRange = [1e-10, 1]
-    # numPoints = 101
-    # integration = 'CI'
-    # pulsesForIntegration = 16
-    # [Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, pulsesForIntegration, numPoints, integration)
-    # # signal.rocPFAplot(snrRange, Pd, Pfa, 1e-6)
-    # signal.rocSNRplot(snrRange, Pd, Pfa, pulsesForIntegration, integration)
-    # alberSnr = signal.albersheimsSnr(0.95, 10e-6, pulsesForIntegration)
 
-    # thresholdRange = np.linspace(0,5,50)
-    # noiseStdev = 1
-    # signalAmplitude = 1
-    # nciMatrix = signal.NCI_Detection(thresholdRange, noiseStdev, signalAmplitude)
     pass
 
 

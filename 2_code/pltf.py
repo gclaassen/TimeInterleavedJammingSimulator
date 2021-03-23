@@ -1,9 +1,7 @@
 import numpy as np
 import ast
-import converter
 import common
 import math
-
 
 class Platform:
     rcs: int = 0

@@ -61,9 +61,20 @@ THREAT_PERCENTAGEJAMMING    = 'percentage_jamming'
 THREAT_LOCATION_SIZE        = 3
 
 JAMMER_CHANNEL              = "channels"
-JAMMER_CHANNEL_RANGE        = "channel_range"
 JAMMER_CHANNEL_START        = "channel_start_MHz"
 JAMMER_CHANNEL_STOP         = "channel_stop_MHz"
 JAMMER_JAMMING_TIME         = "oecm_time_ms"
 JAMMER_LOOKTHROUGH_TIME     = "esm_time_ms"
 JAMMER_CHANNEL_RANGE_SIZE   = 2 #start, stop
+
+def convertRadarTypeStringToInt(strRadarType):
+    if strRadarType == sSEARCH:
+        return SEARCH
+    elif strRadarType == sACQUISITION:
+        return ACQUISITION
+    elif strRadarType == sTRACKING:
+        return TRACKING
+    elif strRadarType == sMISSILE_GUIDANCE:
+        return MISSILE_GUIDANCE
+    else:
+        return None

@@ -1,21 +1,39 @@
 import numpy as np
 import common
-import converter
 import math
-
+import mathRadar as radmath
 
 class Threat:
+    # threat parameters
     radar_id: int = 0
     radar_name = None
     location: None
     emitters = None
+    
+    # current mode parameters
     emitter_current = None
     mode_current = None
-    detect: None
-    jammer: None
-    za: float=0
-    ma: float=0
-    Pj: float=0
+    channel_current = None
+    pulsePercentage_set: float = 0
+    Pd_set: float = 0
+
+    # interval parameters
+    za: float = 0
+    ma: float = 0
+    Pj: float = 0
+    pulsePercentage_current: float = 0
+    Pd_est: float = 0
+    pulses_inInterval: int = 0
+
+    # pulse info
+    pulse_number: int = 0
+    pulse_Tstart: float = 0
+    pulse_Tstop: float = 0
+    pulses_inInterval_coincidenceList = []
+
+    # detection parameters
+    inDetectionRange: bool = False
+    inBurnthroughRange: bool = False
 
     def __init__(self, threatList):
         emitterSize = None
@@ -85,10 +103,10 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
 
             emitters[emmiterIndex][modeIndex][common.THREAT_EMITTER_ID] = emitterNode[common.THREAT_EMITTER_ID]
             emitters[emmiterIndex][modeIndex][common.THREAT_MODE_ID] = modeNode[common.THREAT_MODE_ID]
-            emitters[emmiterIndex][modeIndex][common.THREAT_TYPE] = converter.convertRadarTypeStringToInt(modeNode[common.THREAT_TYPE])
+            emitters[emmiterIndex][modeIndex][common.THREAT_TYPE] = common.convertRadarTypeStringToInt(modeNode[common.THREAT_TYPE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER] = modeNode[common.THREAT_PEAKPOWER]
             emitters[emmiterIndex][modeIndex][common.THREAT_GAIN] = modeNode[common.THREAT_GAIN]
-            emitters[emmiterIndex][modeIndex][common.THREAT_ERP] = modeNode[common.THREAT_ERP] if modeNode[common.THREAT_ISERP] == True else converter.convertToErp(modeNode[common.THREAT_PEAKPOWER], modeNode[common.THREAT_GAIN])
+            emitters[emmiterIndex][modeIndex][common.THREAT_ERP] = modeNode[common.THREAT_ERP] if modeNode[common.THREAT_ISERP] == True else radmath.calculateErpW(modeNode[common.THREAT_PEAKPOWER], modeNode[common.THREAT_GAIN])
             emitters[emmiterIndex][modeIndex][common.THREAT_FREQ] = modeNode[common.THREAT_FREQ]
             emitters[emmiterIndex][modeIndex][common.THREAT_PRI] = modeNode[common.THREAT_PRI]
             emitters[emmiterIndex][modeIndex][common.THREAT_PW] = modeNode[common.THREAT_PW]
@@ -108,8 +126,8 @@ def convertThreatJsonToClass(jsonThreatDict):
     return threatClass
 
 def PriTimeRange(Tstart_ns, Tstop_ns, PRI):
-    PriStart = [(Tstart_us//PRI)*PRI] + PRI
-    PriStop = [(Tstop_us//PRI)*PRI] + PRI
+    PriStart = [(Tstart_ns//PRI)*PRI] + PRI
+    PriStop = [(Tstop_ns//PRI)*PRI] + PRI
     totalPulses = math.ceil((PriStop - PriStart)/PRI)
 
     return [PriStart, PriStop, totalPulses]
