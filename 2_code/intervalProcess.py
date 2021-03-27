@@ -1,14 +1,7 @@
-import pycuda.driver as cuda
-import pycuda.autoinit
-from pycuda.compiler import SourceModule
+from numba import cuda
 import numpy
 import math
 
-#determine mode change
-    #determine mode start and end time
-        #get each pulse -start time, reflection time
-        #get each jam pulse
-        
 class cInterval:
     total_intervals: int = 0
     current_interval: int = 0
@@ -22,3 +15,6 @@ class cInterval:
 
 def intervalsInFlight_ms(numIntervalLength_ms, numFlightTime_ms):
     return math.ceil(numFlightTime_ms/numIntervalLength_ms)
+
+def intervalCoincidenceCalculator(threats, interval):
+    pass

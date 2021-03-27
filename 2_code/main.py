@@ -33,11 +33,26 @@ def helpPrints():
     print('-v:\tvisualize\n')
 
 def main(argv):
-
+    oPlatform = None
+    oJammer = None
+    oThreats = None
     doViz = False
+
     doViz = argumentExtraction(argv)
 
     # Initialize
+    [oPlatform, oJammer, oThreats] = initEnvironment()
+
+    interval.intervalCoincidenceCalculator()
+
+    # visualize the world
+    if doViz:
+        # visualize.worldview(cPlatform, cThreatLibrary)
+        visualize.topview(oPlatform, oThreats)
+
+    pass
+
+def initEnvironment():
     # init platform class instance
     oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
@@ -50,12 +65,7 @@ def main(argv):
     for itChannel in oJammer.oChannel:
         itChannel.oInterval = interval.cInterval(itChannel.interval_time_ms, oPlatform.timeStop_ms)
 
-    # visualize the world
-    if doViz:
-        # visualize.worldview(cPlatform, cThreatLibrary)
-        visualize.topview(oPlatform, oThreats)
-
-    pass
+    return [oPlatform, oJammer, oThreats]
 
 
 if __name__ == "__main__":
