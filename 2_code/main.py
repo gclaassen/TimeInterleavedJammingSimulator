@@ -6,6 +6,7 @@ import common
 import jsonParser
 import visualize
 import numpy as np
+import intervalProcess as interval
 
 def argumentExtraction(argv):
     setViz = False
@@ -34,30 +35,28 @@ def helpPrints():
 def main(argv):
 
     doViz = False
-    
     doViz = argumentExtraction(argv)
-    
+
     # Initialize
     # init platform class instance
-    oPlatform = platform.Platform(jsonParser.parseJsonFile(common.PLATFORMDIR))
+    oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
     oThreats = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
-    
-    oJammer = jammer.Jammer(jsonParser.parseJsonFile(common.JAMMERDIR))
-    
+
+    oJammer = jammer.cJammer(jsonParser.parseJsonFile(common.JAMMERDIR))
+
     # profile creator
-    
-    
+    for itChannel in oJammer.oChannel:
+        itChannel.oInterval = interval.cInterval(itChannel.interval_time_ms, oPlatform.timeStop_ms)
+
     # visualize the world
     if doViz:
         # visualize.worldview(cPlatform, cThreatLibrary)
         visualize.topview(oPlatform, oThreats)
-    
 
     pass
 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    

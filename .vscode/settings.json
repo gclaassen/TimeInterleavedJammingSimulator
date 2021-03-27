@@ -16,5 +16,12 @@
     "python.pythonPath": "C:\\Python39\\python.exe",
     "cSpell.enabled": false,
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "[python]": {
+        "gitlens.codeLens.symbolScopes": [
+            "!Module"
+        ]
+    },
+    "python.autoComplete.extraPaths": [
+        "../2_code/"]
 }

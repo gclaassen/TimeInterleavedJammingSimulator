@@ -3,7 +3,7 @@ import common
 import math
 import mathRadar as radmath
 
-class Threat:
+class cThreat:
     # threat parameters
     radar_id: int = 0
     radar_name = None
@@ -121,7 +121,7 @@ def convertThreatJsonToClass(jsonThreatDict):
     threatClass = [None]*jsonThreatList.__len__()
 
     for idx, jsonThreat in enumerate(jsonThreatList):
-        threatClass[idx] = Threat(jsonThreat)
+        threatClass[idx] = cThreat(jsonThreat)
 
     return threatClass
 

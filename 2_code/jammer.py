@@ -2,17 +2,13 @@ import numpy as np
 import common
 import jsonParser
 
-class Channel:
+class cChannel:
+    oInterval: None
     oecm_time_ms: int=0
     esm_time_ms: int=0
     interval_time_ms: int = 0
     channel_range_MHz = None
 
-    pulse_profile = None
-    jammer_profile = None
-    interval_Tstart: int = 0
-    interval_Tstop: int = 0
-    
     def __init__(self, channelList, channelRange):
         self.oecm_time_ms = channelList[common.JAMMER_JAMMING_TIME]
         self.esm_time_ms = channelList[common.JAMMER_LOOKTHROUGH_TIME]
@@ -20,8 +16,8 @@ class Channel:
         self.channel_range_MHz = channelRange
 
 
-class Jammer:
-    cChannel: None
+class cJammer:
+    oChannel: None
     channel_size: int = 0
     channel_ranges_MHz = None
 
@@ -30,9 +26,9 @@ class Jammer:
             jammerList[common.JAMMER_CHANNEL])
         self.channel_size = jammerList[common.JAMMER_CHANNEL].__len__()
         
-        self.cChannel = [None]*self.channel_size
+        self.oChannel = [None]*self.channel_size
         for idx, channelList in enumerate(jammerList[common.JAMMER_CHANNEL]):
-            self.cChannel[idx] = Channel(channelList, self.channel_ranges_MHz[idx])
+            self.oChannel[idx] = cChannel(channelList, self.channel_ranges_MHz[idx])
 
 
 def convertJammerChannelsJsonToArray(jsonJammerChansDict):
@@ -44,4 +40,3 @@ def convertJammerChannelsJsonToArray(jsonJammerChansDict):
 
 def profileCreatorJammingThreat():
     pass
-
