@@ -78,3 +78,16 @@ def convertRadarTypeStringToInt(strRadarType):
         return MISSILE_GUIDANCE
     else:
         return None
+    
+ThreatPulseLibSize = 8 # 1:threat id, 2:pulse start time, 3:pulse end time, 4:pri, 5:pw, 7:current pulse number/total pulses, 8: total pulses in coincidence, 9: interval duration [us]
+PulseArrSize = 3
+
+INTERVAL_LIB_RADAR_ID                   = 0
+INTERVAL_LIB_PULSE_START                = 1
+INTERVAL_LIB_PULSE_STOP                 = 2
+INTERVAL_LIB_PRI_US                     = 3
+INTERVAL_LIB_PW_US                      = 4
+INTERVAL_LIB_PULSE_NUMBER               = 5
+INTERVAL_LIB_COINCIDENCE_NUMBER         = 6
+INTERVAL_LIB_OECM_TIME_US               = 7
+INTERVAL_LIB_SIZE                       = 8

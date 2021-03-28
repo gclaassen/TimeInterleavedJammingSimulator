@@ -35,20 +35,20 @@ def helpPrints():
 def main(argv):
     oPlatform = None
     oJammer = None
-    oThreats = None
+    olThreats = None
     doViz = False
 
     doViz = argumentExtraction(argv)
 
     # Initialize
-    [oPlatform, oJammer, oThreats] = initEnvironment()
+    [oPlatform, oJammer, olThreats] = initEnvironment()
 
-    interval.intervalEsmProcessor(oPlatform, oJammer, oThreats, oJammer.oChannel)
+    interval.intervalEsmProcessor(oPlatform, oJammer, olThreats, oJammer.oChannel)
 
     # visualize the world
     if doViz:
         # visualize.worldview(cPlatform, cThreatLibrary)
-        visualize.topview(oPlatform, oThreats)
+        visualize.topview(oPlatform, olThreats)
 
     pass
 
@@ -56,7 +56,7 @@ def initEnvironment():
     # init platform class instance
     oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR))
     # init threats (mulitple instances of threat class)
-    oThreats = threats.convertThreatJsonToClass(
+    olThreats = threats.convertThreatJsonToClass(
         jsonParser.parseJsonFile(common.THREATDIR))
 
     oJammer = jammer.cJammer(jsonParser.parseJsonFile(common.JAMMERDIR))
@@ -65,7 +65,7 @@ def initEnvironment():
     for itChannel in oJammer.oChannel:
         itChannel.oInterval = interval.cInterval(itChannel.interval_time_ms, oPlatform.timeStop_ms)
 
-    return [oPlatform, oJammer, oThreats]
+    return [oPlatform, oJammer, olThreats]
 
 
 if __name__ == "__main__":

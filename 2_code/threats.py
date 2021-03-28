@@ -26,9 +26,8 @@ class cThreat:
     pulses_inInterval: int = 0
 
     # pulse info
-    pulse_number: int = 0
-    pulse_Tstart: float = 0
-    pulse_Tstop: float = 0
+    pulse_total: int = 0
+    pulse_coincidence_percentage: float = 0
     pulses_inInterval_coincidenceList = []
 
     # detection parameters
