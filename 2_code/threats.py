@@ -9,7 +9,7 @@ class cThreat:
     radar_name = None
     location: None
     emitters = None
-    
+
     # current mode parameters
     emitter_current = None
     mode_current = None
@@ -62,6 +62,10 @@ class cThreat:
             emitterSize = 1
         self.emitters = convertEmitterJsonToArray(
             threatList[common.THREAT_EMITTERS], emitterSize)
+ 
+        if(self.emitters.__len__() > 0):
+            self.emitter_current = self.emitters[0]
+            self.mode_current = self.emitter_current[common.THREAT_MODE_ID]
 
 
 def convertEmitterJsonToArray(emitterList, emitterSize):

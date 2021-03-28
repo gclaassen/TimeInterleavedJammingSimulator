@@ -43,7 +43,7 @@ def main(argv):
     # Initialize
     [oPlatform, oJammer, oThreats] = initEnvironment()
 
-    interval.intervalCoincidenceCalculator()
+    interval.intervalEsmProcessor(oPlatform, oJammer, oThreats, oJammer.oChannel)
 
     # visualize the world
     if doViz:

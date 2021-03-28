@@ -4,6 +4,7 @@ import jsonParser
 
 class cChannel:
     oInterval: None
+    oThreatLib: []
     oecm_time_ms: int=0
     esm_time_ms: int=0
     interval_time_ms: int = 0
@@ -17,7 +18,7 @@ class cChannel:
 
 
 class cJammer:
-    oChannel: None
+    oChannel: []
     channel_size: int = 0
     channel_ranges_MHz = None
 
