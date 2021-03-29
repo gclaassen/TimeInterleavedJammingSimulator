@@ -39,7 +39,7 @@ Time Interleaved Jamming Simulator
 - numba *
 - multiprocessing
 
-*install required
+> *install required
 
 ## PC
 - OS: Windows 10 64 bit
