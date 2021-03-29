@@ -159,9 +159,9 @@ def pulseCoincidence(sarrThreats):
     '''
     Tend = 0.0 #Farthest Tend
     Tstart = 0.0
-    temp = None
-    TstartIdx = None
-    TcoincidenceIdx = None
+    TstartRadarIdx = None
+    lTcoincidenceIdx = None
+    inCoincidence = False
     
     # update times and increase pulse total
     for idx in range(sarrThreats.__len__()):
@@ -171,20 +171,52 @@ def pulseCoincidence(sarrThreats):
 
     # loop over entire interval duration
     while(Tend <= sarrThreats[0, common.INTERVAL_LIB_OECM_TIME_US] or Tstart <= sarrThreats[0, common.INTERVAL_LIB_OECM_TIME_US]):
+        inCoincidence = False
 
-        TstartIdx = np.max(np.where(sarrThreats[:, common.INTERVAL_LIB_PULSE_START] == np.min(sarrThreats[:, common.INTERVAL_LIB_PULSE_START])))
-        sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_START] = sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[TstartIdx, common.INTERVAL_LIB_PRI_US]
-        TcoincidenceIdx = np.where(sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_STOP] >= sarrThreats[:, common.INTERVAL_LIB_PULSE_START])
+        # 1. get the first pulse
+        TstartRadarIdx = np.max(np.where(sarrThreats[:, common.INTERVAL_LIB_PULSE_START] == np.min(sarrThreats[:, common.INTERVAL_LIB_PULSE_START])))
 
-        # TODO: create coincidence list, update the coincidence increment right
-        if(TcoincidenceIdx[0].size > 0):
-            sarrThreats[np.max(TcoincidenceIdx[0]), common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1 # count pulse
-            sarrThreats[TstartIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1 # count pulse
+        # 2. update the first pulse Tstart as to allow for the next lowest pulse to be seen
+        sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_START] = sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PRI_US]
+
+        # 3. Tend > Tstart: coincidence check Tend with all of the next lowest Tstart pulses
+        lTcoincidenceIdx = np.where(sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP] >= sarrThreats[:, common.INTERVAL_LIB_PULSE_START])
+        if(lTcoincidenceIdx[0].size > 0):
+            inCoincidence = True
+            sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
         else:
-            sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_STOP] = sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_START] + sarrThreats[TstartIdx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW
-            sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_NUMBER] += 1
+            inCoincidence = False
+
+        # 4. update Tend to its next Tend
+        sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP] = sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_START] + sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PW_US]
+        sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER] += 1
+
+
+        while(inCoincidence is True):
+            # 5. update all of the coincidence pulses Tstart
+            sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] = sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PRI_US]
             
-            Tend = sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_STOP]
-            Tstart = sarrThreats[TstartIdx, common.INTERVAL_LIB_PULSE_START]
+            #TODO: from here
+            # 6. check to find the highest Tend of the coincidence pulses
+            lTcoincidenceIdx = np.argmax(sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP], axis=1)
+            
+            # 7. update the lower Tend to their next Tend
+            
+            # 8. repeat 3 - 7 until no more coincidences found
+            # 3. Tend > Tstart: coincidence check Tend with all of the next lowest Tstart pulses
+            lTcoincidenceIdx = np.where(sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP] >= sarrThreats[:, common.INTERVAL_LIB_PULSE_START])
+            if(lTcoincidenceIdx[0].size > 0):
+                inCoincidence = True
+                sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
+            else:
+                inCoincidence = False
+
+            # 4. update Tend to its next Tend
+            sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP] = sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_START] + sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PW_US]
+            sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER] += 1
+
+
+            Tend = sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_STOP]
+            Tstart = sarrThreats[TstartRadarIdx, common.INTERVAL_LIB_PULSE_START]
         
     return sarrThreats
