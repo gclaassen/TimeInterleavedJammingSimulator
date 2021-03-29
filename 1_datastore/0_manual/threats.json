@@ -283,7 +283,7 @@
             "erp_db": 0,
             "frequency_MHz": 9200,
             "pulse_width_us": 0.337,
-            "pri_us": 573,
+            "pri_us": 17,
             "cpi": 64,
             "percentage_jamming": 0.5
           }
