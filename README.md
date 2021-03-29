@@ -30,13 +30,16 @@ Time Interleaved Jamming Simulator
 ### Pyton Modules
 - math
 - json
-- numpy
-- ast
-- scipy
-- matplotlib
-- matplotlib-label-lines
-- spectrum
-- numba
+- numpy *
+- ast 
+- scipy *
+- matplotlib *
+- matplotlib-label-lines *
+- spectrum *
+- numba *
+- multiprocessing
+
+*install required
 
 ## PC
 - OS: Windows 10 64 bit
