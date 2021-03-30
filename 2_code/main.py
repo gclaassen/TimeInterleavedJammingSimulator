@@ -8,6 +8,7 @@ import visualize
 import numpy as np
 import intervalProcess as interval
 import logging
+logging.basicConfig(level = logging.NOTSET)
 
 def argumentExtraction(argv):
     setViz = False

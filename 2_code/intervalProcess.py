@@ -133,7 +133,7 @@ def intervalCoincidenceCalculator(olChannels):
 
     timeCounter[0] = time.perf_counter()
     logging.info("Number of processors: %s", mp.Pool(mp.cpu_count()))
-    retList = mp.Pool(olChannels.__len__()).map(pulseCoincidence, threatPulseLib)
+    retList = mp.Pool(olChannels.__len__()).map(pulseCoincidenceAssessor, threatPulseLib)
 
     for coincIdx in range(olChannels.__len__()):
         lCoincidenceLib[coincIdx] = retList[coincIdx][1]
@@ -141,7 +141,7 @@ def intervalCoincidenceCalculator(olChannels):
         threatPulseLib[coincIdx][:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = threatPulseLib[coincIdx][:, common.INTERVAL_LIB_COINCIDENCE_NUMBER] / threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PULSE_NUMBER]
     
     timeCounter[1] = time.perf_counter()
-    logging.debug("Coincidence timer: %s", timeCounter[1]-timeCounter[0])
+    logging.debug("%s seconds to complete coincidence assessor for interval", timeCounter[1]-timeCounter[0])
     pass
 
 def initThreatPulseLib(threatPulseLib, index, threatItem, jammingIntervalTime_ms):
@@ -168,9 +168,9 @@ def initThreatPulseLib(threatPulseLib, index, threatItem, jammingIntervalTime_ms
     threatPulseLib[index, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = 0 # pulse coincidence/total pulses in interval perc
     threatPulseLib[index, common.INTERVAL_LIB_OECM_TIME_US] = jammingIntervalTime_ms * 1000 # oecm timein us
 
-def pulseCoincidence(sarrThreats):
+def pulseCoincidenceAssessor(sarrThreats):
     '''
-    pulseCoincidence
+    pulseCoincidenceAssessor
 
     calculate each channels coinicidence using parralel processing
 
