@@ -7,6 +7,7 @@ import jsonParser
 import visualize
 import numpy as np
 import intervalProcess as interval
+import logging
 
 def argumentExtraction(argv):
     setViz = False
@@ -17,20 +18,20 @@ def argumentExtraction(argv):
     except getopt.GetoptError:
         helpPrints()
         return None
-    for opt, arg in opts:
+    for opt, _ in opts:
         if opt == '-h':
             helpPrints()
             exit()
         elif opt in ("-v", "--visualize"):
             setViz = True
-            print('Visualization set to True')
+            logging.info('Visualization set to True')
 
     return setViz
 
 def helpPrints():
-    print('\npyTIJ.py <arguments> \n')
-    print('~~~ARGUMENT LIST~~~\n')
-    print('-v:\tvisualize\n')
+    logging.info('\npyTIJ.py <arguments> \n')
+    logging.info('~~~ARGUMENT LIST~~~\n')
+    logging.info('-v:\tvisualize\n')
 
 def main(argv):
     oPlatform = None

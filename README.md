@@ -31,13 +31,15 @@ Time Interleaved Jamming Simulator
 - math
 - json
 - numpy *
-- ast 
+- ast
 - scipy *
 - matplotlib *
 - matplotlib-label-lines *
 - spectrum *
 - numba *
 - multiprocessing
+- logging
+- time
 
 > *install required
 

@@ -1,6 +1,7 @@
 import math
 import common
 import traceback
+import logging
 
 #log base enum values
 BASENORMAL          = 0 # log()
@@ -12,7 +13,7 @@ def convertTodBm(numValue, numMultiplier, enumBase):
     elif(enumBase == BASENORMAL):
         return numMultiplier*math.log(numValue)
     else:
-        print('Incorrect log base chosen:\n', traceback.print_stack()[0])
+        logging.critical('Incorrect log base chosen')
 
 def calculateErpW(numPower, numGain):
     return numPower*numGain
