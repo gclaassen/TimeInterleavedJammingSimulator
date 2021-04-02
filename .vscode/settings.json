@@ -13,7 +13,7 @@
         "activityBar.activeBorder": "#91b887"
     },
     "peacock.color": "#854f5a",
-    "python.pythonPath": "C:\\Python39\\python.exe",
+    "python.pythonPath": "C:\\Python3\\python.exe",
     "cSpell.enabled": false,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,

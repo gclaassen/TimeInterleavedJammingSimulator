@@ -37,6 +37,9 @@ def convertPowerdBmToWatt(numPower_dBm):
 def convertGaindBm(numGain):
     return convertTodBm(numGain,10, BASE10)
 
+def convertPRFtoPRIus(numPRF_Hz, numPW_us):
+    return ((1/(numPRF_Hz))*1e6) - numPW_us
+
 def attenuation(numWavelength, numRc):
     return ((common.STERADIANS*numRc)/numWavelength) ^ 2
 

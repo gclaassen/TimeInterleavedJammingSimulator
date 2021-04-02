@@ -2,7 +2,7 @@
   "threats": [
     {
       "radar_id": 1,
-      "radar_name": "SA-8",
+      "radar_name": "AN/AWG-9",
       "location": {
         "X_coord": -3500,
         "Y_coord": 3000,
@@ -15,9 +15,22 @@
         "modes": [
           {
             "mode_id": 0,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
-            "power_peak_W": 500000,
+            "power_peak_W": 250000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 2.7,
+            "pri_us": 2430.3,
+            "cpi": 16,
+            "percentage_jamming": 0.5
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "isERP": false,
+            "power_peak_W": 25000,
             "gain": 35,
             "erp_db": 0,
             "frequency_MHz": 7400,
@@ -31,7 +44,7 @@
     },
     {
       "radar_id": 2,
-      "radar_name": "SA-8",
+      "radar_name": "AN/APG",
       "location": {
         "X_coord": -2500,
         "Y_coord": 3000,
@@ -43,15 +56,41 @@
         "emitter_id": 0,
         "modes": [
           {
-            "mode_id": 1,
-            "type": "TS",
+            "mode_id": 0,
+            "type": 0,
             "isERP": false,
-            "power_peak_W": 1000000,
+            "power_peak_W": 16000,
             "gain": 35,
             "erp_db": 0,
-            "frequency_MHz": 1000,
-            "pulse_width_us": 2,
-            "pri_us": 500,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.2,
+            "pri_us": 999.8,
+            "cpi": 8,
+            "percentage_jamming": 0.7
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "isERP": false,
+            "power_peak_W": 16000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.81,
+            "pri_us": 999.19,
+            "cpi": 8,
+            "percentage_jamming": 0.7
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "isERP": false,
+            "power_peak_W": 16000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.1,
+            "pri_us": 2499.9,
             "cpi": 8,
             "percentage_jamming": 0.7
           }
@@ -73,7 +112,7 @@
         "modes": [
           {
             "mode_id": 3,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 1000000,
             "gain": 35,
@@ -89,7 +128,7 @@
     },
     {
       "radar_id": 4,
-      "radar_name": "SA-8",
+      "radar_name": "AN/SPG-51",
       "location": {
         "X_coord": 2500,
         "Y_coord": 3000,
@@ -101,15 +140,28 @@
         "emitter_id": 0,
         "modes": [
           {
-            "mode_id": 2,
-            "type": "TS",
+            "mode_id": 0,
+            "type": 0,
             "isERP": false,
-            "power_peak_W": 1000000,
+            "power_peak_W": 30000,
+            "gain": 35,
+            "erp_db": 0,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 3.2,
+            "pri_us": 102,
+            "cpi": 16,
+            "percentage_jamming": 0.6
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "isERP": false,
+            "power_peak_W": 1000,
             "gain": 35,
             "erp_db": 0,
             "frequency_MHz": 9000,
-            "pulse_width_us": 0.25,
-            "pri_us": 407,
+            "pulse_width_us": 3.2,
+            "pri_us": 102,
             "cpi": 16,
             "percentage_jamming": 0.6
           }
@@ -131,7 +183,7 @@
         "modes": [
           {
             "mode_id": 0,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 35,
@@ -160,7 +212,7 @@
         "modes": [
           {
             "mode_id": 0,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 50,
@@ -189,7 +241,7 @@
         "modes": [
           {
             "mode_id": 1,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 35,
@@ -218,7 +270,7 @@
         "modes": [
           {
             "mode_id": 0,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 35,
@@ -247,7 +299,7 @@
         "modes": [
           {
             "mode_id": 1,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 35,
@@ -276,7 +328,7 @@
         "modes": [
           {
             "mode_id": 2,
-            "type": "TS",
+            "type": 0,
             "isERP": false,
             "power_peak_W": 500000,
             "gain": 35,
@@ -292,7 +344,7 @@
     },
     {
       "radar_id": 11,
-      "radar_name": "SA-6",
+      "radar_name": "AN/TPS-44",
       "location": {
         "X_coord": -5500,
         "Y_coord": -8000,
@@ -304,15 +356,15 @@
         "emitter_id": 0,
         "modes": [
           {
-            "mode_id": 1,
-            "type": "TS",
+            "mode_id": 0,
+            "type": 0,
             "isERP": false,
-            "power_peak_W": 1000000,
+            "power_peak_W": 1300000,
             "gain": 60,
             "erp_db": 0,
-            "frequency_MHz": 6900,
-            "pulse_width_us": 6.4,
-            "pri_us": 17,
+            "frequency_MHz": 1250,
+            "pulse_width_us": 4.2,
+            "pri_us": 3741,
             "cpi": 32,
             "percentage_jamming": 0.9
           }

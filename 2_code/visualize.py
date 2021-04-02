@@ -29,7 +29,7 @@ def topview(pf, th):
     for thNode in th:
         # for emNode in thNode.emitters:
             # for modeNode in emNode:
-                # modeColor = domeColor(modeNode[common.THREAT_TYPE])
+                # modeColor = domeColor(modeNode[common.THREAT_MODE_TYPE])
                 # plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color=modeColor, s=thNode.location[common.THREAT_RANGE], alpha=0.5)
                 # ax.add_artist(plt.Circle((thNode.location[common.XCOORD], thNode.location[common.YCOORD]), thNode.location[common.THREAT_RANGE], color=modeColor, linewidth=3,  linestyle='dashed', fill=False))
         plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color = 'r', marker = 'x', linewidth=3, s = 50)

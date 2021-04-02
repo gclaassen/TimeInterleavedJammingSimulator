@@ -2,6 +2,7 @@ import numpy as np
 import common
 import math
 import mathRadar as radmath
+import logging
 
 class cThreat:
     # threat parameters
@@ -39,6 +40,7 @@ class cThreat:
 
         self.radar_id = threatList[common.THREAT_ID]
         self.radar_name = threatList[common.THREAT_NAME]
+        logging.debug("Threat: %s id: %s",self.radar_name, self.radar_id)
         self.location = np.array((
             threatList[common.THREAT_LOCATION][common.XCOORD],
             threatList[common.THREAT_LOCATION][common.YCOORD],
@@ -56,15 +58,23 @@ class cThreat:
         isMultipleEmitters = isinstance(
             threatList[common.THREAT_EMITTERS], list)
         if(isMultipleEmitters == True):
+            logging.debug("Multiple emitters")
             emitterSize = threatList[common.THREAT_EMITTERS].__len__()
         else:
+            logging.debug("Single emitter")
             emitterSize = 1
         self.emitters = convertEmitterJsonToArray(
             threatList[common.THREAT_EMITTERS], emitterSize)
  
         if(self.emitters.__len__() > 0):
-            self.emitter_current = self.emitters[0]
-            self.mode_current = self.emitter_current[common.THREAT_MODE_ID]
+            minModeIdx = 0
+            modeSize = np.size(self.emitters[0])
+            if(modeSize > 1):
+                minModeIdx = np.min(np.where(self.emitters[0][:][common.THREAT_MODE_TYPE] == np.min(self.emitters[0][:][common.THREAT_MODE_TYPE])))
+            #TODO: currently only cater so a single emitter with single or multiple different modes
+            
+            self.mode_current = self.emitters[0][minModeIdx][common.THREAT_MODE_ID]
+            self.emitter_current = self.emitters[0][minModeIdx]
 
 
 def convertEmitterJsonToArray(emitterList, emitterSize):
@@ -83,12 +93,14 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             modeSize = emitterNode[common.THREAT_MODES].__len__()
         else:
             modeSize = 1
+        logging.debug("Mode Size %s", modeSize)
+
 
         emitters[emmiterIndex] = np.zeros(modeSize, dtype=
                                         [
                                             (common.THREAT_EMITTER_ID,int),
                                             (common.THREAT_MODE_ID,int),
-                                            (common.THREAT_TYPE,int),
+                                            (common.THREAT_MODE_TYPE,int),
                                             (common.THREAT_PEAKPOWER, int),
                                             (common.THREAT_GAIN, int),
                                             (common.THREAT_ERP, int),
@@ -99,6 +111,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_PERCENTAGEJAMMING, float)
                                         ], order='C')
         for modeIndex in range(0, modeSize):
+            
             if(isMultipleModes == True):
                 modeNode = emitterNode[common.THREAT_MODES][modeIndex]
             else:
@@ -106,7 +119,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
 
             emitters[emmiterIndex][modeIndex][common.THREAT_EMITTER_ID] = emitterNode[common.THREAT_EMITTER_ID]
             emitters[emmiterIndex][modeIndex][common.THREAT_MODE_ID] = modeNode[common.THREAT_MODE_ID]
-            emitters[emmiterIndex][modeIndex][common.THREAT_TYPE] = common.convertRadarTypeStringToInt(modeNode[common.THREAT_TYPE])
+            emitters[emmiterIndex][modeIndex][common.THREAT_MODE_TYPE] = modeNode[common.THREAT_MODE_TYPE]
             emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER] = modeNode[common.THREAT_PEAKPOWER]
             emitters[emmiterIndex][modeIndex][common.THREAT_GAIN] = modeNode[common.THREAT_GAIN]
             emitters[emmiterIndex][modeIndex][common.THREAT_ERP] = modeNode[common.THREAT_ERP] if modeNode[common.THREAT_ISERP] == True else radmath.calculateErpW(modeNode[common.THREAT_PEAKPOWER], modeNode[common.THREAT_GAIN])
@@ -115,7 +128,6 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_PW] = modeNode[common.THREAT_PW]
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
             emitters[emmiterIndex][modeIndex][common.THREAT_PERCENTAGEJAMMING] = modeNode[common.THREAT_PERCENTAGEJAMMING]
-
     return emitters
 
 

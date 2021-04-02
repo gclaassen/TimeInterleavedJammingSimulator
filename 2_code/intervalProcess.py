@@ -142,6 +142,7 @@ def intervalCoincidenceCalculator(olChannels):
     
     timeCounter[1] = time.perf_counter()
     logging.debug("%s seconds to complete coincidence assessor for interval", timeCounter[1]-timeCounter[0])
+    
     pass
 
 def initThreatPulseLib(threatPulseLib, index, threatItem, jammingIntervalTime_ms):
