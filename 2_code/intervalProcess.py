@@ -139,7 +139,12 @@ def intervalCoincidenceCalculator(olChannels):
         lCoincidenceLib[coincIdx] = retList[coincIdx][1]
         threatPulseLib[coincIdx] = retList[coincIdx][0]
         threatPulseLib[coincIdx][:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = threatPulseLib[coincIdx][:, common.INTERVAL_LIB_COINCIDENCE_NUMBER] / threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PULSE_NUMBER]
-    
+
+        # for logIdx in range(0, np.size(threatPulseLib[coincIdx])):
+            # logging.debug("#T%s \t[id: %s]  \t[pulses: %s] \t[coincidence: %s \t[c/p: %s] \t[PRI %sus] \t[PW: %sus]", logIdx, threatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_RADAR_ID], threatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PULSE_NUMBER], threatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER], threatPulseLib[coincIdx][logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC], threatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PRI_US], threatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PW_US])
+
+        logging.debug("[id: %d] \t[pulses: %d] \t[coincidence: %d] \t[c/p: %.3f] \t[PRI %fus] \t[PW: %fus] \t[Duty Cycle: %f]", threatPulseLib[coincIdx][:, common.INTERVAL_LIB_RADAR_ID], threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PULSE_NUMBER], threatPulseLib[coincIdx][:, common.INTERVAL_LIB_COINCIDENCE_NUMBER], threatPulseLib[coincIdx][:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC], threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PRI_US], threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PW_US], threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PW_US]/threatPulseLib[coincIdx][:, common.INTERVAL_LIB_PRI_US] )
+
     timeCounter[1] = time.perf_counter()
     logging.debug("%s seconds to complete coincidence assessor for interval", timeCounter[1]-timeCounter[0])
     

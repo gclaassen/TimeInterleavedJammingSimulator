@@ -2,21 +2,9 @@
     "channels":
     [
         {
-            "esm_time_ms": 3000,
-            "oecm_time_ms": 4000,
+            "esm_time_ms": 0,
+            "oecm_time_ms": 10000,
             "channel_start_MHz": 1000,
-            "channel_stop_MHz":  3000
-        },
-        {
-            "esm_time_ms": 3000,
-            "oecm_time_ms": 4000,
-            "channel_start_MHz": 3000,
-            "channel_stop_MHz":  6000
-        },
-        {
-            "esm_time_ms": 3000,
-            "oecm_time_ms": 4000,
-            "channel_start_MHz": 6000,
             "channel_stop_MHz":  10000
         }
     ]

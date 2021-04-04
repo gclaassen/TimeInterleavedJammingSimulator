@@ -228,7 +228,7 @@
     },
     {
       "radar_id": 7,
-      "radar_name": "SA-6",
+      "radar_name": "AN/SPG-32",
       "location": {
         "X_coord": 2500,
         "Y_coord": 15000,
@@ -248,8 +248,8 @@
             "erp_db": 0,
             "frequency_MHz": 5100,
             "pulse_width_us": 0.5,
-            "pri_us": 566,
-            "cpi": 32,
+            "pri_us": 1800,
+            "cpi": 0.3,
             "percentage_jamming": 0.9
           }
         ]
