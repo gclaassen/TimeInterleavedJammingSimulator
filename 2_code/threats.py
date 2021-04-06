@@ -15,25 +15,22 @@ class cThreat:
     emitter_current = None
     mode_current = None
     channel_current = None
-    pulsePercentage_set: float = 0
-    Pd_set: float = 0
+    JPP_req: float = 0
+    Pd_req: float = 0
+    CPI_size: int = 0
 
-    # interval parameters
-    za: float = 0
-    ma: float = 0
-    Pj: float = 0
-    pulsePercentage_current: float = 0
-    Pd_est: float = 0
-    pulses_inInterval: int = 0
-
-    # pulse info
-    pulse_total: int = 0
-    pulse_coincidence_percentage: float = 0
-    pulses_inInterval_coincidenceList = []
+    CPI_startAt: int = 0
+    Pd_startAt: float = 0
+    SNR_startAt: float = 0
 
     # detection parameters
     inDetectionRange: bool = False
     inBurnthroughRange: bool = False
+
+    #interval Info
+    lIntervalPulseStore = None
+    lIntervalPulseCoincidenceStore = None
+    lIntervalTIJStore = None
 
     def __init__(self, threatList):
         emitterSize = None

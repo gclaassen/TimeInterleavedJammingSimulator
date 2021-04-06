@@ -47,7 +47,7 @@ def main(argv):
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment()
 
-    interval.intervalEsmProcessor(oPlatform, oJammer, olThreats, oJammer.oChannel)
+    interval.intervalProcessor(oPlatform, oJammer, olThreats, oJammer.oChannel)
 
     # visualize the world
     if doViz:
