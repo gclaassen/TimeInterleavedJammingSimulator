@@ -191,7 +191,7 @@ def intervalCoincidenceCalculator(olChannels, intervalIdx):
             [lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_RADAR_ID], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PULSE_NUMBER], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100, lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PRI_US], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PW_US], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PW_US]/lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
         table = columnar(loggingCoincData, loggingCoincHeader, no_borders=True)
-        logging.log(1, "\n\n"+table+"\n\n")
+        logging.debug( "\n\n"+table+"\n\n")
 
         timeCounter[1] = time.perf_counter()
         logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], coincIdx, olChannels[coincIdx].oecm_time_ms/1000 )
@@ -319,7 +319,7 @@ def cpiSweeper(chanItem):
             threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi
             
             threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif = threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp - threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req
-            logging.log(1, "Coincidence %d:%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]", coincIdx, coincPulseIdx, threatList[coincPulse.radar_idx].lIntervalTIJStore.radar_id, threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi, CoincidencesInCPI[0].__len__(), threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif )
+            logging.debug( "Coincidence %d:%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]", coincIdx, coincPulseIdx, threatList[coincPulse.radar_idx].lIntervalTIJStore.radar_id, threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi, CoincidencesInCPI[0].__len__(), threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif )
         #TODO: Radar Real
         # coincBar.update(1)
     #TODO: any radars not in coincidence?
