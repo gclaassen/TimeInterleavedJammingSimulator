@@ -4,7 +4,8 @@ import jsonParser
 
 class cChannel:
     oInterval: None
-    oThreatLib: []
+    oThreatLib: None
+    oCoincidences: None
     oecm_time_ms: int=0
     esm_time_ms: int=0
     interval_time_ms: int = 0
