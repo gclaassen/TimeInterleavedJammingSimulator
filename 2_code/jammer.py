@@ -27,7 +27,7 @@ class cJammer:
         self.channel_ranges_MHz = convertJammerChannelsJsonToArray(
             jammerList[common.JAMMER_CHANNEL])
         self.channel_size = jammerList[common.JAMMER_CHANNEL].__len__()
-        
+
         self.oChannel = [None]*self.channel_size
         for idx, channelList in enumerate(jammerList[common.JAMMER_CHANNEL]):
             self.oChannel[idx] = cChannel(channelList, self.channel_ranges_MHz[idx])

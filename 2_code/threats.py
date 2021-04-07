@@ -15,13 +15,6 @@ class cThreat:
     emitter_current = None
     mode_current = None
     channel_current = None
-    JPP_req: float = 0
-    Pd_req: float = 0
-    CPI_size: int = 0
-
-    CPI_startAt: int = 0
-    Pd_startAt: float = 0
-    SNR_startAt: float = 0
 
     # detection parameters
     inDetectionRange: bool = False

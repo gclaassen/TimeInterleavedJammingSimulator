@@ -10,6 +10,7 @@ import intervalProcess as interval
 import logging
 
 logging.basicConfig(level = logging.NOTSET)
+logging.basicConfig(filename='tij.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level = logging.NOTSET)
 np.set_printoptions(precision=5, suppress=True)
 
 def argumentExtraction(argv):

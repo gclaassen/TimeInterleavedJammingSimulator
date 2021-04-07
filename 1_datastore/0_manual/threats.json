@@ -24,7 +24,7 @@
             "pulse_width_us": 2.7,
             "pri_us": 2430.3,
             "cpi": 16,
-            "percentage_jamming": 0.5
+            "percentage_jamming": 0.8
           },
           {
             "mode_id": 1,
@@ -66,7 +66,7 @@
             "pulse_width_us": 0.2,
             "pri_us": 999.8,
             "cpi": 8,
-            "percentage_jamming": 0.7
+            "percentage_jamming": 0.8
           },
           {
             "mode_id": 1,
@@ -191,7 +191,7 @@
             "frequency_MHz": 9200,
             "pulse_width_us": 0.725,
             "pri_us": 573,
-            "cpi": 8,
+            "cpi": 32,
             "percentage_jamming": 0.8
           }
         ]
@@ -220,7 +220,7 @@
             "frequency_MHz": 7800,
             "pulse_width_us": 0.5,
             "pri_us": 566,
-            "cpi": 8,
+            "cpi": 32,
             "percentage_jamming": 0.5
           }
         ]
@@ -249,7 +249,7 @@
             "frequency_MHz": 5100,
             "pulse_width_us": 0.5,
             "pri_us": 1800,
-            "cpi": 0.3,
+            "cpi": 32,
             "percentage_jamming": 0.9
           }
         ]
@@ -308,7 +308,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 573,
             "cpi": 32,
-            "percentage_jamming": 0.5
+            "percentage_jamming": 0.7
           }
         ]
       }
@@ -337,7 +337,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 17,
             "cpi": 64,
-            "percentage_jamming": 0.5
+            "percentage_jamming": 0.6
           }
         ]
       }

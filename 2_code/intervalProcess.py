@@ -12,19 +12,18 @@ class cInterval:
     intervals_total: int = 0
     interval_current_Tstart: float = 0
     interval_current_Tstop: float = 0
-    coincidence_profile = None
-    pulse_profile = None
-    jammer_profile = None
 
     def __init__(self, numIntervalLength_ms, numFlightTime_ms):
         self.intervals_total = intervalsInFlight(numIntervalLength_ms, numFlightTime_ms)
 
 class cCoincidence:
     radar_id: int = 0
+    radar_idx: int = 0
     pulse_number: int = 0
     coincidence_number: int = 0
 
-    def __init__(self, numRadar_id, numPulse_number, numCoincidence_idx):
+    def __init__(self, numIdx, numRadar_id, numPulse_number, numCoincidence_idx):
+        self.radar_idx = numIdx
         self.radar_id = numRadar_id
         self.pulse_number = numPulse_number
         self.coincidence_number = numCoincidence_idx
@@ -34,9 +33,18 @@ class cTIJ:
     za: float = 0
     ma: float = 0
     jpp: float = 0
+    jpp_req: float = 0
+    jpp_dif: float = 0
+    cpi: float = 0
+    cpi_startAt: int = 0
+    Pd_req: float = 0
+    Pd_startAt: float = 0
+    SNR_startAt: float = 0
 
-    def __init__(self, numRadar_ID):
+    def __init__(self, numRadar_ID, numCPI, numJPP_req):
         self.radar_id = numRadar_ID
+        self.cpi = numCPI
+        self.jpp_req = numJPP_req
 
 def intervalsInFlight(numIntervalLength_ms, numFlightTime_ms):
     '''
@@ -77,21 +85,22 @@ def intervalProcessor(oPlatform, oJammer, olThreats, olChannels):
     olChannels : [cJammer cChannel object list]
         [description]
     '''
+    oIntervals = cInterval(olChannels[0].interval_time_ms, oPlatform.timeStop_ms)
+    for intervalIdx in range(0, oIntervals.intervals_total):
+        logging.info("Interval %s of %s", intervalIdx+1, oIntervals.intervals_total)
+        sortThreatsTolChannels(olThreats, olChannels) #TODO: what about start time when mode changes
+        [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(olChannels, intervalIdx)
 
-    sortThreatsTolChannels(olThreats, olChannels)
+        for chanIdx, chanItem in enumerate(olChannels):
+            chanItem.oCoincidences = lCoincidenceLib[chanIdx]
+            for threatIdx, threatItem in enumerate(chanItem.oThreatLib):
+                threatItem.lIntervalPulseStore = lThreatPulseLib[chanIdx][threatIdx]
+                threatItem.lIntervalPulseCoincidenceStore = lAllCoincidencePerThreat[chanIdx][threatIdx]
+                threatItem.lIntervalTIJStore = cTIJ(threatItem.radar_id, threatItem.emitter_current[common.THREAT_CPI], threatItem.emitter_current[common.THREAT_PERCENTAGEJAMMING] )
 
-    [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(olChannels)
+        mp.Pool(olChannels.__len__()).map(cpiSweeper, olChannels)
 
-    for chanIdx, chanItem in enumerate(olChannels):
-        chanItem.oCoincidences = lCoincidenceLib[chanIdx]
-        for threatIdx, threatItem in enumerate(chanItem.oThreatLib):
-            threatItem.lIntervalPulseStore = lThreatPulseLib[chanIdx][threatIdx]
-            threatItem.lIntervalPulseCoincidenceStore = lAllCoincidencePerThreat[chanIdx][threatIdx]
-            threatItem.lIntervalTIJStore = cTIJ(threatItem.radar_id)
-
-    mp.Pool(olChannels.__len__()).map(cpiSweeper, olChannels)
-
-    pass
+    pass #TODO: remove
 
 def sortThreatsTolChannels(olThreats, olChannels):
     '''
@@ -132,7 +141,7 @@ def clearChannelThreats(olChannels):
     for chanItem in olChannels:
         chanItem.oThreatLib = []
 
-def intervalCoincidenceCalculator(olChannels):
+def intervalCoincidenceCalculator(olChannels, intervalIdx):
     '''
     intervalCoincidenceCalculator
 
@@ -157,7 +166,11 @@ def intervalCoincidenceCalculator(olChannels):
     for idx, chanItem in enumerate(olChannels):
         lThreatPulseLib[idx] = np.zeros((chanItem.oThreatLib.__len__(), common.INTERVAL_LIB_SIZE))
         for idy, threatItem in enumerate(chanItem.oThreatLib):
-            initlThreatPulseLib(lThreatPulseLib[idx], idy, threatItem, chanItem.oecm_time_ms)
+            if(intervalIdx == 0):
+                initlThreatPulseLib(lThreatPulseLib[idx], idy, threatItem, chanItem.oecm_time_ms)
+            else:
+                lThreatPulseLib[idx][idy] = threatItem.lIntervalPulseStore
+                lThreatPulseLib[idx][idy, common.INTERVAL_LIB_OECM_TIME_US] = (chanItem.oecm_time_ms * 1000) + (intervalIdx * chanItem.oecm_time_ms * 1000)# update oecm time in us
 
     timeCounter[0] = time.perf_counter()
     logging.info("Number of processors: %s", mp.Pool(mp.cpu_count()))
@@ -166,9 +179,9 @@ def intervalCoincidenceCalculator(olChannels):
     for coincIdx in range(olChannels.__len__()):
         lCoincidenceLib[coincIdx] = retList[coincIdx][1]
         lThreatPulseLib[coincIdx] = retList[coincIdx][0]
-        lAllCoincidencePerThreat[coincIdx] = np.array(retList[coincIdx][2])
+        lAllCoincidencePerThreat[coincIdx] = np.array(retList[coincIdx][2], dtype=object)
 
-        logging.debug("Channel %d stats:\ttotal coincidences: %d\n", coincIdx, lCoincidenceLib[coincIdx].__len__())
+        logging.info("Channel %d stats:\ttotal coincidences: %d\n", coincIdx, lCoincidenceLib[coincIdx].__len__())
 
         lThreatPulseLib[coincIdx][:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = lThreatPulseLib[coincIdx][:, common.INTERVAL_LIB_COINCIDENCE_NUMBER] / lThreatPulseLib[coincIdx][:, common.INTERVAL_LIB_PULSE_NUMBER]
 
@@ -178,10 +191,10 @@ def intervalCoincidenceCalculator(olChannels):
             [lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_RADAR_ID], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PULSE_NUMBER], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100, lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PRI_US], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PW_US], lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PW_US]/lThreatPulseLib[coincIdx][logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
         table = columnar(loggingCoincData, loggingCoincHeader, no_borders=True)
-        logging.debug("\n\n"+table+"\n\n")
+        logging.log(1, "\n\n"+table+"\n\n")
 
         timeCounter[1] = time.perf_counter()
-        logging.debug( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], coincIdx, olChannels[coincIdx].oecm_time_ms/1000 )
+        logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], coincIdx, olChannels[coincIdx].oecm_time_ms/1000 )
 
     return [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat]
 
@@ -207,7 +220,7 @@ def initlThreatPulseLib(lThreatPulseLib, index, threatItem, jammingIntervalTime_
     lThreatPulseLib[index, common.INTERVAL_LIB_PULSE_NUMBER] = 1 # current pulse number/total pulses
     lThreatPulseLib[index, common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0 # total coincidence
     lThreatPulseLib[index, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = 0 # pulse coincidence/total pulses in interval perc
-    lThreatPulseLib[index, common.INTERVAL_LIB_OECM_TIME_US] = jammingIntervalTime_ms * 1000 # oecm timein us
+    lThreatPulseLib[index, common.INTERVAL_LIB_OECM_TIME_US] = jammingIntervalTime_ms * 1000# oecm timein us
 
 def pulseCoincidenceAssessor(sarrThreats):
     '''
@@ -248,7 +261,8 @@ def pulseCoincidenceAssessor(sarrThreats):
             if(inCoincidence == True):
                 sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
                 for coincRadarIdx in np.nditer(lTcoincidenceIdx[0]):
-                    lcoincidence[-1].append(cCoincidence(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID],
+                    lcoincidence[-1].append(cCoincidence(np.max(coincRadarIdx),
+                                                         sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID],
                                                          sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
                                                          sarrThreats[coincRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]) )
                     lAllCoincidencePerThreat[coincRadarIdx].append(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
@@ -266,7 +280,8 @@ def pulseCoincidenceAssessor(sarrThreats):
             lTempCoinc = []
 
             for coincRadarIdx in np.nditer(lTcoincidenceIdx[0]):
-                lTempCoinc.append(cCoincidence(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID],
+                lTempCoinc.append(cCoincidence(np.max(coincRadarIdx),
+                                               sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID],
                                                sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
                                                sarrThreats[coincRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]) )
                 lAllCoincidencePerThreat[coincRadarIdx].append(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
@@ -293,12 +308,19 @@ def pulseCoincidenceAssessor(sarrThreats):
     return retList
 
 def cpiSweeper(chanItem):
-    coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    for coincidence in enumerate(chanItem.oCoincidences):
+    threatList = chanItem.oThreatLib
+    # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
+    for coincIdx, coincidence in enumerate(chanItem.oCoincidences):
         #TODO: TIJ proc
         ##TODO: JPP - jamming pulse percentage
-        
+        for coincPulseIdx, coincPulse in enumerate(coincidence):
+            CoincidencesInCPI = np.where(np.logical_and(chanItem.oThreatLib[coincPulse.radar_idx].lIntervalPulseCoincidenceStore >= coincPulse.pulse_number, chanItem.oThreatLib[coincPulse.radar_idx].lIntervalPulseCoincidenceStore <= (threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi + coincPulse.pulse_number) ))
+
+            threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi
+            
+            threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif = threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp - threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req
+            logging.log(1, "Coincidence %d:%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]", coincIdx, coincPulseIdx, threatList[coincPulse.radar_idx].lIntervalTIJStore.radar_id, threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi, CoincidencesInCPI[0].__len__(), threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif )
         #TODO: Radar Real
-        coincBar.update(1)
+        # coincBar.update(1)
     #TODO: any radars not in coincidence?
     pass
