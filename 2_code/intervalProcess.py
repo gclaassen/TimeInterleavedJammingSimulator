@@ -35,6 +35,7 @@ class cTIJ:
     jpp: float = 0
     jpp_req: float = 0
     jpp_dif: float = 0
+    jpp_dif_norm: float = 0
     cpi: float = 0
     cpi_startAt: int = 0
     Pd_req: float = 0
@@ -318,8 +319,11 @@ def cpiSweeper(chanItem):
 
             threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi
             
-            threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif = threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp - threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req
-            logging.debug( "Coincidence %d:%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]", coincIdx, coincPulseIdx, threatList[coincPulse.radar_idx].lIntervalTIJStore.radar_id, threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi, CoincidencesInCPI[0].__len__(), threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif )
+            threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif = threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req - threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp
+            
+            threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif_norm = (threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif + 1)/2
+            
+            logging.debug( "Coincidence %d:%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]\t[norm jpp diff: %3f]", coincIdx, coincPulseIdx, threatList[coincPulse.radar_idx].lIntervalTIJStore.radar_id, threatList[coincPulse.radar_idx].lIntervalTIJStore.cpi, CoincidencesInCPI[0].__len__(), threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_req, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif, threatList[coincPulse.radar_idx].lIntervalTIJStore.jpp_dif_norm)
         #TODO: Radar Real
         # coincBar.update(1)
     #TODO: any radars not in coincidence?
