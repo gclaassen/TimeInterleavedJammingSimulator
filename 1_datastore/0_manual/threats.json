@@ -23,8 +23,8 @@
             "frequency_MHz": 9000,
             "pulse_width_us": 2.7,
             "pri_us": 2430.3,
-            "cpi": 16,
-            "percentage_jamming": 0.8
+            "cpi": 8,
+            "percentage_jamming": 0.9
           },
           {
             "mode_id": 1,
@@ -37,7 +37,7 @@
             "pulse_width_us": 0.313,
             "pri_us": 357,
             "cpi": 16,
-            "percentage_jamming": 0.5
+            "percentage_jamming": 0.8
           }
         ]
       }
@@ -66,7 +66,7 @@
             "pulse_width_us": 0.2,
             "pri_us": 999.8,
             "cpi": 8,
-            "percentage_jamming": 0.8
+            "percentage_jamming": 0.9
           },
           {
             "mode_id": 1,
@@ -79,7 +79,7 @@
             "pulse_width_us": 0.81,
             "pri_us": 999.19,
             "cpi": 8,
-            "percentage_jamming": 0.7
+            "percentage_jamming": 0.8
           },
           {
             "mode_id": 2,
@@ -92,7 +92,7 @@
             "pulse_width_us": 0.1,
             "pri_us": 2499.9,
             "cpi": 8,
-            "percentage_jamming": 0.7
+            "percentage_jamming": 0.8
           }
         ]
       }
@@ -112,7 +112,7 @@
         "modes": [
           {
             "mode_id": 3,
-            "type": 0,
+            "type": 1,
             "isERP": false,
             "power_peak_W": 1000000,
             "gain": 35,
@@ -121,7 +121,7 @@
             "pulse_width_us": 0.587,
             "pri_us": 1507,
             "cpi": 16,
-            "percentage_jamming": 0.7
+            "percentage_jamming": 0.9
           }
         ]
       }
@@ -141,7 +141,7 @@
         "modes": [
           {
             "mode_id": 0,
-            "type": 0,
+            "type": 1,
             "isERP": false,
             "power_peak_W": 30000,
             "gain": 35,
@@ -149,8 +149,8 @@
             "frequency_MHz": 5000,
             "pulse_width_us": 3.2,
             "pri_us": 102,
-            "cpi": 16,
-            "percentage_jamming": 0.6
+            "cpi": 32,
+            "percentage_jamming": 0.9
           },
           {
             "mode_id": 1,
@@ -163,7 +163,7 @@
             "pulse_width_us": 3.2,
             "pri_us": 102,
             "cpi": 16,
-            "percentage_jamming": 0.6
+            "percentage_jamming": 0.9
           }
         ]
       }
@@ -221,7 +221,7 @@
             "pulse_width_us": 0.5,
             "pri_us": 566,
             "cpi": 32,
-            "percentage_jamming": 0.5
+            "percentage_jamming": 0.8
           }
         ]
       }
@@ -308,7 +308,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 573,
             "cpi": 32,
-            "percentage_jamming": 0.7
+            "percentage_jamming": 0.8
           }
         ]
       }
@@ -337,7 +337,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 17,
             "cpi": 64,
-            "percentage_jamming": 0.6
+            "percentage_jamming": 0.8
           }
         ]
       }
