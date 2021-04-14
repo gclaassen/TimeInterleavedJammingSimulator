@@ -1,33 +1,15 @@
 import numpy as np
+import signalProcessing as signal
 
-# MA, Pj, %jamming required
-# weight = np.array([0.9, 0.6, 0.8])
-# threats = np.array([[3.4, 0.5, 0.3], [0.7, 3.1, 0.9], [1.5, 1.3, 0.5]])
-# p=100
+snrRange = [-2, 2, 3, 4]
+PfaRange = [1e-10, 1]
+numPoints = 101
+integration = 'NCI'
+pulsesForIntegration = 16
 
-# normalizedThreats = ranking.normalizeThreat(threats, threats.shape)
-# for idx, threat in enumerate(normalizedThreats):
-#     rank = ranking.ranking(threat,p)
-#     rankWeigthed = ranking.rankingWeigthed(threat, weight, p)
-#     print("rank of threat {0}:\tnormal: {1}\tweighted: {2}\n".format(idx, rank, rankWeigthed))
-    
-# import numpy as np
-# from numba import vectorize
-# from numba import cuda
+snrMatrix = signal.albersheimsSnr([0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99], 1e-6, [4, 8, 16, 32, 64, 128])
 
-# print(cuda.gpus)
+[Pfa,Pd] = signal.rocsnr(snrRange, PfaRange, pulsesForIntegration, numPoints, integration)
+signal.rocSNRplot(snrRange, Pd, Pfa, pulsesForIntegration, integration)
 
-# @vectorize(['float32(float32, float32)'], target='cuda')
-# def Add(a, b):
-#   return a + b
-
-# # Initialize arrays
-# N = 100000
-# A = np.ones(N, dtype=np.float32)
-# B = np.ones(A.shape, dtype=A.dtype)
-# C = np.empty_like(A, dtype=A.dtype)
-
-# # Add arrays on GPU
-# C = Add(A, B)
-
-# pass
+pass

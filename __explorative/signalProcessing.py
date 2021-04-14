@@ -53,15 +53,16 @@ def rocSNRplot(snrRange, Pd, Pfa, NumPulses, integration):
         snrPoint = snrPoint + 1
 
     labelLines(plt.gca().get_lines(), zorder = 2.5)
-    if(integration == 'CI'):
-        plt.title('Receiver Operating Characteristics (ROC) Curves for Coherent Integration of ' + str(NumPulses) + ' pulses')
-    elif(integration == 'NCI'):
-        plt.title('Receiver Operating Characteristics (ROC) Curves for Non-Coherent Integration of ' + str(NumPulses) + ' pulses')
+    # if(integration == 'CI'):
+    #     plt.title('Receiver Operating Characteristics (ROC) Curves for Coherent Integration of ' + str(NumPulses) + ' pulses')
+    # elif(integration == 'NCI'):
+    #     plt.title('Receiver Operating Characteristics (ROC) Curves for Non-Coherent Integration of ' + str(NumPulses) + ' pulses')
     plt.ylabel('Probability of Detection')
     plt.xlabel('Probability of False Alarm')
     plt.xticks([1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1])
     plt.yticks([0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.87, 0.9, 0.93, 0.95, 0.98, 1])
     plt.grid(True)
+    plt.rc('font', size=22)          # controls default text sizes
     plt.show()
 
 # def rocPFAplot(snrRange, Pd, Pfa, reqPfa):
@@ -92,6 +93,18 @@ def albersheimsSnr(Pd, Pfa, N):
     B = np.log(Pd/(1-Pd))
     return -5 * np.log10(N) + (6.2 + (4.54/(np.sqrt(N + 0.44)))) * np.log10(A + 0.12 * A * B + 1.7* B)
 
+def albersheimsSnr(PdRange, Pfa, N):
+    SnrMatrix = np.zeros((PdRange.__len__(),1+N.__len__() ))
+    for PdIdx, Pd in enumerate(PdRange):
+        A = np.log(0.62/Pfa)
+        B = np.log(Pd/(1-Pd))
+        SnrMatrix[PdIdx, 0] = Pd
+        for Nidx, cpi in enumerate(N):
+            idx = Nidx + 1
+            SnrMatrix[PdIdx, idx] = -5 * np.log10(cpi) + (6.2 + (4.54/(np.sqrt(cpi + 0.44)))) * np.log10(A + 0.12 * A * B + 1.7* B)
+        
+
+    return SnrMatrix
 
 def albersheimsPd(x, Pfa, N):
     A = np.log(0.62/Pfa)
