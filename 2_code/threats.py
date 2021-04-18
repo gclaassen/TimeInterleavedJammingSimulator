@@ -16,11 +16,6 @@ class cThreat:
     mode_current = None
     channel_current = None
 
-    # detection parameters
-    platform_distance: float = 0.0
-    inDetectionRange: bool = False
-    inBurnthroughRange: bool = False
-
     #interval Info
     lIntervalPulseStore = None
     lIntervalPulseCoincidenceStore = None
