@@ -6,9 +6,7 @@
       "location": {
         "X_coord": -3500,
         "Y_coord": 3000,
-        "Z_coord": 0,
-        "range_max_m": 8000,
-        "altitude_max_m": 15000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -48,9 +46,7 @@
       "location": {
         "X_coord": -2500,
         "Y_coord": 3000,
-        "Z_coord": 0,
-        "range_max_m": 5000,
-        "altitude_max_m": 12000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -103,9 +99,7 @@
       "location": {
         "X_coord": -500,
         "Y_coord": 500,
-        "Z_coord": 0,
-        "range_max_m": 2000,
-        "altitude_max_m": 9000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -132,9 +126,7 @@
       "location": {
         "X_coord": 2500,
         "Y_coord": 3000,
-        "Z_coord": 0,
-        "range_max_m": 3000,
-        "altitude_max_m": 9000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -174,9 +166,7 @@
       "location": {
         "X_coord": 7000,
         "Y_coord": 1100,
-        "Z_coord": 0,
-        "range_max_m": 10000,
-        "altitude_max_m": 5000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -203,9 +193,7 @@
       "location": {
         "X_coord": 5500,
         "Y_coord": 8000,
-        "Z_coord": 0,
-        "range_max_m": 3500,
-        "altitude_max_m": 15000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -232,9 +220,7 @@
       "location": {
         "X_coord": 2500,
         "Y_coord": 15000,
-        "Z_coord": 0,
-        "range_max_m": 8000,
-        "altitude_max_m": 9000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -261,9 +247,7 @@
       "location": {
         "X_coord": 11500,
         "Y_coord": 15000,
-        "Z_coord": 0,
-        "range_max_m": 8500,
-        "altitude_max_m": 9000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -290,9 +274,7 @@
       "location": {
         "X_coord": 13000,
         "Y_coord": -1100,
-        "Z_coord": 0,
-        "range_max_m": 4500,
-        "altitude_max_m": 5000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -319,9 +301,7 @@
       "location": {
         "X_coord": 7000,
         "Y_coord": -5500,
-        "Z_coord": 0,
-        "range_max_m": 4000,
-        "altitude_max_m": 5000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,
@@ -348,9 +328,7 @@
       "location": {
         "X_coord": -5500,
         "Y_coord": -8000,
-        "Z_coord": 0,
-        "range_max_m": 2000,
-        "altitude_max_m": 35000
+        "Z_coord": 0
       },
       "emitters": {
         "emitter_id": 0,

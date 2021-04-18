@@ -2,17 +2,19 @@ import numpy as np
 import ast
 import common
 import math
+import mathRadar as mathrad
+import cartesian
 
 class cPlatform:
     rcs: int = 0
     flightPath = None
     nodes = 0
-    timeStart_ms = 0
-    timeStop_ms = 0
+    timeStart_us = 0
+    timeStop_us = 0
 
     def __init__(self, platformList):
         self.rcs = platformList[common.PLF_PLATFORM][common.PLF_RCS]
-        [self.timeStart_ms, self.timeStop_ms, self.flightPath] = convertPlatformJsonToArray(
+        [self.timeStart_us, self.timeStop_us, self.flightPath] = convertPlatformJsonToArray(
             platformList[common.PLF_PLATFORM][common.PLF_FLIGHTPATH])
 
 
@@ -21,7 +23,7 @@ def convertPlatformJsonToArray(jsonPlatformDict):
     iTimeStart = 0
     iTotalNodeTime = 0
 
-    arrFlightPath = np.zeros(shape=(jsonPlatformDict.__len__()), dtype=[(common.XCOORD, int), (common.YCOORD, int), (common.ZCOORD, int), (common.DISTANCE, float), (common.PLF_SPEED, int), (common.TIME, float)], order='C')
+    arrFlightPath = cartesian.initializeCartesianArray(jsonPlatformDict.__len__())
 
     for idx, fp in enumerate(jsonPlatformDict):
         arrFlightPath[idx][common.XCOORD] = fp[common.XCOORD]
@@ -32,22 +34,16 @@ def convertPlatformJsonToArray(jsonPlatformDict):
         if(idx == 0):
             arrFlightPath[idx][common.TIME] = 0
             arrFlightPath[idx][common.DISTANCE] = 0
+            arrFlightPath[idx][common.ANGLE_AZI] = 0
+            arrFlightPath[idx][common.ANGLE_ELEV] = 0
+
         elif(idx > 0):
-            [arrFlightPath[idx][common.TIME], arrFlightPath[idx][common.DISTANCE]] = nodeFlightTime(arrFlightPath[idx-1],arrFlightPath[idx])
+            [ arrFlightPath[idx][common.DISTANCE], arrFlightPath[idx][common.ANGLE_AZI], arrFlightPath[idx][common.ANGLE_ELEV] ] = cartesian.sphericalCoordinatesCalculation(arrFlightPath[idx-1], arrFlightPath[idx])
+
+            arrFlightPath[idx][common.TIME] = cartesian.flightTimeBetweenCartesianPoints_us(arrFlightPath[idx][common.DISTANCE], arrFlightPath[idx][common.PLF_SPEED])
 
         iTotalNodeTime += arrFlightPath[idx][common.TIME]
 
-    return [iTimeStart*1000, iTotalNodeTime*1000, arrFlightPath]
+        arrFlightPath[idx][common.TOTAL_TIME] = iTotalNodeTime
 
-# calculate distance in 3d space:
-## sqrt( ( x2 - x1 )^2 + ( y2 - y1 )^2 + ( y2 - y1 )^2 )
-# meaure time
-## t = d/v
-def nodeFlightTime(prevNode, currentNode):
-    distance = distance3dSpace(prevNode, currentNode)
-    return [distance/currentNode[common.PLF_SPEED], distance]
-
-def distance3dSpace (node1, node2):
-    return math.sqrt(math.pow((node2[common.XCOORD] - node1[common.XCOORD]), 2) +
-    math.pow((node2[common.YCOORD] - node1[common.YCOORD]), 2) +
-    math.pow((node2[common.ZCOORD] - node1[common.ZCOORD]), 2))
+    return [iTimeStart, iTotalNodeTime, arrFlightPath]

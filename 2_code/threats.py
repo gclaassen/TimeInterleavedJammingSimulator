@@ -17,6 +17,7 @@ class cThreat:
     channel_current = None
 
     # detection parameters
+    platform_distance: float = 0.0
     inDetectionRange: bool = False
     inBurnthroughRange: bool = False
 
@@ -34,16 +35,12 @@ class cThreat:
         self.location = np.array((
             threatList[common.THREAT_LOCATION][common.XCOORD],
             threatList[common.THREAT_LOCATION][common.YCOORD],
-            threatList[common.THREAT_LOCATION][common.ZCOORD],
-            threatList[common.THREAT_LOCATION][common.THREAT_RANGE],
-            threatList[common.THREAT_LOCATION][common.THREAT_ALT]
+            threatList[common.THREAT_LOCATION][common.ZCOORD]
             ), dtype=
                     [
                         (common.XCOORD,int),
                         (common.YCOORD,int),
-                        (common.ZCOORD,int),
-                        (common.THREAT_RANGE, int),
-                        (common.THREAT_ALT, int)
+                        (common.ZCOORD,int)
                     ], order='C')
         isMultipleEmitters = isinstance(
             threatList[common.THREAT_EMITTERS], list)

@@ -15,5 +15,5 @@ class cModeWeigth:
     TT: float = 0.75
     MG: float = 1.0
 
-def modeAssessment(weights, mode, ZA, inLethalRange, JPdifference_norm):
+def threatValueCalculation(weights, mode, ZA, inLethalRange, JPdifference_norm):
     return (weights.mode_weight * mode) + (weights.za_weight * ZA) + (weights.lethalRange_weight * inLethalRange) + (weights.JammingPercentage_weight * JPdifference_norm)

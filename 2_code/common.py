@@ -26,8 +26,12 @@ XCOORD                  = "X_coord"
 YCOORD                  = "Y_coord"
 ZCOORD                  = "Z_coord"
 
-TIME                    = "time"
-DISTANCE                = "distance"
+TIME                    = "time_us"
+TOTAL_TIME              = "totalTime_us"
+DISTANCE                = "distance_m"
+
+ANGLE_AZI               = "azi_angle"
+ANGLE_ELEV              = "elev_angle"
 
 # Platform JSON key values
 PLF_PLATFORM                = 'platform'

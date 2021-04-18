@@ -48,7 +48,10 @@ def main(argv):
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment()
 
-    interval.intervalProcessor(oPlatform, oJammer, olThreats, oJammer.oChannel)
+    #TODO: create multiprocess per channel -> only catering for a single channel
+    interval.intervalProcessor(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
+    #     logging.info("Number of processors: %s", mp.Pool(mp.cpu_count()))
+    # retList = mp.Pool(oChannel.__len__()).map(interval.intervalProcessor, [oPlatform, oJammer, olThreats, oJammer.oChannel])
 
     # visualize the world
     if doViz:
@@ -68,7 +71,7 @@ def initEnvironment():
 
     # profile creator
     for itChannel in oJammer.oChannel:
-        itChannel.oInterval = interval.cInterval(itChannel.interval_time_ms, oPlatform.timeStop_ms)
+        itChannel.oInterval = interval.cInterval(itChannel.interval_time_us, oPlatform.timeStop_us, )
 
     return [oPlatform, oJammer, olThreats]
 

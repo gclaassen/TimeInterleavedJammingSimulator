@@ -1,20 +1,21 @@
 import numpy as np
 import common
 import jsonParser
+import mathRadar as mathrad
 
 class cChannel:
     oInterval: None
     oThreatLib: None
     oCoincidences: None
-    oecm_time_ms: int=0
-    esm_time_ms: int=0
-    interval_time_ms: int = 0
+    oecm_time_us: int=0
+    esm_time_us: int=0
+    interval_time_us: int = 0
     channel_range_MHz = None
 
     def __init__(self, channelList, channelRange):
-        self.oecm_time_ms = channelList[common.JAMMER_JAMMING_TIME]
-        self.esm_time_ms = channelList[common.JAMMER_LOOKTHROUGH_TIME]
-        self.interval_time_ms = self.oecm_time_ms + self.esm_time_ms
+        self.oecm_time_us = mathrad.convertTimeMilisecondsToMicroseconds(channelList[common.JAMMER_JAMMING_TIME])
+        self.esm_time_us = mathrad.convertTimeMilisecondsToMicroseconds(channelList[common.JAMMER_LOOKTHROUGH_TIME])
+        self.interval_time_us = self.oecm_time_us + self.esm_time_us
         self.channel_range_MHz = channelRange
 
 

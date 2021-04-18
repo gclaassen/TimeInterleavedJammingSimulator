@@ -7,6 +7,7 @@ import logging
 BASENORMAL          = 0 # log()
 BASE10              = 1 # log10()
 
+
 def convertTodBm(numValue, numMultiplier, enumBase):
     if(enumBase == BASE10):
         return numMultiplier*math.log10(numValue)
@@ -18,11 +19,18 @@ def convertTodBm(numValue, numMultiplier, enumBase):
 def calculateErpW(numPower, numGain):
     return numPower*numGain
 
-def convertTimeSecondsToNanoseconds(numTime_s):
-    return numTime_s*1e9
 
-def convertTimeMinutesToSeconds(numTime_m):
-    return numTime_m*60
+def convertTimeSecondsToMicroseconds(numTime_s):
+    return numTime_s*1e6
+
+def convertTimeMilisecondsToMicroseconds(numTime_ms):
+    return numTime_ms*1e3
+
+def convertTimeMicrosecondsToMilliseconds(numTime_us):
+    return numTime_us*1e-3
+
+def convertTimeMicrosecondsToSeconds(numTime_us):
+    return numTime_us*1e-6
 
 def convertErpdBm(numPower_W, numGain):
     return convertPowerWattTodBm(numPower_W) + convertGaindBm(numGain)
