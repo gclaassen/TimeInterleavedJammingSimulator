@@ -16,9 +16,8 @@ def convertTodBm(numValue, numMultiplier, enumBase):
     else:
         logging.critical('Incorrect log base chosen')
 
-def calculateErpW(numPower, numGain):
-    return numPower*numGain
-
+def convertTimeKilometreToMetre(numDistance_km):
+    return numDistance_km*1e-3
 
 def convertTimeSecondsToMicroseconds(numTime_s):
     return numTime_s*1e6
@@ -47,6 +46,9 @@ def convertGaindBm(numGain):
 
 def convertPRFtoPRIus(numPRF_Hz, numPW_us):
     return ((1/(numPRF_Hz))*1e6) - numPW_us
+
+def calculateErpW(numPower, numGain):
+    return numPower*numGain
 
 def attenuation(numWavelength, numRc):
     return ((common.STERADIANS*numRc)/numWavelength) ^ 2
