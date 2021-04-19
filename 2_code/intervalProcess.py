@@ -11,7 +11,7 @@ from dataclasses import dataclass, astuple, asdict
 import tijZA as za
 import tijMA as ma
 import tijTR as tr
-import mathRadar as mathrad
+import mathRadar as radmath
 
 class cInterval:
     intervals_total: int = 0
@@ -198,7 +198,7 @@ def intervalCoincidenceCalculator(oChannel):
     logging.debug( "\n\n"+table+"\n\n")
 
     timeCounter[1] = time.perf_counter()
-    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, mathrad.convertTimeMicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
+    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radmath.convertTimeMicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
 
     return [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat]
 
@@ -320,6 +320,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
     for coincIdx, coincidence in enumerate(oChannel.oCoincidences):
         #TODO: TIJ TEST -> multiprocess this function
         for coincPulseIdx, coincPulse in enumerate(coincidence):
+            ##TODO: SNR and JSR calculations
             ##TODO: JPP - jamming pulse percentage
             radar_idx = coincPulse.radar_idx
             CoincidencesInCPI = np.where(np.logical_and(oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore >= coincPulse.pulse_number, oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore <= (threatList[radar_idx].lIntervalTIJStore.cpi + coincPulse.pulse_number) ))

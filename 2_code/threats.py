@@ -84,11 +84,12 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_MODE_ID,int),
                                             (common.THREAT_MODE_TYPE,int),
                                             (common.THREAT_PEAKPOWER, int),
+                                            (common.THREAT_AVGPOWER, float),
                                             (common.THREAT_GAIN, int),
-                                            (common.THREAT_ERP, int),
                                             (common.THREAT_FREQ, int),
                                             (common.THREAT_PRI, float),
                                             (common.THREAT_PW, float),
+                                            (common.THREAT_DUTY_CYCLE, float),
                                             (common.THREAT_CPI, int),
                                             (common.THREAT_PERCENTAGEJAMMING, float)
                                         ], order='C')
@@ -104,11 +105,12 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_MODE_TYPE] = modeNode[common.THREAT_MODE_TYPE]
             emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER] = modeNode[common.THREAT_PEAKPOWER]
             emitters[emmiterIndex][modeIndex][common.THREAT_GAIN] = modeNode[common.THREAT_GAIN]
-            emitters[emmiterIndex][modeIndex][common.THREAT_ERP] = modeNode[common.THREAT_ERP] if modeNode[common.THREAT_ISERP] == True else radmath.calculateErpW(modeNode[common.THREAT_PEAKPOWER], modeNode[common.THREAT_GAIN])
             emitters[emmiterIndex][modeIndex][common.THREAT_FREQ] = modeNode[common.THREAT_FREQ]
             emitters[emmiterIndex][modeIndex][common.THREAT_PRI] = modeNode[common.THREAT_PRI]
             emitters[emmiterIndex][modeIndex][common.THREAT_PW] = modeNode[common.THREAT_PW]
+            emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radmath.calculateDutyCycle(modeNode[common.THREAT_PW], modeNode[common.THREAT_PRI])
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
+            emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER] = radmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PERCENTAGEJAMMING] = modeNode[common.THREAT_PERCENTAGEJAMMING]
     return emitters
 
