@@ -4,7 +4,7 @@ import pltf as platform
 import jammer
 import common
 import jsonParser
-import visualize
+# import visualize
 import numpy as np
 import intervalProcess as interval
 import logging
@@ -54,9 +54,9 @@ def main(argv):
     # retList = mp.Pool(oChannel.__len__()).map(interval.intervalProcessor, [oPlatform, oJammer, olThreats, oJammer.oChannel])
 
     # visualize the world
-    if doViz:
+    # if doViz:
         # visualize.worldview(cPlatform, cThreatLibrary)
-        visualize.topview(oPlatform, olThreats)
+        # visualize.topview(oPlatform, olThreats)
 
     pass
 
@@ -71,7 +71,7 @@ def initEnvironment():
 
     # profile creator
     for itChannel in oJammer.oChannel:
-        itChannel.oInterval = interval.cInterval(itChannel.interval_time_us, oPlatform.timeStop_us, )
+        itChannel.oInterval = interval.cInterval(itChannel.interval_time_us, oPlatform.timeStop_us )
 
     return [oPlatform, oJammer, olThreats]
 

@@ -1,5 +1,4 @@
 import numpy as np
-from numba import vectorize
 
 def ranking(threatCategoriesList, p):
     sumVal = 0

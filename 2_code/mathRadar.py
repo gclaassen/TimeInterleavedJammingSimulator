@@ -66,4 +66,5 @@ def platformSkinReturnPower_dB(numThreat_Tx_ERP, numThreat_Tx_Fc,  numThreat_Rx_
     return ( numThreat_Tx_ERP - 103 - convertTodBm(numThreat_Tx_Fc, 20, BASE10) - convertTodBm(numRange, 40, BASE10) + numThreat_Rx_GaindBm + convertTodBm(numPlatform_RCS, 10, BASE10)  + convertTodBm(numRange_losses, 20, BASE10) )
 
 def calculateSpreadingLoss(range_m, wavelength):
-    return 32 + convertTodBm(range_m, 20, BASE10)
+    # return 32 + convertTodBm(range_m, 20, BASE10)
+    NotImplementedError
