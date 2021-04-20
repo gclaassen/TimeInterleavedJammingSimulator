@@ -9,9 +9,17 @@ import numpy as np
 import intervalProcess as interval
 import logging
 
-logging.basicConfig(level = logging.NOTSET)
-logging.basicConfig(filename='tij.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level = logging.DEBUG)
+logging.basicConfig(filename='tij.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level = logging.DEBUG)
 np.set_printoptions(precision=5, suppress=True)
+
+# comment to print to console, uncomment to save to log file
+# # create logger with 'spam_application'
+# logger = logging.getLogger('Time-Interleaved Jamming')
+# # logger.setLevel(logging.DEBUG)
+# # create file handler which logs even debug messages
+# fh = logging.FileHandler('tij.log')
+# fh.setLevel(logging.DEBUG)
+# logger.addHandler(fh)
 
 def argumentExtraction(argv):
     setViz = False
