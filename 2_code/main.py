@@ -9,9 +9,9 @@ import numpy as np
 import intervalProcess as interval
 import logging
 
-logging.basicConfig(level = logging.DEBUG)
+# logging.basicConfig(level = logging.DEBUG)
 # comment to print to console, uncomment to save to log file
-# logging.basicConfig(filename='tij.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level = logging.DEBUG)
+logging.basicConfig(filename='tij.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level = logging.DEBUG)
 np.set_printoptions(precision=5, suppress=True)
 
 def argumentExtraction(argv):
