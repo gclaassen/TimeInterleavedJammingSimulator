@@ -2,17 +2,21 @@ import math
 import common
 import cartesian
 import numpy as np
+import mathRadar as radmath
 
 def calculateZoneAssessment(timeOfCoincidence_us, pltf_flightPath, threat_location):
-    Rc = calculatePlatformDistance_m(timeOfCoincidence_us, pltf_flightPath, threat_location)
-    Rm = calculateMaxRadarRange_m()
-    Rb = calculateBurnthroughRange_m()
+    Rc = calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location)
+    Rm = calculatemaxRadarRange_km()
+    Rb = calculateburnthroughRange_km()
     Rn = calculateZoneAssessmentValue(Rc, Rm, Rb)
 
     return [Rc, Rm, Rb, Rn]
 
+def calculateZoneAssessment(Rc, Rm, Rb):
+    return calculateZoneAssessmentValue(Rc, Rm, Rb)
+
 ## get distance between platform and radar
-def calculatePlatformDistance_m(timeOfCoincidence_us, pltf_flightPath, threat_location):
+def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location):
     pltfPathArray = cartesian.initializeCartesianArray(1)
 
     # determine new platform coordinates
@@ -30,15 +34,15 @@ def calculatePlatformDistance_m(timeOfCoincidence_us, pltf_flightPath, threat_lo
     ## get the cartesian coordinates
     [pltfPathArray[0][common.XCOORD], pltfPathArray[0][common.YCOORD], pltfPathArray[0][common.ZCOORD]] = cartesian.updateCoord(pltf_flightPath[prevNodeIdx], pltfPathArray[0])
 
-    ## get the distance between platform and threat
-    return cartesian.displacement3dSpace (pltfPathArray, threat_location)
+    ## get the distance between platform and threat in km
+    return radmath.convertMeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
 
 #TODO:
-def calculateMaxRadarRange_m():
+def calculatemaxRadarRange_km():
     return 0.0
 
 #TODO:
-def calculateBurnthroughRange_m():
+def calculateburnthroughRange_km():
     return 0.0
 
 def calculateZoneAssessmentValue(Rc, Rm, Rb):

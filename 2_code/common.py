@@ -50,15 +50,15 @@ THREAT_EMITTERMODES_SIZE    = 11
 THREAT_EMITTER_ID           = 'emitter_id'
 THREAT_MODE_ID              = 'mode_id'
 THREAT_MODE_TYPE            = 'type'
-THREAT_AVGPOWER             = 'power_avg_W'
-THREAT_PEAKPOWER            = 'power_peak_W'
+THREAT_AVGPOWER_KW          = 'power_avg_kW'
+THREAT_PEAKPOWER_KW         = 'power_peak_kW'
 THREAT_GAIN                 = 'gain'
-THREAT_FREQ                 = 'frequency_MHz'
-THREAT_PRI                  = 'pri_us'
-THREAT_PW                   = 'pulse_width_us'
+THREAT_FREQ_MHZ             = 'frequency_MHz'
+THREAT_PRI_US               = 'pri_us'
+THREAT_PW_US                = 'pulse_width_us'
 THREAT_DUTY_CYCLE           = 'duty_cycle'
-THREAT_RANGE                = 'range_max_m'
-THREAT_ALT                  = 'altitude_max_m'
+THREAT_RANGE_KM             = 'range_max_km'
+THREAT_ALT_KM               = 'altitude_max_km'
 THREAT_LOCATION             = 'location'
 THREAT_CPI                  = 'cpi'
 THREAT_PERCENTAGEJAMMING    = 'percentage_jamming'
@@ -98,4 +98,8 @@ INTERVAL_INTERVAL_COINCIDENCE_PERC      = 9
 INTERVAL_LIB_OECM_TIME_US               = 10
 INTERVAL_LIB_SIZE                       = 11
 
-JammingRangeBinSize = 5
+JammingRangeBinSize = 0
+
+RadarEquationConstant = 239.3 # Range in km
+
+T0 = 290 # [K]

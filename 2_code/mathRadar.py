@@ -16,8 +16,11 @@ def convertTodBm(numValue, numMultiplier, enumBase):
     else:
         logging.critical('Incorrect log base chosen')
 
-def convertTimeKilometreToMetre(numDistance_km):
-    return numDistance_km*1e-3
+def convertKilometerToMeter(numDistance_km):
+    return numDistance_km*1e3
+
+def convertMeterToKiloMeter(numDistance_m):
+    return numDistance_m*1e-3
 
 def convertTimeSecondsToMicroseconds(numTime_s):
     return numTime_s*1e6
@@ -59,12 +62,23 @@ def calculateErpW(numPower, numGain):
 def attenuation(numWavelength, numRc):
     return ((common.STERADIANS*numRc)/numWavelength) ^ 2
 
-def attenuation_dB(numWavelength_MHz, numRc_m):
-    return -27.55 + convertTodBm(numRc_m, 20, BASE10) + convertTodBm(numWavelength_MHz, 20, BASE10)
-
-def platformSkinReturnPower_dB(numThreat_Tx_ERP, numThreat_Tx_Fc,  numThreat_Rx_GaindBm, numPlatform_RCS, numRange, numRange_losses):
-    return ( numThreat_Tx_ERP - 103 - convertTodBm(numThreat_Tx_Fc, 20, BASE10) - convertTodBm(numRange, 40, BASE10) + numThreat_Rx_GaindBm + convertTodBm(numPlatform_RCS, 10, BASE10)  + convertTodBm(numRange_losses, 20, BASE10) )
-
 def calculateSpreadingLoss(range_m, wavelength):
     # return 32 + convertTodBm(range_m, 20, BASE10)
     NotImplementedError
+
+def radarEquation_DetectabilityFactor(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, R_km, Lt_dBm, La_dBm):
+    # Return the detectability factor (Max SNR for a single detection)
+    return common.RadarEquationConstant * (( Pt_Kw * pw_us * Gt_dB * Gr_dB * rcs_m2 )/( math.pow(Fc_MHz,2) * Ts_K * math.pow(R_km,4) * La_dBm * Lt_dBm ))
+
+def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB, Lt_dBm, La_dBm):
+    # Return the range value
+    return math.pow(common.RadarEquationConstant * (( Pt_Kw * pw_us * Gt_dB * Gr_dB * rcs_m2 )/( math.pow(Fc_MHz,2) * Ts_K * Dx_dB * La_dBm * Lt_dBm )), 1/4)
+
+
+## TODO: rework
+# def attenuation_dB(numWavelength_MHz, numRc_m):
+#     return -27.55 + convertTodBm(numRc_m, 20, BASE10) + convertTodBm(numWavelength_MHz, 20, BASE10)
+
+## TODO: rework
+# def platformSkinReturnPower_dB(ERPt_dB, Fc_MHz,  Gr_dB, rcs_m2, R_km, Lr_dBm):
+#     return ( ERPt_dB - 103 - convertTodBm(Fc_MHz, 20, BASE10) - convertTodBm(R_km, 40, BASE10) + Gr_dB + convertTodBm(rcs_m, 10, BASE10)  + Lr_dBm )

@@ -30,8 +30,8 @@ def topview(pf, th):
         # for emNode in thNode.emitters:
             # for modeNode in emNode:
                 # modeColor = domeColor(modeNode[common.THREAT_MODE_TYPE])
-                # plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color=modeColor, s=thNode.location[common.THREAT_RANGE], alpha=0.5)
-                # ax.add_artist(plt.Circle((thNode.location[common.XCOORD], thNode.location[common.YCOORD]), thNode.location[common.THREAT_RANGE], color=modeColor, linewidth=3,  linestyle='dashed', fill=False))
+                # plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color=modeColor, s=thNode.location[common.THREAT_RANGE_KM], alpha=0.5)
+                # ax.add_artist(plt.Circle((thNode.location[common.XCOORD], thNode.location[common.YCOORD]), thNode.location[common.THREAT_RANGE_KM], color=modeColor, linewidth=3,  linestyle='dashed', fill=False))
         plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color = 'r', marker = 'x', linewidth=3, s = 50)
         ax.annotate(thNode.radar_id, (thNode.location[common.XCOORD], thNode.location[common.YCOORD]+300))
                 # ax.annotate(thNode.radar_name, (thNode.location[common.XCOORD]+500, thNode.location[common.YCOORD]+200))
@@ -76,7 +76,7 @@ def worldview(pf, th):
         for mode in range(totalModes):
             modeColor = None
 
-            [x,y,z] = domeCreate(th[0].emitters[0][mode][common.THREAT_RANGE], th[0].emitters[0][mode][common.THREAT_ALT], th[thNode].location[common.XCOORD], th[thNode].location[common.YCOORD], th[thNode].location[common.ZCOORD])
+            [x,y,z] = domeCreate(th[0].emitters[0][mode][common.THREAT_RANGE_KM], th[0].emitters[0][mode][common.THREAT_ALT_KM], th[thNode].location[common.XCOORD], th[thNode].location[common.YCOORD], th[thNode].location[common.ZCOORD])
             modeColor = domeColor(th[0].emitters[0][mode][2])
 
             ax.plot_wireframe(x, y, z, rstride = 3, cstride = 3, linewidth = 1, color = modeColor, alpha=0.5)
