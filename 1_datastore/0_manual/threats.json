@@ -21,7 +21,7 @@
             "pri_us": 300,
             "cpi": 64,
             "Pd": 0.5,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           },
           {
@@ -34,7 +34,7 @@
             "pri_us": 357,
             "cpi": 16,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -61,7 +61,7 @@
             "pri_us": 999.8,
             "cpi": 8,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           },
           {
@@ -74,7 +74,7 @@
             "pri_us": 999.19,
             "cpi": 8,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.8
           },
           {
@@ -87,7 +87,7 @@
             "pri_us": 2499.9,
             "cpi": 8,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -114,7 +114,7 @@
             "pri_us": 1507,
             "cpi": 16,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -141,7 +141,7 @@
             "pri_us": 102,
             "cpi": 32,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           },
           {
@@ -154,7 +154,7 @@
             "pri_us": 102,
             "cpi": 16,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -181,7 +181,7 @@
             "pri_us": 573,
             "cpi": 32,
             "Pd": 0.5,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -208,7 +208,7 @@
             "pri_us": 566,
             "cpi": 32,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.6
           }
         ]
@@ -235,7 +235,7 @@
             "pri_us": 1800,
             "cpi": 32,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
@@ -262,7 +262,7 @@
             "pri_us": 500,
             "cpi": 32,
             "Pd": 0.5,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.8
           }
         ]
@@ -289,7 +289,7 @@
             "pri_us": 573,
             "cpi": 32,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.7
           }
         ]
@@ -316,7 +316,7 @@
             "pri_us": 17,
             "cpi": 64,
             "Pd": 0.8,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.8
           }
         ]
@@ -343,7 +343,7 @@
             "pri_us": 3741,
             "cpi": 32,
             "Pd": 0.9,
-            "Pfa": 10e-6,
+            "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
           }
         ]
