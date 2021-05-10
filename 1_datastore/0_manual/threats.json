@@ -20,7 +20,9 @@
             "pulse_width_us": 30,
             "pri_us": 300,
             "cpi": 64,
-            "percentage_jamming": 0.9
+            "Pd": 0.5,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           },
           {
             "mode_id": 1,
@@ -31,7 +33,9 @@
             "pulse_width_us": 0.313,
             "pri_us": 357,
             "cpi": 16,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -56,7 +60,9 @@
             "pulse_width_us": 0.2,
             "pri_us": 999.8,
             "cpi": 8,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           },
           {
             "mode_id": 1,
@@ -67,7 +73,9 @@
             "pulse_width_us": 0.81,
             "pri_us": 999.19,
             "cpi": 8,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.8
           },
           {
             "mode_id": 2,
@@ -78,7 +86,9 @@
             "pulse_width_us": 0.1,
             "pri_us": 2499.9,
             "cpi": 8,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -103,7 +113,9 @@
             "pulse_width_us": 0.587,
             "pri_us": 1507,
             "cpi": 16,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -128,7 +140,9 @@
             "pulse_width_us": 3.2,
             "pri_us": 102,
             "cpi": 32,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           },
           {
             "mode_id": 1,
@@ -139,7 +153,9 @@
             "pulse_width_us": 3.2,
             "pri_us": 102,
             "cpi": 16,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -164,7 +180,9 @@
             "pulse_width_us": 0.725,
             "pri_us": 573,
             "cpi": 32,
-            "percentage_jamming": 0.8
+            "Pd": 0.5,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -189,7 +207,9 @@
             "pulse_width_us": 0.5,
             "pri_us": 566,
             "cpi": 32,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.6
           }
         ]
       }
@@ -214,7 +234,9 @@
             "pulse_width_us": 0.5,
             "pri_us": 1800,
             "cpi": 32,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }
@@ -239,7 +261,9 @@
             "pulse_width_us": 0.5,
             "pri_us": 500,
             "cpi": 32,
-            "percentage_jamming": 0.9
+            "Pd": 0.5,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.8
           }
         ]
       }
@@ -264,7 +288,9 @@
             "pulse_width_us": 0.337,
             "pri_us": 573,
             "cpi": 32,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.7
           }
         ]
       }
@@ -289,7 +315,9 @@
             "pulse_width_us": 0.337,
             "pri_us": 17,
             "cpi": 64,
-            "percentage_jamming": 0.8
+            "Pd": 0.8,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.8
           }
         ]
       }
@@ -314,7 +342,9 @@
             "pulse_width_us": 4.2,
             "pri_us": 3741,
             "cpi": 32,
-            "percentage_jamming": 0.9
+            "Pd": 0.9,
+            "Pfa": 10e-6,
+            "__debugPercentageJamming": 0.9
           }
         ]
       }

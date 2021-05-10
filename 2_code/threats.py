@@ -91,6 +91,8 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_PW_US, float),
                                             (common.THREAT_DUTY_CYCLE, float),
                                             (common.THREAT_CPI, int),
+                                            (common.THREAT_PROB_DETECTION, float),
+                                            (common.THREAT_PROB_FALSE_ALARM, float),
                                             (common.THREAT_PERCENTAGEJAMMING, float)
                                         ], order='C')
         for modeIndex in range(0, modeSize):
@@ -111,6 +113,8 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radmath.calculateDutyCycle(modeNode[common.THREAT_PW_US], modeNode[common.THREAT_PRI_US])
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
             emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER_KW] = radmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
+            emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION] = modeNode[common.THREAT_PROB_DETECTION]
+            emitters[emmiterIndex][modeIndex][common.THREAT_PROB_FALSE_ALARM] = modeNode[common.THREAT_PROB_FALSE_ALARM]
             emitters[emmiterIndex][modeIndex][common.THREAT_PERCENTAGEJAMMING] = modeNode[common.THREAT_PERCENTAGEJAMMING]
     return emitters
 

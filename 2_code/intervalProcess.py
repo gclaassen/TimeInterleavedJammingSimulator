@@ -338,7 +338,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Coinc Pulse', 'Threat ID', 'D0(x) [dB]', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Lt [dB]', 'Ls [dB]', 'CPI', '#Coinc CPI', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
+    loggingTijHeader = ['Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Lt [dB]', 'Ls [dB]', 'D0(x) [dB]', 'Pd', 'Pfa', 'CPI', '#Coinc CPI', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
     loggingTijData = []
 
 
@@ -385,7 +385,6 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             [
                 coincPulseIdx+1,
                 threatList[radar_idx].lIntervalTIJStore.radar_id,
-                SNR_D0,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -396,6 +395,9 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 1, #TODO: determine losses
                 1,
+                SNR_D0,
+                threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION],
+                threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 threatList[radar_idx].lIntervalTIJStore.cpi,
                 CoincidencesInCPI[0].__len__(),
                 threatList[radar_idx].lIntervalTIJStore.jpp_req,
