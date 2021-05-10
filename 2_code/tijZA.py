@@ -12,8 +12,8 @@ def calculateZoneAssessment(timeOfCoincidence_us, pltf_flightPath, threat_locati
 
     return [Rc, Rm, Rb, Rn]
 
-def calculateZoneAssessment(Rc, Rm, Rb):
-    return calculateZoneAssessmentValue(Rc, Rm, Rb)
+# def calculateZoneAssessment(Rc, Rm, Rb):
+#     return calculateZoneAssessmentValue(Rc, Rm, Rb)
 
 ## get distance between platform and radar
 def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location):
@@ -59,7 +59,6 @@ def calculateZoneAssessmentValue(Rc, Rm, Rb):
         Rn = 1
     else:
         Rn = 0
-
     return Rn
 
 

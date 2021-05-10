@@ -4,7 +4,7 @@ import math
 import common
 import time
 import logging
-from columnar import columnar
+from tabulate import tabulate
 import util
 # from tqdm import tqdm
 from dataclasses import dataclass, astuple, asdict
@@ -104,6 +104,9 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
         [description]
     '''
 
+    loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Radar to Platform Distance [km]']
+    loggingRangeData = []
+
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
 
@@ -115,9 +118,13 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart + oJammer.oChannel[0].interval_time_us
 
         # Get the starting ranges at each new interval
+        loggingRangeData = []
         for threatIdx, threatItem in enumerate(olThreats):
             RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart, oPlatform.flightPath, threatItem.location)
-            logging.info("DISTANCE:\t[threat id: %d]\t[Range: %.3f km]", threatIdx+1, RadarDistance_km)
+            loggingRangeData.append([threatIdx+1, oChannel.oInterval.interval_current_Tstart, RadarDistance_km])
+
+        table = tabulate(loggingRangeData, loggingRangeHeader, tablefmt="github")
+        logging.debug( "\n\n"+table+"\n\n")
 
         sortThreatsToChannel(olThreats, oChannel) #TODO: what about mode changes
         [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(oChannel)
@@ -199,7 +206,7 @@ def intervalCoincidenceCalculator(oChannel):
         loggingCoincData.append(
         [lThreatPulseLib[logIdx, common.INTERVAL_LIB_RADAR_ID], lThreatPulseLib[logIdx, common.INTERVAL_LIB_PULSE_NUMBER], lThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER], lThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100, lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US], lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US], lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
-    table = columnar(loggingCoincData, loggingCoincHeader, no_borders=True)
+    table = tabulate(loggingCoincData, loggingCoincHeader, tablefmt="github")
     logging.debug( "\n\n"+table+"\n\n")
 
     timeCounter[1] = time.perf_counter()
@@ -331,22 +338,20 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
+    loggingTijHeader = ['Coinc Pulse', 'Threat ID', 'D0(x) [dB]', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Lt [dB]', 'Ls [dB]', 'CPI', '#Coinc CPI', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
+    loggingTijData = []
+
 
     for coincIdx, coincidence in enumerate(oChannel.oCoincidences):
         logging.debug("------------------------------------------------------------")
-        logging.debug( "COINCIDENCE: %d",coincIdx)
+        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincIdx, coincidence.__len__())
         logging.debug("------------------------------------------------------------")
-        #TODO: TIJ TEST -> multiprocess this function
+        loggingTijData = []
         for coincPulseIdx, coincPulse in enumerate(coincidence):
             ##TODO: SNR and JSR calculations
             ##TODO: JPP - jamming pulse percentage
             radar_idx = coincPulse.radar_idx
             CoincidencesInCPI = np.where(np.logical_and(oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore >= coincPulse.pulse_number, oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore < (threatList[radar_idx].lIntervalTIJStore.cpi + coincPulse.pulse_number) ))
-
-            logging.debug( "PULSE: %d/%d\t[threat id: %d]",
-            coincPulseIdx+1,
-            coincidence.__len__(),
-            threatList[radar_idx].lIntervalTIJStore.radar_id)
 
             # SNR and DETECTABILITY and INTEGRATION
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
@@ -363,46 +368,49 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 1, #TODO: determine losses
                 1) #TODO: determine losses
 
-            logging.debug( "RADAR EQUATION: [D0(x): %.3f dB]\t[Peak Power: %.3f kW]\t[Gain TX: %.3f dBi]\t[Gain RX: %.3f dBi]\t[Pulse width: %.3f us]\t[RCS: %.3f m^2]\t[Frequency: %.3f MHz]\t[Temperature: %.3f K]\t[Range: %.3f km]\t[Loss Spreading: %.3f dB]\t[Loss Attenuation: %.3f dB]",
-            SNR_D0,
-            threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-            threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-            threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-            threatList[radar_idx].emitter_current[common.THREAT_PW_US],
-            oPlatform.rcs,
-            threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-            common.T0,
-            threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
-            1, #TODO: determine losses
-            1) #TODO: determine losses
 
             # TIJ - JAMMING PULSE PERCENTAGE
             threatList[radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/threatList[radar_idx].lIntervalTIJStore.cpi
 
             threatList[radar_idx].lIntervalTIJStore.jpp_dif = (threatList[radar_idx].lIntervalTIJStore.jpp_req - threatList[radar_idx].lIntervalTIJStore.jpp)/threatList[radar_idx].lIntervalTIJStore.jpp_req
 
-            logging.debug( "JAMMING PULSE PERCENTAGE: [cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]",
-            threatList[radar_idx].lIntervalTIJStore.cpi,
-            CoincidencesInCPI[0].__len__(),
-            threatList[radar_idx].lIntervalTIJStore.jpp_req,
-            threatList[radar_idx].lIntervalTIJStore.jpp,
-            threatList[radar_idx].lIntervalTIJStore.jpp_dif)
-
             #TODO: TIJ - ZA
-            # [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
-
-            logging.debug( "ZONE ASSESSMENT: [platform distance: %f km]\t[max radar range: %f km]\t[burnthrough range: %f km]\t[ZA value: %f]",
-            threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
-            threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
-            threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
-            threatList[radar_idx].lIntervalTIJStore.za)
-
+            [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
             #TODO: TIJ - MA
 
-            logging.debug( "************************\n")
+            # logging.debug( "************************\n")
 
-        #TODO: TIJ - TR
+            loggingTijData.append(
+            [
+                coincPulseIdx+1,
+                threatList[radar_idx].lIntervalTIJStore.radar_id,
+                SNR_D0,
+                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                common.T0,
+                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                1, #TODO: determine losses
+                1,
+                threatList[radar_idx].lIntervalTIJStore.cpi,
+                CoincidencesInCPI[0].__len__(),
+                threatList[radar_idx].lIntervalTIJStore.jpp_req,
+                threatList[radar_idx].lIntervalTIJStore.jpp,
+                threatList[radar_idx].lIntervalTIJStore.jpp_dif,
+                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
+                threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
+                threatList[radar_idx].lIntervalTIJStore.za
+                ])
+
+            #TODO: TIJ - TR
+
+        table = tabulate(loggingTijData, loggingTijHeader, tablefmt="github")
+        logging.debug( "\n\n"+table+"\n\n")
 
             #TODO: RADAR REAL
 

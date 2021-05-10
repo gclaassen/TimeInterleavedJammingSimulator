@@ -40,7 +40,7 @@ Time Interleaved Jamming Simulator
 - multiprocessing
 - logging
 - time
-- columnar *
+- tabulate *
 - tqdm *
 
 > *install required
