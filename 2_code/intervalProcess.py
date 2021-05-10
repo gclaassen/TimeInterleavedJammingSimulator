@@ -105,7 +105,7 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
     '''
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
-        logging.info("Interval %s of %s", intervalIdx+1, oChannel.oInterval.intervals_total)
+        logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
 
         oChannel.oInterval.interval_current = intervalIdx
         oChannel.oInterval.interval_current_Tstart = oChannel.interval_time_us * intervalIdx
@@ -113,6 +113,11 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
             oChannel.oInterval.interval_current_Tstop_us = oPlatform.timeStop_us
         else:
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart + oJammer.oChannel[0].interval_time_us
+
+        # Get the starting ranges at each new interval
+        for threatIdx, threatItem in enumerate(olThreats):
+            RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart, oPlatform.flightPath, threatItem.location)
+            logging.info("DISTANCE:\t[threat id: %d]\t[Range: %.3f km]", threatIdx+1, RadarDistance_km)
 
         sortThreatsToChannel(olThreats, oChannel) #TODO: what about mode changes
         [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(oChannel)
@@ -176,6 +181,7 @@ def intervalCoincidenceCalculator(oChannel):
         else:
             lThreatPulseLib[threatIdx] = threatItem.lIntervalPulseStore
             lThreatPulseLib[threatIdx, common.INTERVAL_LIB_OECM_TIME_US] = oChannel.oInterval.interval_current_Tstart_us
+
 
     timeCounter[0] = time.perf_counter()
     retList = pulseCoincidenceAssessor(lThreatPulseLib)
@@ -325,6 +331,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
+
     for coincIdx, coincidence in enumerate(oChannel.oCoincidences):
         logging.debug("------------------------------------------------------------")
         logging.debug( "COINCIDENCE: %d",coincIdx)
