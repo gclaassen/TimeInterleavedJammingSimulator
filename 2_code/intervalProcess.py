@@ -197,7 +197,7 @@ def intervalCoincidenceCalculator(oChannel):
     logging.debug( "\n\n"+table+"\n\n")
 
     timeCounter[1] = time.perf_counter()
-    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radmath.convertTimeMicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
+    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radmath.convertTime_MicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
 
     return [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat]
 
@@ -326,12 +326,20 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
     for coincIdx, coincidence in enumerate(oChannel.oCoincidences):
+        logging.debug("------------------------------------------------------------")
+        logging.debug( "COINCIDENCE: %d",coincIdx)
+        logging.debug("------------------------------------------------------------")
         #TODO: TIJ TEST -> multiprocess this function
         for coincPulseIdx, coincPulse in enumerate(coincidence):
             ##TODO: SNR and JSR calculations
             ##TODO: JPP - jamming pulse percentage
             radar_idx = coincPulse.radar_idx
             CoincidencesInCPI = np.where(np.logical_and(oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore >= coincPulse.pulse_number, oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore < (threatList[radar_idx].lIntervalTIJStore.cpi + coincPulse.pulse_number) ))
+
+            logging.debug( "PULSE: %d/%d\t[threat id: %d]",
+            coincPulseIdx+1,
+            coincidence.__len__(),
+            threatList[radar_idx].lIntervalTIJStore.radar_id)
 
             # SNR and DETECTABILITY and INTEGRATION
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
@@ -348,9 +356,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 1, #TODO: determine losses
                 1) #TODO: determine losses
 
-            logging.debug( "Radar Equation: Coincidence %d:%d/%d\t[threat id: %d]\t[D0(x): %.3f dB]\t[Peak Power: %.3f kW]\t[Gain TX: %.3f dBi]\t[Gain RX: %.3f dBi]\t[Pulse width: %.3f us]\t[RCS: %.3f m^2]\t[Frequency: %.3f MHz]\t[Temperature: %.3f K]\t[Range: %.3f km]\t[Loss Spreading: %.3f dB]\t[Loss Attenuation: %.3f dB]",
-            coincIdx,
-            coincPulseIdx+1,
+            logging.debug( "RADAR EQUATION: [D0(x): %.3f dB]\t[Peak Power: %.3f kW]\t[Gain TX: %.3f dBi]\t[Gain RX: %.3f dBi]\t[Pulse width: %.3f us]\t[RCS: %.3f m^2]\t[Frequency: %.3f MHz]\t[Temperature: %.3f K]\t[Range: %.3f km]\t[Loss Spreading: %.3f dB]\t[Loss Attenuation: %.3f dB]",
             SNR_D0,
             threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
             threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -363,21 +369,12 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             1, #TODO: determine losses
             1) #TODO: determine losses
 
-            logging.debug( "SIGNAL DETECTION: Coincidence %d:%d/%d\t[threat id: %d]\t[D0(x): %d]",
-            coincIdx,
-            coincPulseIdx+1,
-            SNR_D0)
-
             # TIJ - JAMMING PULSE PERCENTAGE
             threatList[radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/threatList[radar_idx].lIntervalTIJStore.cpi
 
             threatList[radar_idx].lIntervalTIJStore.jpp_dif = (threatList[radar_idx].lIntervalTIJStore.jpp_req - threatList[radar_idx].lIntervalTIJStore.jpp)/threatList[radar_idx].lIntervalTIJStore.jpp_req
 
-            logging.debug( "JAMMING PULSE PERCENTAGE: Coincidence %d:%d/%d\t[threat id: %d]\t[cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]",
-            coincIdx,
-            coincPulseIdx+1,
-            coincidence.__len__(),
-            threatList[radar_idx].lIntervalTIJStore.radar_id,
+            logging.debug( "JAMMING PULSE PERCENTAGE: [cpi: %d]\t[coincidences in cpi: %d]\t[jpp req: %.3f]\t[jpp: %.3f]\t[jpp diff: %.3f]",
             threatList[radar_idx].lIntervalTIJStore.cpi,
             CoincidencesInCPI[0].__len__(),
             threatList[radar_idx].lIntervalTIJStore.jpp_req,
@@ -387,11 +384,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             #TODO: TIJ - ZA
             # [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
-            logging.debug( "ZONE ASSESSMENT: Coincidence %d:%d/%d\t[threat id: %d]\t[platform distance: %f km]\t[max radar range: %f km]\t[burnthrough range: %f km]\t[ZA value: %f]",
-            coincIdx,
-            coincPulseIdx+1,
-            coincidence.__len__(),
-            threatList[radar_idx].lIntervalTIJStore.radar_id,
+            logging.debug( "ZONE ASSESSMENT: [platform distance: %f km]\t[max radar range: %f km]\t[burnthrough range: %f km]\t[ZA value: %f]",
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
             threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
             threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
@@ -400,8 +393,9 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
             #TODO: TIJ - MA
 
+            logging.debug( "************************\n")
+
         #TODO: TIJ - TR
-        logging.debug("~~~~~~~~~~")
 
             #TODO: RADAR REAL
 

@@ -1,14 +1,17 @@
 import math
 
-RET_ERROR = 0x0F0C
-RET_WARNING = 0x0BAD
+# CONSTANTS
+STERADIANS = 4*math.pi
+c = 299792458 #Speed of Light (m/s)
+RadarEquationConstant = 239.3 # Range in km
+T0 = 290 # [K]
+Boltzman_k = 1.38*10e-23 # W/Hz
+kT0 = 4*10e-21 # W/Hz
+kT0_dB = -204 # dB (w-s)
 
 THREATDIR   = '1_datastore/0_manual/threats.json'
 PLATFORMDIR = '1_datastore/0_manual/platform.json'
 JAMMERDIR   = '1_datastore/0_manual/jammer.json'
-
-# Global Values
-STERADIANS = 4*math.pi
 
 #string Radar Modes
 sSEARCH              = 'TS'
@@ -99,7 +102,3 @@ INTERVAL_LIB_OECM_TIME_US               = 10
 INTERVAL_LIB_SIZE                       = 11
 
 JammingRangeBinSize = 0
-
-RadarEquationConstant = 239.3 # Range in km
-
-T0 = 290 # [K]

@@ -35,7 +35,7 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
     [pltfPathArray[0][common.XCOORD], pltfPathArray[0][common.YCOORD], pltfPathArray[0][common.ZCOORD]] = cartesian.updateCoord(pltf_flightPath[prevNodeIdx], pltfPathArray[0])
 
     ## get the distance between platform and threat in km
-    return radmath.convertMeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
+    return radmath.convertRange_MeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
 
 #TODO:
 def calculatemaxRadarRange_km():

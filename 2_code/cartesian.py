@@ -37,11 +37,11 @@ def displacement3dSpace (node1, node2):
         math.pow(z, 2))
 
 def flightTimeBetweenCartesianPoints_us(r, velocity_mps):
-    return radmath.convertTimeSecondsToMicroseconds(r/velocity_mps)
+    return radmath.convertTime_SecondsToMicroseconds(r/velocity_mps)
 
 
 def displacementInTime(velocity_mps, time_us):
-    return velocity_mps*radmath.convertTimeMicrosecondsToSeconds(time_us)
+    return velocity_mps*radmath.convertTime_MicrosecondsToSeconds(time_us)
 
 def updateCoord(prevNode, dispNode):
     x = (prevNode[common.XCOORD] + dispNode[common.XCOORD])
