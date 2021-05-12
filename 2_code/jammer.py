@@ -20,14 +20,16 @@ class cChannel:
 
 
 class cJammer:
-    oChannel: []
+    oChannel = []
     channel_size: int = 0
     channel_ranges_MHz = None
+    jammer_bin_size: float = 0
 
     def __init__(self, jammerList):
         self.channel_ranges_MHz = convertJammerChannelsJsonToArray(
             jammerList[common.JAMMER_CHANNEL])
         self.channel_size = jammerList[common.JAMMER_CHANNEL].__len__()
+        self.jammer_bin_size = jammerList[common.JAMMER_ENVELOPE_BIN_SIZE]
 
         self.oChannel = [None]*self.channel_size
         for idx, channelList in enumerate(jammerList[common.JAMMER_CHANNEL]):

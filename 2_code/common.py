@@ -1,8 +1,5 @@
 import math
 
-# CONFIGURABLES
-JammingRangeBinSize = 0
-
 # CONSTANTS
 STERADIANS = 4*math.pi
 c = 299792458 #Speed of Light (m/s)
@@ -77,6 +74,7 @@ JAMMER_CHANNEL_START        = "channel_start_MHz"
 JAMMER_CHANNEL_STOP         = "channel_stop_MHz"
 JAMMER_JAMMING_TIME         = "oecm_time_ms"
 JAMMER_LOOKTHROUGH_TIME     = "esm_time_ms"
+JAMMER_ENVELOPE_BIN_SIZE    = "jamming_envelope_bin_size"
 JAMMER_CHANNEL_RANGE_SIZE   = 2 #start, stop
 
 def convertRadarTypeStringToInt(strRadarType):
@@ -102,4 +100,5 @@ INTERVAL_LIB_PULSE_NUMBER               = 7
 INTERVAL_LIB_COINCIDENCE_NUMBER         = 8
 INTERVAL_INTERVAL_COINCIDENCE_PERC      = 9
 INTERVAL_LIB_OECM_TIME_US               = 10
-INTERVAL_LIB_SIZE                       = 11
+INTERVAL_JAMMING_BIN_ENVELOPE           = 11
+INTERVAL_LIB_SIZE                       = 12
