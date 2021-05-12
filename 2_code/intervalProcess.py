@@ -211,8 +211,8 @@ def intervalCoincidenceCalculator(oChannel, oJammer):
             lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
             lThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
             lThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]+lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
-            (lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]+lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
+            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
+            (lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
     table = tabulate(loggingCoincData, loggingCoincHeader, tablefmt="github")
     logging.debug( "\n\n"+table+"\n\n")
