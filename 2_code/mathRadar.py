@@ -99,3 +99,22 @@ def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB,
 ## TODO: rework
 # def platformSkinReturnPower_dB(ERPt_dB, Fc_MHz,  Gr_dB, rcs_m2, R_km, Lr_dBm):
 #     return ( ERPt_dB - 103 - convertTodBm(Fc_MHz, 20, BASE10) - convertTodBm(R_km, 40, BASE10) + Gr_dB + convertTodBm(rcs_m, 10, BASE10)  + Lr_dBm )
+
+
+def radarEquation_SSJamming_DetectabilityFactor(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, R_km, Lt_dBm, La_dBm, Pj_kW, Gj_dB, Bj_MHz ):
+    # Return the detectability factor when jamming is active (Max SNR for a single detection)
+
+    Pt_dB = convertTodBm(convertPower_KiloWattToWatt(Pt_Kw), 10, BASE10)
+    pw_dB = convertTodBm(convertTime_MicrosecondsToSeconds(pw_us), 10, BASE10)
+    waveLength_dB = convertTodBm(calculateWaveLength(common.c, Fc_MHz), 20, BASE10)
+    rcs_dB = convertTodBm(rcs_m2, 10, BASE10)
+    constants_dB = convertTodBm((4*math.pi), 10, BASE10)
+    R_dB = convertTodBm(convertRange_KilometerToMeter(R_km), 20, 
+    BASE10)
+
+    Pj_dB = convertTodBm(convertPower_KiloWattToWatt(Pj_kW), 10, BASE10)
+    Bj_dB = convertTodBm(convertFrequency_MHzToHz(Bj_MHz), 10, BASE10)
+
+    Wj = (Pj_dB + Gj_dB) - (Bj_dB)
+
+    return (Pt_dB + pw_dB + Gt_dB + Gr_dB + waveLength_dB + rcs_dB) - (constants_dB + R_dB + Lt_dBm + La_dBm + Wj)

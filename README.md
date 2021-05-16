@@ -44,6 +44,7 @@ Time Interleaved Jamming Simulator
 - tqdm *
 
 > *install required
+> pip install numpy scipy matplotlib matplotlib-label-lines spectrum numba tabulate tqdm
 
 ## PC
 - OS: Windows 10 64 bit

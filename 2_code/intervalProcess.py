@@ -347,7 +347,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Lt [dB]', 'Ls [dB]', 'D0(x) [dB]', 'Pd', 'Pfa', '# Pulse', 'CPI', '# Coinc CPI', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
+    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Lt [dB]', 'Ls [dB]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'D0(x) [dB]', 'Dj0(x) [dB]', 'Pd', 'Pfa', '# Pulse', 'CPI', '# Coinc CPI', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
     loggingTijData = []
 
 
@@ -376,6 +376,21 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 1, #TODO: determine losses
                 1) #TODO: determine losses
+
+            SNR_D0_JAMMING = radmath.radarEquation_SSJamming_DetectabilityFactor(
+                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                common.T0,
+                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                1, #TODO: determine losses
+                1,
+                oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz)
 
 
             # TIJ - JAMMING PULSE PERCENTAGE
@@ -408,7 +423,11 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 1, #TODO: determine losses
                 1,
+                oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz,
                 SNR_D0,
+                SNR_D0_JAMMING,
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION],
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 coincPulse.pulse_number,
