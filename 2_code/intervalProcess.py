@@ -366,28 +366,47 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
             SNR_D0 = radmath.radarEquation_DetectabilityFactor(
+                # threatList[radar_idx].lIntervalTIJStore.cpi,
+                1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
                 threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                common.T0,
+                common.kT0,
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 1, #TODO: determine losses
-                1) #TODO: determine losses
+                1, #TODO: determine losses
+                1) #TODO: determine Cb
 
-            SNR_D0_JAMMING = radmath.radarEquation_SSJamming_DetectabilityFactor(
+            SNR_D0_test = radmath.radarEquation_DetectabilityFactor_dB(
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
                 threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                common.T0,
+                common.kT0_dB,
+                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                1, #TODO: determine losses
+                1 #TODO: determine losses
+                ) #TODO: determine Cb
+
+            SNR_D0_JAMMING = radmath.radarEquation_SSJamming_DetectabilityFactor(
+                # threatList[radar_idx].lIntervalTIJStore.cpi,
+                1,
+                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                common.kT0,
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 1, #TODO: determine losses
                 1,
+                1, #TODO: determine Cb
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz)

@@ -7,7 +7,7 @@ RadarEquationConstant = 239.3 # Range in km
 T0 = 290 # [K]
 Boltzman_k = 1.38*10e-23 # W/Hz
 kT0 = 4*10e-21 # W/Hz
-kT0_dB = -204 # dB (w-s)
+kT0_dB = -204 # dBW/Hz
 
 THREATDIR   = '1_datastore/0_manual/threats.json'
 PLATFORMDIR = '1_datastore/0_manual/platform.json'
