@@ -35,7 +35,7 @@ def convertTime_MicrosecondsToMilliseconds(numTime_us):
     return numTime_us*1e-3
 
 def convertTime_MicrosecondsToSeconds(numTime_us):
-    return numTime_us*1e-6
+    return numTime_us*math.pow(10,-6)
 
 def convertPower_ErpTodBm(numPower_W, numGain_dB):
     return convertPower_WattTodBm(numPower_W) + numGain_dB
@@ -60,7 +60,7 @@ def convertPeakPowerToAvgPower(numPeakPower_W, numDutyCycle):
     return numPeakPower_W*numDutyCycle
 
 def convertFrequency_MHzToHz(frequency_MHz):
-    return frequency_MHz*1e6
+    return frequency_MHz*math.pow(10, 6)
 
 def calculateDutyCycle(numPW_us, numPRI_us):
     return numPW_us/numPRI_us
@@ -77,76 +77,123 @@ def calculateSpreadingLoss(range_m, frequency_MHz):
 def calculateWaveLength(velocity_ms, frequency_MHz):
     return velocity_ms/convertFrequency_MHzToHz(frequency_MHz)
 
-def radarEquation_DetectabilityFactor_dB(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_dB, R_km, Lt_dBm, La_dBm):
+def radarEquation_DetectabilityFactor_dB(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km):
     # Return the detectability factor (Max SNR for a single detection)
 
-    Pt_dB = convertPower_WattTodBm(convertPower_KiloWattToWatt(Pt_Kw))
-    rcs_dB = convertTodB(rcs_m2, 10, BASE10)
-    constants_dB = -38.2
-    # pw_dB = convertTodB(convertTime_MicrosecondsToSeconds(pw_us), 10, BASE10)
-    # fc_dB = convertTodB(convertFrequency_MHzToHz(Fc_MHz), 20, BASE10)
-    # R_dB = convertTodB(convertRange_KilometerToMeter(R_km), 40, BASE10)
+    Pt = convertPower_KiloWattToWatt(Pt_kw)
+    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Rc = convertRange_KilometerToMeter(Rc_km)
 
-    pw_dB = convertTodB(pw_us, 10, BASE10)
-    fc_dB = convertTodB(Fc_MHz, 20, BASE10)
-    R_dB = convertTodB(R_km, 40, BASE10)
+    N_dB = convertTodB(N, 10, BASE10)
+    Pt_dBW = convertTodB(Pt, 10, BASE10)
+    rcs_dBsm = convertTodB(rcs_m2, 10, BASE10)
+    constants_dB = convertTodB(common.STERADIANS, 30, BASE10)
+    pw_dB = convertTodB(pw, 10, BASE10)
+    waveLength_dBm = convertTodB(calculateWaveLength(common.c, Fc_MHz), 20, BASE10)
+    Rc_dBm = convertTodB(Rc, 40, BASE10)
 
-    return constants_dB + Pt_dB + pw_dB + Gt_dB + Gr_dB + rcs_dB - fc_dB - Ts_dB - R_dB - Lt_dBm - La_dBm
+    return (N_dB + Pt_dBW + pw_dB + Gt_dB + Gr_dB + rcs_dBsm + waveLength_dBm + common.F_dB) - (constants_dB + common.kT0_dB + Rc_dBm + common.L_dB)
 
 
-def radarEquation_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, R_km, Lt_dBm, La_dBm, Cb):
+def radarEquation_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km):
     # Return the detectability factor (Max SNR for a single detection)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gr_dB)
-    Lt = convertFromdB(Lt_dBm)
-    La = convertFromdB(La_dBm)
 
-    return convertTodB( (( N * Pt_kw * pw_us * Gt * Gr * rcs_m2 + math.pow(waveLength,2) )/( math.pow(4*math.pi, 3) * Ts_K * math.pow(R_km, 4) * Cb * Lt * La )), 10, BASE10)
+    Pt = convertPower_KiloWattToWatt(Pt_kw)
+    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Rc = convertRange_KilometerToMeter(Rc_km)
 
+    Fp = convertFromdB(common.Fp_dB)
+    Frdr = convertFromdB(common.Frdr_dB)
+    Flens = convertFromdB(common.Flens_dB)
+
+    La = convertFromdB(common.La_dB)
+    Lt = convertFromdB(common.Lt_dB)
+
+    Ts = common.kT0
+
+    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
+    En =  math.pow(common.STERADIANS, 3) * Ts * math.pow(Rc, 4) * La * Lt
+
+    SNR = Es/En
+    SNR_dB = convertTodB(SNR, 10, BASE10)
+    return SNR_dB
 
 def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB, Lt_dBm, La_dBm):
     # Return the range value
     return math.pow(common.RadarEquationConstant * (( convertPower_KiloWattToWatt(Pt_Kw) * pw_us * Gt_dB * Gr_dB * rcs_m2 )/( math.pow(Fc_MHz,2) * Ts_K * Dx_dB * La_dBm * Lt_dBm )), 1/4)
 
 
-## TODO: rework
-# def attenuation_dB(numWavelength_MHz, numRc_m):
-#     return -27.55 + convertTodBm(numRc_m, 20, BASE10) + convertTodBm(numWavelength_MHz, 20, BASE10)
-
-## TODO: rework
-# def platformSkinReturnPower_dB(ERPt_dB, Fc_MHz,  Gr_dB, rcs_m2, R_km, Lr_dBm):
-#     return ( ERPt_dB - 103 - convertTodBm(Fc_MHz, 20, BASE10) - convertTodBm(R_km, 40, BASE10) + Gr_dB + convertTodBm(rcs_m, 10, BASE10)  + Lr_dBm )
-
-
-def radarEquation_SSJamming_DetectabilityFactor_dB(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, R_km, Lt_dBm, La_dBm, Pj_kW, Gj_dB, Bj_MHz ):
-    # Return the detectability factor when jamming is active (Max SNR for a single detection)
-
-    Pt_dB = convertTodB(convertPower_KiloWattToWatt(Pt_Kw), 10, BASE10)
-    pw_dB = convertTodB(convertTime_MicrosecondsToSeconds(pw_us), 10, BASE10)
-    waveLength_dB = convertTodB(calculateWaveLength(common.c, Fc_MHz), 20, BASE10)
-    rcs_dB = convertTodB(rcs_m2, 10, BASE10)
-    constants_dB = convertTodB((4*math.pi), 10, BASE10)
-    R_dB = convertTodB(convertRange_KilometerToMeter(R_km), 20, 
-    BASE10)
-
-    Pj_dB = convertTodB(convertPower_KiloWattToWatt(Pj_kW), 10, BASE10)
-    Bj_dB = convertTodB(convertFrequency_MHzToHz(Bj_MHz), 10, BASE10)
-
-    Wj_dB = (Pj_dB + Gj_dB) - (Bj_dB)
-
-    return (Pt_dB + pw_dB + Gt_dB + Gr_dB + waveLength_dB + rcs_dB) - (constants_dB + R_dB + Lt_dBm + La_dBm + Wj_dB)
-
-
-def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, R_km, Lt_dBm, La_dBm, Cb, Pj_kW, Gj_dB, Bj_MHz) :
+def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, pw_us, rcs_m2, Rc_km, Pj_kW, Gj_dB, Bj_MHz) :
     # Return the detectability factor (Max SNR for a single detection)
 
     Gt = convertFromdB(Gt_dB)
+
+    Pt = convertPower_KiloWattToWatt(Pt_kw)
+    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Rc = convertRange_KilometerToMeter(Rc_km)
+
+    Fp = convertFromdB(common.Fp_dB)
+    Frdr = convertFromdB(common.Frdr_dB)
+    Flens = convertFromdB(common.Flens_dB)
+
+    La = convertFromdB(common.La_dB)
+    Lt = convertFromdB(common.Lt_dB)
+
+    Pj= convertPower_KiloWattToWatt(Pj_kW)
+    Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
-    Lt = convertFromdB(Lt_dBm)
-    La = convertFromdB(La_dBm)
-    Wj = convertPower_KiloWattToWatt(Pj_kW)/ Bj_MHz #W/MHz
 
-    return convertTodB(( N * Pt_kw * pw_us ) * (( Gt * rcs_m2 )/(4*math.pi * math.pow(R_km, 2) * Cb * Lt * La * Wj * Gj )), 10, BASE10)
+    Fjl = convertFromdB(common.Fjl_dB)
+    Fjp = convertFromdB(common.Fjp_dB)
+    Lja = convertFromdB(common.Lja_dB)
+    Ljt = convertFromdB(common.Ljt_dB)
 
+    Es =  N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * Bj * Lja * Ljt
+    En =  common.STERADIANS * math.pow(Rc, 2) * La * Lt * (common.Qj * Pj * Gj * Fjl * Fjp )
+
+    SNR = Es/En
+    SNR_dB = convertTodB(SNR, 10, BASE10)
+
+    return SNR_dB
+
+def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, pw_us, rcs_m2, Rc_km, Pj_kW, Gj_dB, Bj_MHz, snrReq, cpiJammingAvg) :
+    #  Return the JPP value
+
+    Gt = convertFromdB(Gt_dB)
+
+    Pt = convertPower_KiloWattToWatt(Pt_kw)
+    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Rc = convertRange_KilometerToMeter(Rc_km)
+
+    Fp = convertFromdB(common.Fp_dB)
+    Frdr = convertFromdB(common.Frdr_dB)
+    Flens = convertFromdB(common.Flens_dB)
+
+    La = convertFromdB(common.La_dB)
+    Lt = convertFromdB(common.Lt_dB)
+
+    Pj= convertPower_KiloWattToWatt(Pj_kW)
+    Bj = convertFrequency_MHzToHz(Bj_MHz)
+    Gj = convertFromdB(Gj_dB)
+
+    Fjl = convertFromdB(common.Fjl_dB)
+    Fjp = convertFromdB(common.Fjp_dB)
+    Lja = convertFromdB(common.Lja_dB)
+    Ljt = convertFromdB(common.Ljt_dB)
+
+    Es =  N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * Bj * Lja * Ljt
+    En =  common.STERADIANS * math.pow(Rc, 2) * La * Lt * ((cpiJammingAvg) * (common.Qj * Pj * Gj * Fjl * Fjp ))
+
+    SNR = Es/En
+    SNR_dB = convertTodB(SNR, 10, BASE10)
+
+    JsrAvg = SNR_dB/snrReq
+
+    if(JsrAvg >= 1.0):
+        return False
+    else:
+        return True

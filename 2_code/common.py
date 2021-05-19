@@ -1,13 +1,34 @@
 import math
 
-# CONSTANTS
+# CONSTANTS: RADAR
 STERADIANS = 4*math.pi
 c = 299792458 #Speed of Light (m/s)
 RadarEquationConstant = 239.3 # Range in km
 T0 = 290 # [K]
-Boltzman_k = 1.38*10e-23 # W/Hz
-kT0 = 4*10e-21 # W/Hz
+Boltzman_k = 1.38*math.pow(10,-23) # W/Hz
+kT0 = 4*math.pow(10,-21) # W/Hz
 kT0_dB = -204 # dBW/Hz
+
+La_dB = 1.2
+Lt_dB = 1
+L_dB = La_dB + Lt_dB
+
+Fp_dB = 1
+Frdr_dB= 1
+Flens_dB = 1
+F_dB = Fp_dB + Frdr_dB + Flens_dB
+
+# CONSTANS: JAMMER
+Qj = 0.3
+
+Fjl_dB = -0.1
+# Fjpp_dB = -20
+Fjp_dB = -3 # circular antenna
+Fj_dB = Fjl_dB + Fjp_dB
+
+Lja_dB = 0.8
+Ljt_dB = 1
+Lj_dB = Lja_dB + Ljt_dB
 
 THREATDIR   = '1_datastore/0_manual/threats.json'
 PLATFORMDIR = '1_datastore/0_manual/platform.json'

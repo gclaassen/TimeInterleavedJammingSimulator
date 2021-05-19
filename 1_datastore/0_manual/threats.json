@@ -134,12 +134,12 @@
           {
             "mode_id": 0,
             "type": 1,
-            "power_peak_kW": 30,
+            "power_peak_kW": 500,
             "gain": 35,
             "frequency_MHz": 5000,
             "pulse_width_us": 3.2,
             "pri_us": 102,
-            "cpi": 32,
+            "cpi": 128,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "__debugPercentageJamming": 0.9
