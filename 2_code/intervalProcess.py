@@ -347,7 +347,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'D0(x) [dB]', 'Dj0(x) [dB]', 'Pd', 'Pfa', '# Pulse', 'CPI', '# Coinc CPI', '# Jamming', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
+    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'D0(x) [dB]', 'Dj0(x) [dB]', 'D0(x) JPP', 'Pd', 'Pfa', '# Pulse', 'CPI', '# Coinc CPI', '# Jamming', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
     loggingTijData = []
 
 
@@ -365,7 +365,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             # SNR and DETECTABILITY and INTEGRATION
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
-            SNR_D0 = radmath.radarEquation_DetectabilityFactor(
+            SNR_dB = radmath.radarEquation_DetectabilityFactor(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
                 # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -376,13 +376,15 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km)
 
-            SNR_D0_JAMMING = radmath.radarEquation_SSJamming_DetectabilityFactor(
+            SNR_NJ_dB = radmath.radarEquation_SSJamming_DetectabilityFactor(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
                 # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
+                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
@@ -395,21 +397,24 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 cpiSize = int(threatList[radar_idx].lIntervalTIJStore.cpi)
 
 
-            for Njamming in range(1, cpiSize):
-                JppTest = Njamming/threatList[radar_idx].lIntervalTIJStore.cpi
-                bJppReached = radmath.radarEquation_SSJamming_JPP(
+            for Njamming in range(1, cpiSize+1):
+                intermittentJammingAvg = Njamming/threatList[radar_idx].lIntervalTIJStore.cpi
+                [bJppReached, SNR_INJ_dB] = radmath.radarEquation_SSJamming_JPP(
                     threatList[radar_idx].lIntervalTIJStore.cpi,
                     # 1,
                     threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                     threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                     threatList[radar_idx].emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
+                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
                     threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
                     4, # get correct Pd->SNR for current Range
-                    JppTest)
+                    intermittentJammingAvg)
+
                 if bJppReached == True:
                     if cpiSize < threatList[radar_idx].lIntervalTIJStore.cpi:
                         if Njamming > cpiSize:
@@ -417,7 +422,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                         else:
                             threatList[radar_idx].lIntervalTIJStore.jpp_req = Njamming/cpiSize
                     else:
-                        threatList[radar_idx].lIntervalTIJStore.jpp_req = JppTest
+                        threatList[radar_idx].lIntervalTIJStore.jpp_req = intermittentJammingAvg
                     break
                 else:
                     threatList[radar_idx].lIntervalTIJStore.jpp_req = 1.0
@@ -452,8 +457,9 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz,
-                SNR_D0,
-                SNR_D0_JAMMING,
+                SNR_dB,
+                SNR_NJ_dB,
+                SNR_INJ_dB,
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION],
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 coincPulse.pulse_number,

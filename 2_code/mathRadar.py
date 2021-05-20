@@ -119,18 +119,24 @@ def radarEquation_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_
     En =  math.pow(common.STERADIANS, 3) * Ts * math.pow(Rc, 4) * La * Lt
 
     SNR = Es/En
+
     SNR_dB = convertTodB(SNR, 10, BASE10)
+
     return SNR_dB
+
 
 def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB, Lt_dBm, La_dBm):
     # Return the range value
     return math.pow(common.RadarEquationConstant * (( convertPower_KiloWattToWatt(Pt_Kw) * pw_us * Gt_dB * Gr_dB * rcs_m2 )/( math.pow(Fc_MHz,2) * Ts_K * Dx_dB * La_dBm * Lt_dBm )), 1/4)
 
 
-def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, pw_us, rcs_m2, Rc_km, Pj_kW, Gj_dB, Bj_MHz) :
-    # Return the detectability factor (Max SNR for a single detection)
+def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz) :
+    #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
+    Gr = convertFromdB(Gr_dB)
+
+    waveLength = calculateWaveLength(common.c, Fc_MHz)
 
     Pt = convertPower_KiloWattToWatt(Pt_kw)
     pw = convertTime_MicrosecondsToSeconds(pw_us)
@@ -147,23 +153,31 @@ def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, pw_us, rcs_m2, 
     Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
 
-    Fjl = convertFromdB(common.Fjl_dB)
+    Fjl = 1
     Fjp = convertFromdB(common.Fjp_dB)
     Lja = convertFromdB(common.Lja_dB)
     Ljt = convertFromdB(common.Ljt_dB)
 
-    Es =  N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * Bj * Lja * Ljt
-    En =  common.STERADIANS * math.pow(Rc, 2) * La * Lt * (common.Qj * Pj * Gj * Fjl * Fjp )
+    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
+
+    Ts = Tj
+
+    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
+    En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
 
     SNR = Es/En
+
     SNR_dB = convertTodB(SNR, 10, BASE10)
 
     return SNR_dB
 
-def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, pw_us, rcs_m2, Rc_km, Pj_kW, Gj_dB, Bj_MHz, snrReq, cpiJammingAvg) :
+def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz, snrReq, cpiJammingAvg) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
+    Gr = convertFromdB(Gr_dB)
+
+    waveLength = calculateWaveLength(common.c, Fc_MHz)
 
     Pt = convertPower_KiloWattToWatt(Pt_kw)
     pw = convertTime_MicrosecondsToSeconds(pw_us)
@@ -180,20 +194,28 @@ def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, pw_us, rcs_m2, Rc_km, Pj_kW, Gj
     Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
 
-    Fjl = convertFromdB(common.Fjl_dB)
+    Fjl = 1
     Fjp = convertFromdB(common.Fjp_dB)
     Lja = convertFromdB(common.Lja_dB)
     Ljt = convertFromdB(common.Ljt_dB)
 
-    Es =  N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * Bj * Lja * Ljt
-    En =  common.STERADIANS * math.pow(Rc, 2) * La * Lt * ((cpiJammingAvg) * (common.Qj * Pj * Gj * Fjl * Fjp ))
+    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
+
+    JTj = cpiJammingAvg * Tj
+
+    JT0 = common.T0 * (1 - cpiJammingAvg)
+
+    Ts = JTj + JT0
+
+    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
+    En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
 
     SNR = Es/En
-    SNR_dB = convertTodB(SNR, 10, BASE10)
 
+    SNR_dB = convertTodB(SNR, 10, BASE10)
     JsrAvg = SNR_dB/snrReq
 
     if(JsrAvg >= 1.0):
-        return False
+        return [False, SNR_dB]
     else:
-        return True
+        return [True, SNR_dB]
