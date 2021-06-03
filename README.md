@@ -1,7 +1,7 @@
+# WIP
+
 # Time-Interleaved-Jamming
 Time Interleaved Jamming Simulator
-
-## WIP
 
 ## Zone Assessment
 *IN PROGRESS*
