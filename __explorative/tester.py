@@ -1,5 +1,6 @@
 import numpy as np
 import signalProcessing as signal
+import math
 
 snrRange = [-2, 2, 3, 4]
 PfaRange = [1e-10, 1]
