@@ -2,6 +2,10 @@ import math
 import common
 import traceback
 import logging
+import scipy
+import scipy.stats
+import scipy.special
+import numpy as np
 
 #log base enum values
 BASENORMAL          = 0 # log()
@@ -129,6 +133,13 @@ def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB,
     # Return the range value
     return math.pow(common.RadarEquationConstant * (( convertPower_KiloWattToWatt(Pt_Kw) * pw_us * Gt_dB * Gr_dB * rcs_m2 )/( math.pow(Fc_MHz,2) * Ts_K * Dx_dB * La_dBm * Lt_dBm )), 1/4)
 
+def calculatePd(Pfa, snr, integration):
+    if integration == 'CI':
+        # return 0.5*scipy.special.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
+        return 0.5*scipy.special.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
+
+    elif integration == 'NCI':
+        NotImplementedError
 
 def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz) :
     #  Return the JPP value
@@ -162,16 +173,18 @@ def radarEquation_SSJamming_DetectabilityFactor(N, Pt_kw, Gt_dB, Gr_dB, pw_us, r
 
     Ts = Tj
 
-    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
+    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
     En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
 
-    SNR = Es/En
+    SNR_D0 = Es/En
 
-    SNR_dB = convertTodB(SNR, 10, BASE10)
+    SNR_CI = N * SNR_D0
+
+    SNR_dB = convertTodB(SNR_CI, 10, BASE10)
 
     return SNR_dB
 
-def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz, snrReq, cpiJammingAvg) :
+def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -201,21 +214,23 @@ def radarEquation_SSJamming_JPP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, R
 
     Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
 
-    JTj = cpiJammingAvg * Tj
+    Tj_ij = cpiJammingAvg * Tj
 
-    JT0 = common.T0 * (1 - cpiJammingAvg)
+    Ts = Tj_ij + common.T0
 
-    Ts = JTj + JT0
-
-    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
+    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
     En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
 
     SNR = Es/En
 
-    SNR_dB = convertTodB(SNR, 10, BASE10)
-    JsrAvg = SNR_dB/snrReq
+    SNR_CI = N*SNR
 
-    if(JsrAvg >= 1.0):
-        return [False, SNR_dB]
+    SNR_dB = convertTodB(SNR, 10, BASE10)
+    SNR_CI_db = convertTodB(SNR_CI, 10, BASE10)
+
+    PdCurrent = calculatePd(Pfa, SNR_CI, 'CI')
+
+    if(PdCurrent >= minPd):
+        return [False, SNR_CI_db, PdCurrent]
     else:
-        return [True, SNR_dB]
+        return [True, SNR_CI_db, PdCurrent]

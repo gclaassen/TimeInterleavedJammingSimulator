@@ -5,27 +5,29 @@ from matplotlib import pyplot as plt
 from labellines import labelLine, labelLines
 import spectrum
 import scipy.stats as sp_stats
+from scipy.stats import ncx2
 
 
 # PULSE INTEGRATION
-def Pd(Pfa, SNR, N, integration):
+def calculatePd(Pfa, SNR_dB, N, integration):
     if integration == 'CI':
-        return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(SNR*N))
+        snr = N*math.pow(10, SNR_dB/10)
+        # return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
+        return 0.5*sp_spec.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
+
     elif integration == 'NCI':
-    #     T = -np.log(Pfa)
-    #     T = np.real(sp_spec.gammaincinv(1-Pfa,N))
-    #     Nx = N*SNR
-    #     marcumVal = 0.5*sp_spec.erfc(np.sqrt(2*Nx), np.sqrt(2*T))
-    #     expVal = np.exp(-(T+Nx))
-    #     sumBesselVal = 0
-    #     pulseRange = np.arange(2, N, 1)
-    #     for r in pulseRange:
-    #         sumBesselValTemp = np.power(T/Nx,(r-1)/2)*sp_spec.jv(r-1 , 2*np.sqrt(Nx*T))
-    #         sumBesselVal = sum([sumBesselVal,sumBesselValTemp])
-    #     return marcumVal + expVal * sumBesselVal
-    # elif integration is 'NCI_ALB':
-        # Albersheims Equation Estimation
         return albersheimsPd(spectrum.pow2db(SNR), Pfa, N)
+
+def calculateSNR(Pd, Pfa, N):
+    Hn = N
+    Gfa = 2.36*math.sqrt(-math.log(Pfa))-1.02
+    t = 0.9*(2*Pd-1)
+    Gd = 1.231*t/math.sqrt(1-math.pow(t,2))
+    X0 = math.pow(Gfa + Gd, 2)
+
+    D0n = X0/4*Hn * ( 1 + math.sqrt( 1 + (16*Hn/1*X0) ) )
+
+    return D0n
 
 def rocsnr(snrRange, PfaRange, numPulses, numPoints, integration):
     minPfa = math.log10(PfaRange[0])
@@ -40,7 +42,7 @@ def rocsnr(snrRange, PfaRange, numPulses, numPoints, integration):
         snrPow = spectrum.db2pow(snr)
         pfaPoint = 0
         for far in Pfa:
-            PdMatrix[snrPoint, pfaPoint] = Pd(far, snrPow, numPulses, integration)
+            PdMatrix[snrPoint, pfaPoint] = calculatePd(far, snrPow, numPulses, integration)
             pfaPoint = pfaPoint + 1
         snrPoint = snrPoint + 1
     return Pfa, PdMatrix

@@ -86,8 +86,8 @@ THREAT_ALT_KM               = 'altitude_max_km'
 THREAT_LOCATION             = 'location'
 THREAT_CPI                  = 'cpi'
 THREAT_PROB_DETECTION       = 'Pd'
+THREAT_PROB_DETECTION_MIN   = 'Pd_min'
 THREAT_PROB_FALSE_ALARM     = 'Pfa'
-THREAT_PERCENTAGEJAMMING    = '__debugPercentageJamming'
 THREAT_LOCATION_SIZE        = 3
 
 JAMMER_CHANNEL              = "channels"

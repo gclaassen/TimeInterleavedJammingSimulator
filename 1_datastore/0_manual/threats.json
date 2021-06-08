@@ -22,7 +22,7 @@
             "cpi": 64,
             "Pd": 0.5,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           },
           {
             "mode_id": 1,
@@ -35,7 +35,7 @@
             "cpi": 16,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -62,7 +62,7 @@
             "cpi": 8,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           },
           {
             "mode_id": 1,
@@ -75,7 +75,7 @@
             "cpi": 8,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.8
+            "Pd_min": 0.1
           },
           {
             "mode_id": 2,
@@ -88,7 +88,7 @@
             "cpi": 8,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -115,7 +115,7 @@
             "cpi": 16,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -142,7 +142,7 @@
             "cpi": 128,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           },
           {
             "mode_id": 1,
@@ -155,7 +155,7 @@
             "cpi": 16,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -182,7 +182,7 @@
             "cpi": 32,
             "Pd": 0.5,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -209,7 +209,7 @@
             "cpi": 32,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.6
+            "Pd_min": 0.1
           }
         ]
       }
@@ -236,7 +236,7 @@
             "cpi": 32,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
@@ -263,7 +263,7 @@
             "cpi": 32,
             "Pd": 0.5,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.8
+            "Pd_min": 0.1
           }
         ]
       }
@@ -290,7 +290,7 @@
             "cpi": 32,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.7
+            "Pd_min": 0.1
           }
         ]
       }
@@ -317,7 +317,7 @@
             "cpi": 64,
             "Pd": 0.8,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.8
+            "Pd_min": 0.1
           }
         ]
       }
@@ -344,7 +344,7 @@
             "cpi": 32,
             "Pd": 0.9,
             "Pfa": 1e-6,
-            "__debugPercentageJamming": 0.9
+            "Pd_min": 0.1
           }
         ]
       }
