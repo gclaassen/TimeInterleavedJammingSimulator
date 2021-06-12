@@ -11,9 +11,10 @@ from scipy.stats import ncx2
 # PULSE INTEGRATION
 def calculatePd(Pfa, SNR_dB, N, integration):
     if integration == 'CI':
-        snr = N*math.pow(10, SNR_dB/10)
-        # return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
-        return 0.5*sp_spec.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
+        # snr = N*math.pow(10, SNR_dB/10)
+        snr = SNR_dB
+        return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
+        # return 0.5*sp_spec.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
 
     elif integration == 'NCI':
         return albersheimsPd(spectrum.pow2db(SNR), Pfa, N)

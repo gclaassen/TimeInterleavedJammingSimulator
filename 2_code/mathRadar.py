@@ -135,8 +135,8 @@ def radarEquation_Range(Pt_Kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Ts_K, Dx_dB,
 
 def calculatePd(Pfa, snr, integration):
     if integration == 'CI':
-        # return 0.5*scipy.special.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
-        return 0.5*scipy.special.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
+        return 0.5*scipy.special.erfc(scipy.special.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
+        # return 0.5*scipy.special.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
 
     elif integration == 'NCI':
         NotImplementedError
