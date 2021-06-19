@@ -347,7 +347,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'D0(x) [dB]', 'Dj0(x) [dB]', 'D0(x) JPP', 'Pd', 'Pfa', 'Pd min', 'Pd achieved', '# Pulse', 'CPI', '# Coinc CPI', '# Jamming', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rb [km]', 'ZA']
+    loggingTijHeader = ['Selected', 'MA', 'Coinc Pulse', 'Threat ID', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'Pfa', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd', 'Pd min', 'Pd IJ', 'Pulse history', 'N (CPI)', 'C (CPI)', 'M (CPI)', 'JPP req', 'JPP curr', 'JPP diff', 'Rws [km]', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA']
     loggingTijData = []
 
 
@@ -365,7 +365,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             # SNR and DETECTABILITY and INTEGRATION
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
-            SNR_dB = radmath.radarEquation_DetectabilityFactor(
+            SNR_dB = radmath.radarEquationSNR(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
                 # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -376,7 +376,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km)
 
-            SNR_NJ_dB = radmath.radarEquation_SSJamming_DetectabilityFactor(
+            SNR_NJ_dB = radmath.radarEquationSNR_NoiseJamming(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
                 # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -399,7 +399,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
             for Njamming in range(1, cpiSize+1):
                 intermittentJammingAvg = Njamming/threatList[radar_idx].lIntervalTIJStore.cpi
-                [bJppReached, SNR_INJ_dB, Pd_min_achieved] = radmath.radarEquation_SSJamming_JPP(
+                [bJppReached, SNR_INJ_dB, Pd_min_achieved] = radmath.radarEquationSNR_CPIJP(
                     threatList[radar_idx].lIntervalTIJStore.cpi,
                     # 1,
                     threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -430,23 +430,75 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
 
             # TIJ - JAMMING PULSE PERCENTAGE
-            threatList[radar_idx].lIntervalTIJStore.jpp = 1 - CoincidencesInCPI[0].__len__()/cpiSize
+            threatList[radar_idx].lIntervalTIJStore.jpp = CoincidencesInCPI[0].__len__()/cpiSize
 
 
-            threatList[radar_idx].lIntervalTIJStore.jpp_dif = (threatList[radar_idx].lIntervalTIJStore.jpp_req - threatList[radar_idx].lIntervalTIJStore.jpp)/threatList[radar_idx].lIntervalTIJStore.jpp_req
+            threatList[radar_idx].lIntervalTIJStore.jpp_dif = threatList[radar_idx].lIntervalTIJStore.jpp_req/threatList[radar_idx].lIntervalTIJStore.jpp
 
             #TODO: TIJ - ZA
-            [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
+
+            #calculate max range
+            SNR_m = radmath.calculateSNR(threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION], threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
+            SNR_m_dB = radmath.convertTodB(SNR_m, 10, radmath.BASE10)
+            threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km = radmath.radarEquationRange(
+                threatList[radar_idx].lIntervalTIJStore.cpi,
+                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                SNR_m
+            )
+
+            # calculate min intermittent jamming range
+            minIJRadarRange_km = radmath.radarEquationRange_CPIJP(
+                    threatList[radar_idx].lIntervalTIJStore.cpi,
+                    threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                    threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                    oPlatform.rcs,
+                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                    SNR_m,
+                    oJammer.jammer_power_kW,
+                    oJammer.jammer_gain_dB,
+                    oJammer.jammer_bandwidth_MHz,
+                    intermittentJammingAvg
+            )
+
+            threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km = radmath.radarEquationRange_CPIJP(
+                    threatList[radar_idx].lIntervalTIJStore.cpi,
+                    threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
+                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
+                    threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                    oPlatform.rcs,
+                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                    SNR_m,
+                    oJammer.jammer_power_kW,
+                    oJammer.jammer_gain_dB,
+                    oJammer.jammer_bandwidth_MHz,
+                    1.0
+            )
+
+            [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km)
 
             #TODO: TIJ - MA
+            lethalRangeVal = 0
+            if threatList[radar_idx].lIntervalTIJStore.platformDistance_km <= threatList[radar_idx].lethalRange_km:
+                lethalRangeVal = 1
+            modeValue = ma.threatValueCalculation(threatList[radar_idx].mode_current, threatList[radar_idx].lIntervalTIJStore.za, lethalRangeVal, threatList[radar_idx].lIntervalTIJStore.jpp_dif )
 
             # logging.debug( "************************\n")
 
             loggingTijData.append(
             [
                 "TBD",
+                modeValue,
                 coincPulseIdx+1,
                 threatList[radar_idx].lIntervalTIJStore.radar_id,
+                threatList[radar_idx].mode_current,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -458,11 +510,11 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz,
+                threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 SNR_dB,
                 SNR_NJ_dB,
                 SNR_INJ_dB,
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION],
-                threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION_MIN],
                 Pd_min_achieved,
                 coincPulse.pulse_number,
@@ -472,8 +524,10 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 threatList[radar_idx].lIntervalTIJStore.jpp_req,
                 threatList[radar_idx].lIntervalTIJStore.jpp,
                 threatList[radar_idx].lIntervalTIJStore.jpp_dif,
+                threatList[radar_idx].lethalRange_km,
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
+                minIJRadarRange_km,
                 threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
                 threatList[radar_idx].lIntervalTIJStore.za
                 ])

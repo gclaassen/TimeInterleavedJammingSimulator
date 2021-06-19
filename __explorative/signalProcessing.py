@@ -4,31 +4,28 @@ import math
 from matplotlib import pyplot as plt
 from labellines import labelLine, labelLines
 import spectrum
+import scipy
 import scipy.stats as sp_stats
 from scipy.stats import ncx2
 
 
+def phiInv(x):
+    return math.sqrt(2)*scipy.special.erfinv(2*x-1)
+
+def phi(x):
+    return 0.5*(1 + scipy.special.erf(x/math.sqrt(2)))
+
 # PULSE INTEGRATION
-def calculatePd(Pfa, SNR_dB, N, integration):
+def calculatePd(Pfa, snr, n, integration):
     if integration == 'CI':
-        # snr = N*math.pow(10, SNR_dB/10)
-        snr = SNR_dB
-        return 0.5*sp_spec.erfc(sp_spec.erfcinv(2*Pfa)-np.sqrt(snr+0.5))
-        # return 0.5*sp_spec.erfc(math.sqrt(-math.log(Pfa))-np.sqrt(snr+0.5))
+        return 0.5*scipy.special.erfc(scipy.special.erfcinv(2*Pfa)-np.sqrt(n*snr))
 
     elif integration == 'NCI':
-        return albersheimsPd(spectrum.pow2db(SNR), Pfa, N)
+        NotImplementedError
+        # return albersheimsPd(spectrum.pow2db(SNR), Pfa, N)
 
-def calculateSNR(Pd, Pfa, N):
-    Hn = N
-    Gfa = 2.36*math.sqrt(-math.log(Pfa))-1.02
-    t = 0.9*(2*Pd-1)
-    Gd = 1.231*t/math.sqrt(1-math.pow(t,2))
-    X0 = math.pow(Gfa + Gd, 2)
-
-    D0n = X0/4*Hn * ( 1 + math.sqrt( 1 + (16*Hn/1*X0) ) )
-
-    return D0n
+def calculateSNR(Pd, Pfa, n):
+    return (1/(2*n))*math.pow(phiInv(Pfa) - phiInv(Pd), 2)
 
 def rocsnr(snrRange, PfaRange, numPulses, numPoints, integration):
     minPfa = math.log10(PfaRange[0])

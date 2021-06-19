@@ -4,10 +4,8 @@ import cartesian
 import numpy as np
 import mathRadar as radmath
 
-def calculateZoneAssessment(timeOfCoincidence_us, pltf_flightPath, threat_location):
+def calculateZoneAssessment(timeOfCoincidence_us, pltf_flightPath, threat_location, Rm, Rb):
     Rc = calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location)
-    Rm = calculatemaxRadarRange_km()
-    Rb = calculateburnthroughRange_km()
     Rn = calculateZoneAssessmentValue(Rc, Rm, Rb)
 
     return [Rc, Rm, Rb, Rn]
@@ -36,14 +34,6 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
 
     ## get the distance between platform and threat in km
     return radmath.convertRange_MeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
-
-#TODO:
-def calculatemaxRadarRange_km():
-    return 0.0
-
-#TODO:
-def calculateburnthroughRange_km():
-    return 0.0
 
 def calculateZoneAssessmentValue(Rc, Rm, Rb):
     Rdelta = Rm - Rb

@@ -1,17 +1,17 @@
 {
     "workbench.colorCustomizations": {
         "tab.unfocusedActiveBorder": "#fff0",
-        "activityBar.background": "#2a3439",
-        "activityBar.activeBackground": "#2a3439",
-        "activityBar.activeBorder": "#ffcc33",
+        "activityBar.background": "#8c7d58",
+        "activityBar.activeBackground": "#8c7d58",
+        "activityBar.activeBorder": "#2a3439",
         "activityBar.foreground": "#fdb827",
-        "activityBar.inactiveForeground": "#181818",
-        "activityBarBadge.background": "#ffcc33",
-        "activityBarBadge.foreground": "#2a3439",
-        "panel.border": "#2a3439",
-        "sideBar.border": "#2a3439",
-        "editorGroup.border": "#2a3439",
-        "tab.activeBorder": "#2a3439",
+        "activityBar.inactiveForeground": "#2a3439",
+        "activityBarBadge.background": "#2a3439",
+        "activityBarBadge.foreground": "#8c7d58",
+        "panel.border": "#8c7d58",
+        "sideBar.border": "#8c7d58",
+        "editorGroup.border": "#8c7d58",
+        "tab.activeBorder": "#8c7d58",
 
         "editor.background": "#323232"
     },
@@ -30,5 +30,7 @@
     ],
     "python.analysis.extraPaths": [
         "../2_code/"
-    ]
+    ],
+    "diffEditor.wordWrap": "on",
+    "editor.wordWrap": "on"
 }

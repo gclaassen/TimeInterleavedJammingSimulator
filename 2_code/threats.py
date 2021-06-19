@@ -11,9 +11,12 @@ class cThreat:
     location: None
     emitters = None
 
+    lethalRange_km = 0
+
     # current mode parameters
     emitter_current = None
     mode_current = None
+    mode_name = None
     channel_current = None
 
     #interval Info
@@ -26,6 +29,7 @@ class cThreat:
 
         self.radar_id = threatList[common.THREAT_ID]
         self.radar_name = threatList[common.THREAT_NAME]
+        self.lethalRange_km = threatList[common.THREAT_LETHAL_RANGE_KM]
         logging.debug("Threat: %s id: %s",self.radar_name, self.radar_id)
         self.location = np.array((
             threatList[common.THREAT_LOCATION][common.XCOORD],
