@@ -4,17 +4,19 @@ import cartesian
 import numpy as np
 import mathRadar as radmath
 
-def calculateZoneAssessment(timeOfCoincidence_us, pltf_flightPath, threat_location, Rm, Rb):
-    Rc = calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location)
-    Rn = calculateZoneAssessmentValue(Rc, Rm, Rb)
 
-    return [Rc, Rm, Rb, Rn]
-
-# def calculateZoneAssessment(Rc, Rm, Rb):
-#     return calculateZoneAssessmentValue(Rc, Rm, Rb)
-
-## get distance between platform and radar
 def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location):
+    """Get the current distance between platform and radar
+
+    Args:
+        timeOfCoincidence_us ([float]): The time of the pulse coincidence
+        pltf_flightPath ([cPlatform.flightPath]): The platform's cartesian flightpath
+        threat_location ([cThreat.location]): The cartesian location of the threat
+
+    Returns:
+        [float]: The current distance Rc_km
+    """
+    
     pltfPathArray = cartesian.initializeCartesianArray(1)
 
     # determine new platform coordinates
@@ -35,20 +37,30 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
     ## get the distance between platform and threat in km
     return radmath.convertRange_MeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
 
-def calculateZoneAssessmentValue(Rc, Rm, Rb):
+def calculateZoneAssessmentValue(Rc_km, Rm_km, Rb_km):
+    """Calculate the zone assessment value
     Rdelta = Rm - Rb
+    ZA = (Rdelta - (Rc - Rb))/Rdelta
 
-    if(Rdelta > 0):
-        if (Rc < Rb):
-            Rn = 1
-        elif (Rc > Rm):
-            Rn = 0
+    Args:
+        Rc_km ([float]): the current line of sight distance between platform and radar in kilometer
+        Rm_km ([float]): The maximum detectable range wrt the required probability of detection of the platform in kilometer
+        Rb_km ([float]): The burnthrough range when the jammer is always active on the threat radar in kilometer
+
+    Returns:
+        [float]: The zone assessment value between 0 (out of detection range) and 1 (inside burnthrough range)
+    """
+    Rdelta_km = Rm_km - Rb_km
+
+    if(Rdelta_km > 0):
+        if (Rc_km < Rb_km):
+            ZA = 1
+        elif (Rc_km > Rm_km):
+            ZA = 0
         else:
-            Rn = (Rdelta - (Rc - Rb) )/Rdelta
-    elif(Rb > 0):
-        Rn = 1
+            ZA = (Rdelta_km - (Rc_km - Rb_km) )/Rdelta_km
+    elif(Rb_km > 0):
+        ZA = 1
     else:
-        Rn = 0
-    return Rn
-
-
+        ZA = 0
+    return ZA

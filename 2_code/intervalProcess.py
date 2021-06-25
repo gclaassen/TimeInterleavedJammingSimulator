@@ -54,9 +54,6 @@ class cTIJ:
 
     cpi: float = 0
     cpi_startAt: int = 0
-
-    Pd_req: float = 0
-    Pd_startAt: float = 0
     SNR_startAt: float = 0
 
     def __init__(self, numRadar_ID, numCPI, numJPP_req):
@@ -482,7 +479,9 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                     1.0
             )
 
-            [threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km, threatList[radar_idx].lIntervalTIJStore.za] = za.calculateZoneAssessment(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km)
+            threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
+
+            threatList[radar_idx].lIntervalTIJStore.za = za.calculateZoneAssessmentValue(threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km)
 
             #TODO: TIJ - MA
             lethalRangeVal = 0

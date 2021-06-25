@@ -15,8 +15,7 @@
 
         "editor.background": "#323232"
     },
-    "peacock.color": "#854f5a",
-    "python.pythonPath": "/bin/python3",
+    "python.defaultInterpreterPath": "/usr/local/bin/python3.9",
     "cSpell.enabled": false,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
@@ -26,11 +25,13 @@
         ]
     },
     "python.autoComplete.extraPaths": [
-        "../2_code/"
+        "2_code/"
     ],
     "python.analysis.extraPaths": [
-        "../2_code/"
+        "2_code/"
     ],
     "diffEditor.wordWrap": "on",
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "python.linting.pylamaEnabled": false,
+    "python.linting.mypyEnabled": false
 }
