@@ -435,11 +435,21 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             dictRank[coincPulseIdx] = olThreats[radar_idx].oIntervalTIJStore.ma
 
         maxRankRadarId = max(dictRank, key=dictRank.get)
-        dictRank.clear()
-        __loggingTijData[maxRankRadarId][0] = ">>>>>"
 
-        priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == coincidence[maxRankRadarId].pulse_number))
-        olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+        # check to see of multiple of same radar in coincidence
+        maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
+        dictMaxRankRadar = {}
+        for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
+            if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
+                dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
+    
+        for priorityRadarKey in dictMaxRankRadar:
+            priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
+            olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+            __loggingTijData[priorityRadarKey][0] = ">>>>>"
+
+        dictMaxRankRadar.clear()
+        dictRank.clear()
 
         #TODO add: bisect.insort(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalPulseJammingSelectedStore, coincidence[maxRankRadarId].pulse_number)
 
