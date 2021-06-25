@@ -127,19 +127,19 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
 
         oChannel.oInterval.interval_current = intervalIdx
-        oChannel.oInterval.interval_current_Tstart = oChannel.interval_time_us * intervalIdx
+        oChannel.oInterval.interval_current_Tstart_us = oChannel.interval_time_us * intervalIdx
         if((intervalIdx + 1) == oChannel.oInterval.intervals_total):
             oChannel.oInterval.interval_current_Tstop_us = oPlatform.timeStop_us
         else:
-            oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart + oJammer.oChannel[0].interval_time_us
+            oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart_us + oJammer.oChannel[0].interval_time_us
 
         # Get the starting ranges at each new interval
         loggingRangeData = []
         for threatIdx, threatItem in enumerate(olThreats):
-            RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart, oPlatform.flightPath, threatItem.location)
+            RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart_us, oPlatform.flightPath, threatItem.location)
             loggingRangeData.append([
                 threatIdx+1, 
-                oChannel.oInterval.interval_current_Tstart, 
+                oChannel.oInterval.interval_current_Tstart_us, 
                 RadarDistance_km, 
                 threatItem.lethalRange_km,
                 threatItem.mode_current,
@@ -159,19 +159,22 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
         table = tabulate(loggingRangeData, loggingRangeHeader, tablefmt="github")
         logging.debug( "\n\n"+table+"\n\n")
 
-        sortThreatsToChannel(olThreats, oChannel) #TODO: what about mode changes
+        sortThreatsToChannel(olThreats, oChannel)
         [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(oChannel, oJammer)
 
         oChannel.oCoincidences = lCoincidenceLib
         for threatIdx, threatItem in enumerate(oChannel.oThreatLib):
-            threatItem.lIntervalPulseStore = lThreatPulseLib[threatIdx]
+            threatItem.lIntervalPulseStore.append(lThreatPulseLib[threatIdx])
             threatItem.lIntervalPulseCoincidenceStore = lAllCoincidencePerThreat[threatIdx]
             threatItem.lIntervalPulseJammingSelectedStore = [] #TODO: add pulses selected for jamming
             threatItem.lIntervalTIJStore = cTIJ(threatItem.radar_id, threatItem.emitter_current[common.THREAT_CPI], threatItem.emitter_current[common.THREAT_PROB_DETECTION_MIN] )
 
         cpiSweeper(oChannel, oPlatform, oJammer)
 
-    pass #TODO: remove
+        # TODO: review interval
+        ## TODO: update radar
+        ## TODO: update jammer
+        ## TODO: save interval data -> rerun purposes
 
 def sortThreatsToChannel(olThreats, oChannel):
     '''
@@ -185,7 +188,7 @@ def sortThreatsToChannel(olThreats, oChannel):
     ----------
     olThreats : [cThreats object list]
         [description]
-    oChannel : [cJammer cChannel object list]
+    oChannel : [cJammer.cChannel object list]
         [description]
     '''
     # clear the channel threats
@@ -220,15 +223,15 @@ def intervalCoincidenceCalculator(oChannel, oJammer):
         if(oChannel.oInterval.interval_current == 0):
             initlThreatPulseLib(lThreatPulseLib, threatIdx, threatItem, oChannel.oInterval.interval_length_us, oJammer.jammer_bin_size)
         else:
-            lThreatPulseLib[threatIdx] = threatItem.lIntervalPulseStore
-            lThreatPulseLib[threatIdx, common.INTERVAL_LIB_OECM_TIME_US] = oChannel.oInterval.interval_current_Tstart_us
+            lThreatPulseLib[threatIdx] = np.array(threatItem.lIntervalPulseStore[threatIdx], dtype=object)
+            lThreatPulseLib[threatIdx, common.INTERVAL_LIB_OECM_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
 
 
     timeCounter[0] = time.perf_counter()
     retList = pulseCoincidenceAssessor(lThreatPulseLib)
 
     lCoincidenceLib = retList[1]
-    lThreatPulseLib = retList[0]
+    lThreatPulseLib = np.array(retList[0], dtype=object)
     lAllCoincidencePerThreat = np.array(retList[2], dtype=object)
 
     logging.info("Stats:\ttotal coincidences: %d\n", lCoincidenceLib.__len__())

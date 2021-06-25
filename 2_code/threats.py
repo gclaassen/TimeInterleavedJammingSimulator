@@ -20,7 +20,7 @@ class cThreat:
     channel_current = None
 
     #interval Info
-    lIntervalPulseStore = None
+    lIntervalPulseStore = []
     lIntervalPulseCoincidenceStore = None
     lIntervalTIJStore = None
 
