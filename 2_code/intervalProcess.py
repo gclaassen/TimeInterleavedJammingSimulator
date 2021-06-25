@@ -258,7 +258,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
     dictRank= {}
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jammable)', 'm (CPI jamming required)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
+    __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jam required)', 'm (CPI standalone)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
     __loggingTijData = []
 
 
@@ -272,7 +272,10 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
         for coincPulseIdx, coincPulse in enumerate(coincidence):
 
             radar_idx = coincPulse.radar_idx
-            CoincidencesInCPI = np.where(np.logical_and(olThreats[radar_idx].lIntervalCoincidences > (coincPulse.pulse_number - olThreats[radar_idx].oIntervalTIJStore.cpi), olThreats[radar_idx].lIntervalCoincidences <= coincPulse.pulse_number ))
+            coincidencesInCPI = np.where(np.logical_and(olThreats[radar_idx].lIntervalCoincidences > (coincPulse.pulse_number - olThreats[radar_idx].oIntervalTIJStore.cpi), olThreats[radar_idx].lIntervalCoincidences <= coincPulse.pulse_number ))
+
+            currentCPISize = olThreats[radar_idx].oIntervalTIJStore.cpi if coincPulse.pulse_number > olThreats[radar_idx].oIntervalTIJStore.cpi else coincPulse.pulse_number
+            standalonePulsesInCPI = currentCPISize - coincidencesInCPI[0].__len__()
 
             # SNR and DETECTABILITY and INTEGRATION
             olThreats[radar_idx].oIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, olThreats[radar_idx].location)
@@ -339,13 +342,6 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
             olThreats[radar_idx].oIntervalTIJStore.Njamming = Njamming
 
-
-            # TIJ - JAMMING PULSE PERCENTAGE
-            olThreats[radar_idx].oIntervalTIJStore.jpp = CoincidencesInCPI[0].__len__()/cpiSize
-
-
-            olThreats[radar_idx].oIntervalTIJStore.jpp_dif = olThreats[radar_idx].oIntervalTIJStore.jpp_req/olThreats[radar_idx].oIntervalTIJStore.jpp
-
             # TIJ - ZA
             ## calculate max range
             SNR_m = radmath.calculateSNR(olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION], olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
@@ -399,11 +395,18 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             ## calcualte the ZA value
             olThreats[radar_idx].oIntervalTIJStore.za = za.calculateZoneAssessmentValue(olThreats[radar_idx].oIntervalTIJStore.platformDistance_km, olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km, olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km)
 
+            # TIJ - JAMMING PULSE PERCENTAGE
+            olThreats[radar_idx].oIntervalTIJStore.jpp = coincidencesInCPI[0].__len__()/cpiSize
+            olThreats[radar_idx].oIntervalTIJStore.jpp_dif = olThreats[radar_idx].oIntervalTIJStore.jpp_req/olThreats[radar_idx].oIntervalTIJStore.jpp
+
             #TODO: TIJ - MA
             lethalRangeVal = 0
             if olThreats[radar_idx].oIntervalTIJStore.platformDistance_km <= olThreats[radar_idx].m_lethalRange_km:
                 lethalRangeVal = 1
-            olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current, olThreats[radar_idx].oIntervalTIJStore.za, lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
+            if lethalRangeVal == 0 and (olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI):
+               olThreats[radar_idx].oIntervalTIJStore.ma = 0
+            else: 
+                olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current, olThreats[radar_idx].oIntervalTIJStore.za, lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
 
             # logging.debug( "************************\n")
 
@@ -417,9 +420,9 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
                 olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB,
                 olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved,
                 coincPulse.pulse_number,
-                CoincidencesInCPI[0].__len__(),
+                coincidencesInCPI[0].__len__(),
                 olThreats[radar_idx].oIntervalTIJStore.Njamming,
-                0, #TODO: How many signals that will be jammed in cpi
+                standalonePulsesInCPI,
                 olThreats[radar_idx].oIntervalTIJStore.jpp_req,
                 olThreats[radar_idx].oIntervalTIJStore.jpp,
                 olThreats[radar_idx].oIntervalTIJStore.jpp_dif,
@@ -450,8 +453,6 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
         dictMaxRankRadar.clear()
         dictRank.clear()
-
-        #TODO add: bisect.insort(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalPulseJammingSelectedStore, coincidence[maxRankRadarId].pulse_number)
 
         __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
         logging.debug( "\n\n"+ __loggingtable +"\n\n")
