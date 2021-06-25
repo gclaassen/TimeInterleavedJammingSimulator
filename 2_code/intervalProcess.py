@@ -401,6 +401,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
             #TODO: TIJ - MA
             lethalRangeVal = 0
+            # ignore pulse if outside WS range AND effective intermittent jamming is achievable with standalone pulses ELSE determine mode assessment
             if olThreats[radar_idx].oIntervalTIJStore.platformDistance_km <= olThreats[radar_idx].m_lethalRange_km:
                 lethalRangeVal = 1
             if lethalRangeVal == 0 and (olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI):
