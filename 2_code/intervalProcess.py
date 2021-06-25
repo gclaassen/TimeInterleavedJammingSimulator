@@ -392,7 +392,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             ## calculate the current range
             olThreats[radar_idx].oIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, olThreats[radar_idx].location)
 
-            ## calcualte the ZA value
+            ## calculate the ZA value
             olThreats[radar_idx].oIntervalTIJStore.za = za.calculateZoneAssessmentValue(olThreats[radar_idx].oIntervalTIJStore.platformDistance_km, olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km, olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km)
 
             # TIJ - JAMMING PULSE PERCENTAGE
@@ -405,7 +405,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             if olThreats[radar_idx].oIntervalTIJStore.platformDistance_km <= olThreats[radar_idx].m_lethalRange_km:
                 lethalRangeVal = 1
 
-            # ignore pulse if outside WS range AND effective intermittent jamming is achievable with standalone pulses ELSE determine mode assessment
+            # Ignore pulse if outside WS range AND effective intermittent jamming is achievable with standalone pulses ELSE determine mode assessment
             if lethalRangeVal == 0 and (olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI):
                olThreats[radar_idx].oIntervalTIJStore.ma = 0
             else: 
