@@ -108,8 +108,20 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
         [description]
     '''
 
-    loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Radar to Platform Distance [km]']
+    loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
     loggingRangeData = []
+
+    loggingJammerHeader = ['Pj [kW]', 'Gj [dB]', 'Bj [MHz]']
+    loggingJammerData = []
+
+
+    loggingJammerData.append([
+                oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz])
+
+    table = tabulate(loggingJammerData, loggingJammerHeader, tablefmt="github")
+    logging.debug( "\n\n"+table+"\n\n")
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
@@ -125,7 +137,24 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
         loggingRangeData = []
         for threatIdx, threatItem in enumerate(olThreats):
             RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart, oPlatform.flightPath, threatItem.location)
-            loggingRangeData.append([threatIdx+1, oChannel.oInterval.interval_current_Tstart, RadarDistance_km])
+            loggingRangeData.append([
+                threatIdx+1, 
+                oChannel.oInterval.interval_current_Tstart, 
+                RadarDistance_km, 
+                threatItem.lethalRange_km,
+                threatItem.mode_current,
+                threatItem.emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatItem.emitter_current[common.THREAT_GAIN],
+                threatItem.emitter_current[common.THREAT_GAIN],
+                threatItem.emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatItem.emitter_current[common.THREAT_FREQ_MHZ],
+                common.T0,
+                threatItem.emitter_current[common.THREAT_CPI],
+                threatItem.emitter_current[common.THREAT_PROB_FALSE_ALARM],
+                threatItem.emitter_current[common.THREAT_PROB_DETECTION],
+                threatItem.emitter_current[common.THREAT_PROB_DETECTION_MIN],
+                ])
 
         table = tabulate(loggingRangeData, loggingRangeHeader, tablefmt="github")
         logging.debug( "\n\n"+table+"\n\n")
@@ -353,7 +382,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
     dictRank= {}
     threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Selected', 'MA', 'Coinc Pulse', 'Threat ID', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'Rc [km]', 'Pj [kW]', 'Gj [dB]', 'Bj [MHz]', 'Pfa', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd', 'Pd min', 'Pd IJ', 'Pulse history', 'n (CPI)', 'c (CPI)', 'j (CPI)', 'm (CPI)', 'JPP req', 'JPP curr', 'JPP diff', 'Rws [km]', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA']
+    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jammable)', 'm (CPI jamming required)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
     loggingTijData = []
 
 
@@ -363,8 +392,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
         logging.debug("------------------------------------------------------------")
         loggingTijData = []
         for coincPulseIdx, coincPulse in enumerate(coincidence):
-            ##TODO: SNR and JSR calculations
-            ##TODO: JPP - jamming pulse percentage
+
             radar_idx = coincPulse.radar_idx
             CoincidencesInCPI = np.where(np.logical_and(oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore > (coincPulse.pulse_number - threatList[radar_idx].lIntervalTIJStore.cpi), oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore <= coincPulse.pulse_number ))
 
@@ -373,7 +401,6 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
             threatList[radar_idx].lIntervalTIJStore.SNR_dB = radmath.radarEquationSNR(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
-                # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -384,7 +411,6 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
             threatList[radar_idx].lIntervalTIJStore.SNR_NJ_dB = radmath.radarEquationSNR_NoiseJamming(
                 threatList[radar_idx].lIntervalTIJStore.cpi,
-                # 1,
                 threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                 threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -407,7 +433,6 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 intermittentJammingAvg = Njamming/threatList[radar_idx].lIntervalTIJStore.cpi
                 [bJppReached, threatList[radar_idx].lIntervalTIJStore.SNR_INJ_dB, threatList[radar_idx].lIntervalTIJStore.Pd_min_achieved] = radmath.radarEquationSNR_CPIJP(
                     threatList[radar_idx].lIntervalTIJStore.cpi,
-                    # 1,
                     threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
                     threatList[radar_idx].emitter_current[common.THREAT_GAIN],
                     threatList[radar_idx].emitter_current[common.THREAT_GAIN],
@@ -443,9 +468,8 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
 
             threatList[radar_idx].lIntervalTIJStore.jpp_dif = threatList[radar_idx].lIntervalTIJStore.jpp_req/threatList[radar_idx].lIntervalTIJStore.jpp
 
-            #TODO: TIJ - ZA
-
-            #calculate max range
+            # TIJ - ZA
+            ## calculate max range
             SNR_m = radmath.calculateSNR(threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION], threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
             threatList[radar_idx].lIntervalTIJStore.SNR_m_dB = radmath.convertTodB(SNR_m, 10, radmath.BASE10)
             threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km = radmath.radarEquationRange(
@@ -459,7 +483,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                 SNR_m
             )
 
-            # calculate min intermittent jamming range
+            ## calculate min intermittent jamming range
             threatList[radar_idx].lIntervalTIJStore.minIJRadarRange_km = radmath.radarEquationRange_CPIJP(
                     threatList[radar_idx].lIntervalTIJStore.cpi,
                     threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -475,6 +499,7 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                     intermittentJammingAvg
             )
 
+            ## calculate the burnthrough range
             threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km = radmath.radarEquationRange_CPIJP(
                     threatList[radar_idx].lIntervalTIJStore.cpi,
                     threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -490,8 +515,10 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
                     1.0
             )
 
+            ## calculate the current range
             threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
 
+            ## calcualte the ZA value
             threatList[radar_idx].lIntervalTIJStore.za = za.calculateZoneAssessmentValue(threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km)
 
             #TODO: TIJ - MA
@@ -505,46 +532,29 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             loggingTijData.append(
             [
                 " ",
-                threatList[radar_idx].lIntervalTIJStore.ma,
                 coincPulseIdx+1,
                 threatList[radar_idx].lIntervalTIJStore.radar_id,
-                threatList[radar_idx].mode_current,
-                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
-                oPlatform.rcs,
-                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                common.T0,
-                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
-                oJammer.jammer_power_kW,
-                oJammer.jammer_gain_dB,
-                oJammer.jammer_bandwidth_MHz,
-                threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
                 threatList[radar_idx].lIntervalTIJStore.SNR_dB,
                 threatList[radar_idx].lIntervalTIJStore.SNR_NJ_dB,
                 threatList[radar_idx].lIntervalTIJStore.SNR_INJ_dB,
-                threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION],
-                threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION_MIN],
                 threatList[radar_idx].lIntervalTIJStore.Pd_min_achieved,
                 coincPulse.pulse_number,
-                threatList[radar_idx].lIntervalTIJStore.cpi,
                 CoincidencesInCPI[0].__len__(),
                 threatList[radar_idx].lIntervalTIJStore.Njamming,
                 0, #TODO: How many signals that will be jammed in cpi
                 threatList[radar_idx].lIntervalTIJStore.jpp_req,
                 threatList[radar_idx].lIntervalTIJStore.jpp,
                 threatList[radar_idx].lIntervalTIJStore.jpp_dif,
-                threatList[radar_idx].lethalRange_km,
                 threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
                 threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
                 threatList[radar_idx].lIntervalTIJStore.minIJRadarRange_km,
                 threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
-                threatList[radar_idx].lIntervalTIJStore.za
+                threatList[radar_idx].lIntervalTIJStore.za,
+                threatList[radar_idx].lIntervalTIJStore.ma
                 ])
 
             #TODO: TIJ - TR
-            dictRank[loggingTijData.__len__()-1] = threatList[radar_idx].lIntervalTIJStore.ma
+            dictRank[coincPulseIdx] = threatList[radar_idx].lIntervalTIJStore.ma
 
         maxRankRadarId = max(dictRank, key=dictRank.get)
         dictRank.clear()
