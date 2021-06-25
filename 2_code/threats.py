@@ -3,34 +3,37 @@ import common
 import math
 import mathRadar as radmath
 import logging
+import util
 
 class cThreat:
-    # threat parameters
-    radar_id: int = 0
-    radar_name = None
-    location: None
-    emitters = None
+    # Radar Parameters
+    m_radar_id: int = 0
+    m_radar_name = None
+    m_location: None
+    m_emitters = None
 
-    lethalRange_km = 0
+    # Weapon System
+    m_lethalRange_km = 0
 
     # current mode parameters
-    emitter_current = None
-    mode_current = None
-    mode_name = None
-    channel_current = None
+    m_emitter_current = None
+    m_mode_current = None
+    m_mode_name = None
+    m_channel_current = None
 
     #interval Info
-    lIntervalPulseStore = []
-    lIntervalPulseCoincidenceStore = None
-    lIntervalTIJStore = None
-
+    oThreatPulseLib = np.zeros(common.INTERVAL_LIB_SIZE)
+    oIntervalTIJStore = None
+    lIntervalCoincidences = None
+    lIntervalJammingPulses = None
+    
     def __init__(self, threatList):
         emitterSize = None
 
-        self.radar_id = threatList[common.THREAT_ID]
-        self.radar_name = threatList[common.THREAT_NAME]
-        self.lethalRange_km = threatList[common.THREAT_LETHAL_RANGE_KM]
-        logging.debug("Threat: %s id: %s",self.radar_name, self.radar_id)
+        self.m_radar_id = threatList[common.THREAT_ID]
+        self.m_radar_name = threatList[common.THREAT_NAME]
+        self.m_lethalRange_km = threatList[common.THREAT_LETHAL_RANGE_KM]
+        logging.debug("Threat: %s id: %s",self.m_radar_name, self.m_radar_id)
         self.location = np.array((
             threatList[common.THREAT_LOCATION][common.XCOORD],
             threatList[common.THREAT_LOCATION][common.YCOORD],
@@ -49,18 +52,18 @@ class cThreat:
         else:
             logging.debug("Single emitter")
             emitterSize = 1
-        self.emitters = convertEmitterJsonToArray(
+        self.m_emitters = convertEmitterJsonToArray(
             threatList[common.THREAT_EMITTERS], emitterSize)
 
-        if(self.emitters.__len__() > 0):
+        if(self.m_emitters.__len__() > 0):
             minModeIdx = 0
-            modeSize = np.size(self.emitters[0])
+            modeSize = np.size(self.m_emitters[0])
             if(modeSize > 1):
-                minModeIdx = np.min(np.where(self.emitters[0][:][common.THREAT_MODE_TYPE] == np.min(self.emitters[0][:][common.THREAT_MODE_TYPE])))
+                minModeIdx = np.min(np.where(self.m_emitters[0][:][common.THREAT_MODE_TYPE] == np.min(self.m_emitters[0][:][common.THREAT_MODE_TYPE])))
             #TODO: currently only cater so a single emitter with single or multiple different modes
 
-            self.mode_current = self.emitters[0][minModeIdx][common.THREAT_MODE_ID]
-            self.emitter_current = self.emitters[0][minModeIdx]
+            self.m_mode_current = self.m_emitters[0][minModeIdx][common.THREAT_MODE_ID]
+            self.m_emitter_current = self.m_emitters[0][minModeIdx]
 
 
 def convertEmitterJsonToArray(emitterList, emitterSize):
@@ -125,7 +128,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
 
 def convertThreatJsonToClass(jsonThreatDict):
     jsonThreatList = jsonThreatDict[common.THREAT_THREATS]
-    threatClass = [None]*jsonThreatList.__len__()
+    threatClass = util.initSeparateListOfObjects(jsonThreatList.__len__())
 
     for idx, jsonThreat in enumerate(jsonThreatList):
         threatClass[idx] = cThreat(jsonThreat)
@@ -138,3 +141,21 @@ def PriTimeRange(Tstart_ns, Tstop_ns, PRI):
     totalPulses = math.ceil((PriStop - PriStart)/PRI)
 
     return [PriStart, PriStop, totalPulses]
+
+def initListThreatPulseLib(threatItem, jammer):
+    threatPulseLib = np.zeros(common.INTERVAL_LIB_SIZE)
+    threatPulseLib[common.INTERVAL_LIB_RADAR_ID] = threatItem.m_radar_id # threat id
+    threatPulseLib[common.INTERVAL_LIB_PULSE_START] = 0 # pulse start
+    threatPulseLib[common.INTERVAL_LIB_PULSE_STOP] = 0 # pulse end
+    threatPulseLib[common.INTERVAL_LIB_NOISE_PULSE_START] = 0 # pulse start
+    threatPulseLib[common.INTERVAL_LIB_NOISE_PULSE_STOP] = 0 # pulse end
+    threatPulseLib[common.INTERVAL_LIB_PRI_US] = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
+    threatPulseLib[common.INTERVAL_LIB_PW_US] = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
+    threatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammer.jammer_bin_size
+    threatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # current pulse number/total pulses
+    threatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0 # total coincidence
+    threatPulseLib[common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = 0 # pulse coincidence/total pulses in interval perc
+    threatPulseLib[common.INTERVAL_STOP_TIME_US] = 0# interval end time in us
+
+    return threatPulseLib
+

@@ -35,93 +35,30 @@ class cCoincidence:
     timeOfCoincidence_us: float = 0
 
 
-class cTIJ:
-    radar_id: int = 0
-
-    # za
-    za: float = 0
-    platformDistance_km: float = 0.0
-    maxRadarRange_km: float = 0.0
-    burnthroughRange_km: float = 0.0
-    minIJRadarRange_km: float = 0.0
-
-    # ma
-    ma: float = 0
-
-    # JPP
-    jpp: float = 0
-    jpp_req: float = 0
-    jpp_dif: float = 0
-
-    cpi: float = 0
-    cpi_startAt: int = 0
-
-    SNR_dB: float = 0
-    SNR_NJ_dB: float = 0
-    SNR_INJ_dB: float = 0
-
-    Pd_min_achieved: float = 0
-    Njamming: float = 0
-
-    def __init__(self, numRadar_ID, numCPI, numJPP_req):
-        self.radar_id = numRadar_ID
-        self.cpi = numCPI
-        self.jpp_req = numJPP_req
-
 def intervalsInFlight(numIntervalLength_us, numFlightTime_us):
-    '''
-    intervalsInFlight
-
-    calculate the number of constant intervals during a flight
-
-    Parameters
-    ----------
-    numIntervalLength_us : [float]
-        The time lenght in milliseconds of the interval
-    numFlightTime_us : [float]
-        The total flight time of the platform in milliseconds
-
-    Returns
-    -------
-    [int]
-        The total number of intervals during the entire flight.
-        NOTE for this iteration the intervals will be constant
-        TODO: dynamic intervals?
-    '''
     return math.ceil(numFlightTime_us/numIntervalLength_us)
 
-def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
-    '''
-    intervalProcessor
+def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
-    This function gets called at the start of an interval to perform ESM
+    lCoincidenceLib = []
+    lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
 
-    Parameters
-    ----------
-    oPlatform : [cPlatform object]
-        [description]
-    oJammer : [cJammer object]
-        [description]
-    olThreats : [cThreats object list]
-        [description]
-    oChannel : [cJammer cChannel object list]
-        [description]
-    '''
+    __loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
+    __loggingRangeData = []
 
-    loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
-    loggingRangeData = []
-
-    loggingJammerHeader = ['Pj [kW]', 'Gj [dB]', 'Bj [MHz]']
-    loggingJammerData = []
+    __loggingJammerHeader = ['Pj [kW]', 'Gj [dB]', 'Bj [MHz]']
+    __loggingJammerData = []
 
 
-    loggingJammerData.append([
+    __loggingJammerData.append([
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz])
 
-    table = tabulate(loggingJammerData, loggingJammerHeader, tablefmt="github")
-    logging.debug( "\n\n"+table+"\n\n")
+    __loggingtable = tabulate(__loggingJammerData, __loggingJammerHeader, tablefmt="github")
+    logging.debug( "\n\n"+ __loggingtable +"\n\n")
+
+    oChannel.oInterval = cInterval(oChannel.oecm_time_us, oPlatform.timeStop_us)
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
@@ -134,367 +71,305 @@ def intervalProcessor(oPlatform, oJammer, olThreats, oChannel):
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart_us + oJammer.oChannel[0].interval_time_us
 
         # Get the starting ranges at each new interval
-        loggingRangeData = []
+        __loggingRangeData = []
         for threatIdx, threatItem in enumerate(olThreats):
             RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart_us, oPlatform.flightPath, threatItem.location)
-            loggingRangeData.append([
+            __loggingRangeData.append([
                 threatIdx+1, 
                 oChannel.oInterval.interval_current_Tstart_us, 
                 RadarDistance_km, 
-                threatItem.lethalRange_km,
-                threatItem.mode_current,
-                threatItem.emitter_current[common.THREAT_PEAKPOWER_KW],
-                threatItem.emitter_current[common.THREAT_GAIN],
-                threatItem.emitter_current[common.THREAT_GAIN],
-                threatItem.emitter_current[common.THREAT_PW_US],
+                threatItem.m_lethalRange_km,
+                threatItem.m_mode_current,
+                threatItem.m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatItem.m_emitter_current[common.THREAT_GAIN],
+                threatItem.m_emitter_current[common.THREAT_GAIN],
+                threatItem.m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
-                threatItem.emitter_current[common.THREAT_FREQ_MHZ],
+                threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
                 common.T0,
-                threatItem.emitter_current[common.THREAT_CPI],
-                threatItem.emitter_current[common.THREAT_PROB_FALSE_ALARM],
-                threatItem.emitter_current[common.THREAT_PROB_DETECTION],
-                threatItem.emitter_current[common.THREAT_PROB_DETECTION_MIN],
+                threatItem.m_emitter_current[common.THREAT_CPI],
+                threatItem.m_emitter_current[common.THREAT_PROB_FALSE_ALARM],
+                threatItem.m_emitter_current[common.THREAT_PROB_DETECTION],
+                threatItem.m_emitter_current[common.THREAT_PROB_DETECTION_MIN],
                 ])
 
-        table = tabulate(loggingRangeData, loggingRangeHeader, tablefmt="github")
-        logging.debug( "\n\n"+table+"\n\n")
+        __loggingtable = tabulate(__loggingRangeData, __loggingRangeHeader, tablefmt="github")
+        logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
-        sortThreatsToChannel(olThreats, oChannel)
-        [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat] = intervalCoincidenceCalculator(oChannel, oJammer)
+        updateThreatsForInterval(olThreats, oChannel) # TODO: for multiple channels
 
-        oChannel.oCoincidences = lCoincidenceLib
-        for threatIdx, threatItem in enumerate(oChannel.oThreatLib):
-            threatItem.lIntervalPulseStore.append(lThreatPulseLib[threatIdx])
-            threatItem.lIntervalPulseCoincidenceStore = lAllCoincidencePerThreat[threatIdx]
-            threatItem.lIntervalPulseJammingSelectedStore = [] #TODO: add pulses selected for jamming
-            threatItem.lIntervalTIJStore = cTIJ(threatItem.radar_id, threatItem.emitter_current[common.THREAT_CPI], threatItem.emitter_current[common.THREAT_PROB_DETECTION_MIN] )
+        intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat)
 
-        cpiSweeper(oChannel, oPlatform, oJammer)
+        
+        for threatIdx, threatItem in enumerate(olThreats):
+            threatItem.lIntervalCoincidences = np.asarray(lAllCoincidencePerThreat[threatIdx])
+            threatItem.lIntervalJammingPulses = [] #TODO: add pulses selected for jamming
+
+        cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer)
 
         # TODO: review interval
         ## TODO: update radar
         ## TODO: update jammer
         ## TODO: save interval data -> rerun purposes
 
-def sortThreatsToChannel(olThreats, oChannel):
-    '''
-    sortThreatsToChannel
+        ## TODO: clear
+        lCoincidenceLib = []
+        lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
+        for threatIdx, threatItem in enumerate(olThreats):
+            threatItem.lIntervalCoincidences = None
+            threatItem.lIntervalJammingPulses = None
 
-    At the start of a new interval sort the threats to the corresponding.
-    The threat modes may have changed during OECM. The new mode/emitter signal characteristics will then
-    be different requiring the ESM operations to place it in a new jamming channel
+def updateThreatsForInterval(olThreats, oChannel):
+    for __, threatItem in enumerate(olThreats):
+        threatItem.oThreatPulseLib[common.INTERVAL_STOP_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
+        pri = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
+        threatItem.oThreatPulseLib[common.INTERVAL_LIB_PRI_US] = pri
+        pw = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
+        threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
+        threatItem.oThreatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0
+        threatItem.oThreatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # always start at pulse 1 otherwise if 0 we will get division by zero
 
-    Parameters
-    ----------
-    olThreats : [cThreats object list]
-        [description]
-    oChannel : [cJammer.cChannel object list]
-        [description]
-    '''
-    # clear the channel threats
-    oChannel.oThreatLib = []
-    # check the current/changed threat freq and place into right freq channel
-    for threatItem in olThreats:
-        if (threatItem.emitter_current.__len__() > 0):
-            if (threatItem.emitter_current[common.THREAT_FREQ_MHZ] >= oChannel.channel_range_MHz[0] and threatItem.emitter_current[common.THREAT_FREQ_MHZ] <= oChannel.channel_range_MHz[1]):
-                oChannel.oThreatLib.append(threatItem)
+def listOfThreatsInChannel(arrThreatPulseLib, olThreats, oChannel):
+    for __, threatItem in enumerate(olThreats):
+        arrThreatPulseLib.append(threatItem.oThreatPulseLib)
 
-def intervalCoincidenceCalculator(oChannel, oJammer):
-    '''
-    intervalCoincidenceCalculator
+def moveThreatPulseLibToThreatObject(npArrThreatPulseLib, olThreats):
+    for threatIdx, threatItem in enumerate(olThreats):
+        threatItem.oThreatPulseLib = npArrThreatPulseLib[threatIdx]
 
-    Calculate all of the coincidences that occurs in each of the channel intervals
+def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat):
 
-    Parameters
-    ----------
-    oChannel : [cJammer cChannel object list]
-        [description]
-    '''
-    lCoincidenceLib = [None]
-    lThreatPulseLib = np.zeros((oChannel.oThreatLib.__len__(), common.INTERVAL_LIB_SIZE))
-    lAllCoincidencePerThreat = [[]]
+    arrThreatPulseLib = []
 
-    retList = [None]*3 # [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat]
     timeCounter = [0]*2 # start and stop
-    loggingCoincHeader = ['Threat ID', 'Pulses', 'PRI [us]', 'PW [us]', 'Duty Cycle [%]', 'Jamming Coincidences', 'c/p [%]', 'Jamming PW [us]', 'Jamming Duty Cycle [%]']
-    loggingCoincData = []
-
-    for threatIdx, threatItem in enumerate(oChannel.oThreatLib):
-        if(oChannel.oInterval.interval_current == 0):
-            initlThreatPulseLib(lThreatPulseLib, threatIdx, threatItem, oChannel.oInterval.interval_length_us, oJammer.jammer_bin_size)
-        else:
-            lThreatPulseLib[threatIdx] = np.array(threatItem.lIntervalPulseStore[threatIdx], dtype=object)
-            lThreatPulseLib[threatIdx, common.INTERVAL_LIB_OECM_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
-
+    __loggingCoincidenceHeader = ['Threat ID', 'Pulses', 'PRI [us]', 'PW [us]', 'Duty Cycle [%]', 'Jamming Coincidences', 'c/p [%]', 'Jamming PW [us]', 'Jamming Duty Cycle [%]']
+    __loggingCoincidenceData = []
 
     timeCounter[0] = time.perf_counter()
-    retList = pulseCoincidenceAssessor(lThreatPulseLib)
 
-    lCoincidenceLib = retList[1]
-    lThreatPulseLib = np.array(retList[0], dtype=object)
-    lAllCoincidencePerThreat = np.array(retList[2], dtype=object)
+    listOfThreatsInChannel(arrThreatPulseLib, olThreats, oChannel)
+    npArrThreatPulseLib = np.array(arrThreatPulseLib)
+
+    pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat)
+
+    moveThreatPulseLibToThreatObject(npArrThreatPulseLib, olThreats)
 
     logging.info("Stats:\ttotal coincidences: %d\n", lCoincidenceLib.__len__())
 
-    lThreatPulseLib[:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = lThreatPulseLib[:, common.INTERVAL_LIB_COINCIDENCE_NUMBER] / lThreatPulseLib[:, common.INTERVAL_LIB_PULSE_NUMBER]
+    npArrThreatPulseLib[:, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = npArrThreatPulseLib[:, common.INTERVAL_LIB_COINCIDENCE_NUMBER] / npArrThreatPulseLib[:, common.INTERVAL_LIB_PULSE_NUMBER]
 
-    loggingCoincData = []
-    for logIdx in range(0, lThreatPulseLib.__len__()):
-        loggingCoincData.append([
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_RADAR_ID],
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PULSE_NUMBER],
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US],
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US],
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
-            lThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
-            lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
-            (lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + lThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*lThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/lThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
+    __loggingCoincidenceData = []
+    for logIdx in range(0, npArrThreatPulseLib.__len__()):
+        __loggingCoincidenceData.append([
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_RADAR_ID],
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PULSE_NUMBER],
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US],
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US],
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
+            npArrThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
+            (npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
-    table = tabulate(loggingCoincData, loggingCoincHeader, tablefmt="github")
-    logging.debug( "\n\n"+table+"\n\n")
+    __loggingtable = tabulate(__loggingCoincidenceData, __loggingCoincidenceHeader, tablefmt="github")
+    logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
     timeCounter[1] = time.perf_counter()
     logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radmath.convertTime_MicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
 
-    return [lThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat]
-
-def initlThreatPulseLib(lThreatPulseLib, index, threatItem, jammingIntervalTime_us, jammingBinSize):
-    '''
-    initlThreatPulseLib
-
-    Update the threat pulse library for coincidence calculation
-
-    Parameters
-    ----------
-    lThreatPulseLib : [type]
-        [description]
-    threatItem : [type]
-        [description]
-    '''
-
-    lThreatPulseLib[index, common.INTERVAL_LIB_RADAR_ID] = threatItem.radar_id # threat id
-    lThreatPulseLib[index, common.INTERVAL_LIB_PULSE_START] = 0 # pulse start
-    lThreatPulseLib[index, common.INTERVAL_LIB_PULSE_STOP] = 0 # pulse end
-    lThreatPulseLib[index, common.INTERVAL_LIB_NOISE_PULSE_START] = 0 # pulse start
-    lThreatPulseLib[index, common.INTERVAL_LIB_NOISE_PULSE_STOP] = 0 # pulse end
-    lThreatPulseLib[index, common.INTERVAL_LIB_PRI_US] = threatItem.emitter_current[common.THREAT_PRI_US] # pri
-    lThreatPulseLib[index, common.INTERVAL_LIB_PW_US] = threatItem.emitter_current[common.THREAT_PW_US] # pw
-    lThreatPulseLib[index, common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammingBinSize
-    lThreatPulseLib[index, common.INTERVAL_LIB_PULSE_NUMBER] = 1 # current pulse number/total pulses
-    lThreatPulseLib[index, common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0 # total coincidence
-    lThreatPulseLib[index, common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = 0 # pulse coincidence/total pulses in interval perc
-    lThreatPulseLib[index, common.INTERVAL_LIB_OECM_TIME_US] = jammingIntervalTime_us# oecm timein us
-
-def pulseCoincidenceAssessor(sarrThreats):
-    '''
-    pulseCoincidenceAssessor
-
-    calculate each channels coinicidence using parralel processing
-
-    Parameters
-    ----------
-    sarrThreats : [type]
-        [description]
-    '''
-    Tend = 0.0 # Farthest Tend
-    Tstart = 0.0
-    TRadarIdx = None
-    lTcoincidenceIdx = None
+def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat):
+    TRadarIdx = 0
+    TCoincidenceIdx = 0
     inCoincidence = False
-    lcoincidence = []
-    lAllCoincidencePerThreat = util.init_seperate_list_of_objects(sarrThreats.__len__())
-    retList = [None]*3 # [sarrThreats, lcoincidence, lAllCoincidencePerThreat]
-    # intervalBar = tqdm(total=sarrThreats[0, common.INTERVAL_LIB_OECM_TIME_US], unit='us')
 
     # update times and increase pulse total
-    for idx in range(sarrThreats.__len__()):
-        sarrThreats[idx, common.INTERVAL_LIB_PULSE_START] = sarrThreats[idx, common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[idx, common.INTERVAL_LIB_PRI_US] # Tstart = Tend + PRI
+    for idx in range(npArrThreatPulseLib.__len__()):
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US] # Tstart = Tend + PRI
 
-        sarrThreats[idx, common.INTERVAL_LIB_PULSE_STOP] =  sarrThreats[idx, common.INTERVAL_LIB_PULSE_START] + sarrThreats[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW 
 
-        sarrThreats[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = sarrThreats[idx, common.INTERVAL_LIB_PULSE_START] - sarrThreats[idx, common.INTERVAL_LIB_PW_US]*(sarrThreats[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
-        sarrThreats[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = sarrThreats[idx, common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[idx, common.INTERVAL_LIB_PW_US]*(sarrThreats[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
 
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+    
+    Tstart = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
+    Tend = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
+
+    TintervalStop = npArrThreatPulseLib[0 , common.INTERVAL_STOP_TIME_US]
 
     # loop over entire interval duration
-    while(Tend <= sarrThreats[0, common.INTERVAL_LIB_OECM_TIME_US] or Tstart <= sarrThreats[0, common.INTERVAL_LIB_OECM_TIME_US]):
+    while(Tend <= TintervalStop or Tstart <= TintervalStop):
         # 1. get the first pulse
-        TRadarIdx = np.max(np.where(sarrThreats[:, common.INTERVAL_LIB_NOISE_PULSE_START] == np.min(sarrThreats[:, common.INTERVAL_LIB_NOISE_PULSE_START])))
+        TRadarIdx = np.max(np.where(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START] == np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])))
         # 3. Tend > Tstart: coincidence check Tend with all of the next lowest Tstart pulses
-        lTcoincidenceIdx = np.where(np.logical_and((sarrThreats[TRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_STOP] >= sarrThreats[:, common.INTERVAL_LIB_NOISE_PULSE_START]),(sarrThreats[TRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START] <= sarrThreats[:, common.INTERVAL_LIB_NOISE_PULSE_START]) ) )
+        TCoincidenceIdx = np.where(np.logical_and((npArrThreatPulseLib[TRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_STOP] >= npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START]),(npArrThreatPulseLib[TRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START] <= npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START]) ) ) 
 
-        if(len(lTcoincidenceIdx[0]) == 1):
+        if(len(TCoincidenceIdx[0]) == 1):
             if(inCoincidence == True):
-                sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
-                for coincRadarIdx in np.nditer(lTcoincidenceIdx[0]):
-                    lcoincidence[-1].append(cCoincidence(int(np.max(coincRadarIdx)),
-                                                         int(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
-                                                         sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
-                                                         int(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
-                                                         sarrThreats[coincRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START] ))
-                    lAllCoincidencePerThreat[coincRadarIdx].append(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
+                npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
+                for coincidenceRadarIdx in np.nditer(TCoincidenceIdx[0]):
+                    lCoincidenceLib[-1].append(cCoincidence(int(np.max(coincidenceRadarIdx)),
+                                                         int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
+                                                         npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
+                                                         int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
+                                                         npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START] ))
+                    lAllCoincidencePerThreat[coincidenceRadarIdx].append(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
             else:
-                Tend = np.max(sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP])
-                Tstart = np.max(sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START])
+                Tend = np.max(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP])
+                Tstart = np.max(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START])
                 # intervalBar.refresh()
                 # intervalBar.update(Tend-intervalBar.last_print_n)
             inCoincidence = False
         else:
             # 5. check to find the highest Tend of the coincidence pulses
-            TRadarIdx = np.max(np.where(sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP] == np.max(sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP])))
-            lTcoincidenceIdx = np.delete(lTcoincidenceIdx[0], TRadarIdx)
-            sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
+            TRadarIdx = np.max(np.where(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP] == np.max(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP])))
+            TCoincidenceIdx = np.delete(TCoincidenceIdx[0], TRadarIdx)
+            npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_COINCIDENCE_NUMBER] += 1
             lTempCoinc = []
 
-            for coincRadarIdx in np.nditer(lTcoincidenceIdx[0]):
-                lTempCoinc.append(cCoincidence(int(np.max(coincRadarIdx)),
-                                               int(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
-                                               sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
-                                               int(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
-                                               sarrThreats[coincRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START]) )
-                lAllCoincidencePerThreat[coincRadarIdx].append(sarrThreats[coincRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
+            for coincidenceRadarIdx in np.nditer(TCoincidenceIdx[0]):
+                lTempCoinc.append(cCoincidence(int(np.max(coincidenceRadarIdx)),
+                                               int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
+                                               npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
+                                               int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
+                                               npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START]) )
+                lAllCoincidencePerThreat[coincidenceRadarIdx].append(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
             if(inCoincidence == True):
-                lcoincidence[-1].extend(lTempCoinc)
+                lCoincidenceLib[-1].extend(lTempCoinc)
             else:
-                lcoincidence.append(lTempCoinc)
+                lCoincidenceLib.append(lTempCoinc)
 
             inCoincidence = True
 
         # 6. update all of the pulses Tstart
-        sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] = sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PRI_US]
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PRI_US]
 
         # 7. update all of the pulses Tend
-        sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
 
-        sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(sarrThreats[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
-        sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(sarrThreats[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
 
-
-        sarrThreats[lTcoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
 
 
-    retList[0] = sarrThreats
-    retList[1] = lcoincidence
-    retList[2] = lAllCoincidencePerThreat
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
 
-    return retList
-
-def cpiSweeper(oChannel, oPlatform, oJammer):
+def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
     dictRank= {}
-    threatList = oChannel.oThreatLib
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
-    loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jammable)', 'm (CPI jamming required)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
-    loggingTijData = []
+    __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jammable)', 'm (CPI jamming required)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
+    __loggingTijData = []
 
 
-    for coincIdx, coincidence in enumerate(oChannel.oCoincidences):
+    for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
         logging.debug("------------------------------------------------------------")
-        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincIdx, coincidence.__len__())
+        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
         logging.debug("------------------------------------------------------------")
-        loggingTijData = []
+
+        __loggingTijData = []
+
         for coincPulseIdx, coincPulse in enumerate(coincidence):
 
             radar_idx = coincPulse.radar_idx
-            CoincidencesInCPI = np.where(np.logical_and(oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore > (coincPulse.pulse_number - threatList[radar_idx].lIntervalTIJStore.cpi), oChannel.oThreatLib[radar_idx].lIntervalPulseCoincidenceStore <= coincPulse.pulse_number ))
+            CoincidencesInCPI = np.where(np.logical_and(olThreats[radar_idx].lIntervalCoincidences > (coincPulse.pulse_number - olThreats[radar_idx].oIntervalTIJStore.cpi), olThreats[radar_idx].lIntervalCoincidences <= coincPulse.pulse_number ))
 
             # SNR and DETECTABILITY and INTEGRATION
-            threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
+            olThreats[radar_idx].oIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, olThreats[radar_idx].location)
 
-            threatList[radar_idx].lIntervalTIJStore.SNR_dB = radmath.radarEquationSNR(
-                threatList[radar_idx].lIntervalTIJStore.cpi,
-                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+            olThreats[radar_idx].oIntervalTIJStore.SNR_dB = radmath.radarEquationSNR(
+                olThreats[radar_idx].oIntervalTIJStore.cpi,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
-                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                threatList[radar_idx].lIntervalTIJStore.platformDistance_km)
+                olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
+                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km)
 
-            threatList[radar_idx].lIntervalTIJStore.SNR_NJ_dB = radmath.radarEquationSNR_NoiseJamming(
-                threatList[radar_idx].lIntervalTIJStore.cpi,
-                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+            olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radmath.radarEquationSNR_NoiseJamming(
+                olThreats[radar_idx].oIntervalTIJStore.cpi,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
-                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
+                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz)
 
             cpiSize = 0
-            if coincPulse.pulse_number < threatList[radar_idx].lIntervalTIJStore.cpi:
+            if coincPulse.pulse_number < olThreats[radar_idx].oIntervalTIJStore.cpi:
                 cpiSize = int(coincPulse.pulse_number)
             else:
-                cpiSize = int(threatList[radar_idx].lIntervalTIJStore.cpi)
+                cpiSize = int(olThreats[radar_idx].oIntervalTIJStore.cpi)
 
 
             for Njamming in range(1, cpiSize+1):
-                intermittentJammingAvg = Njamming/threatList[radar_idx].lIntervalTIJStore.cpi
-                [bJppReached, threatList[radar_idx].lIntervalTIJStore.SNR_INJ_dB, threatList[radar_idx].lIntervalTIJStore.Pd_min_achieved] = radmath.radarEquationSNR_CPIJP(
-                    threatList[radar_idx].lIntervalTIJStore.cpi,
-                    threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+                intermittentJammingAvg = Njamming/olThreats[radar_idx].oIntervalTIJStore.cpi
+                [bJppReached, olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB, olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved] = radmath.radarEquationSNR_CPIJP(
+                    olThreats[radar_idx].oIntervalTIJStore.cpi,
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
-                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
-                    threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
+                    olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
-                    threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION_MIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION_MIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM],
                     intermittentJammingAvg)
 
                 if bJppReached == True:
-                    if cpiSize < threatList[radar_idx].lIntervalTIJStore.cpi:
+                    if cpiSize < olThreats[radar_idx].oIntervalTIJStore.cpi:
                         if Njamming > cpiSize:
-                            threatList[radar_idx].lIntervalTIJStore.jpp_req = 1.0
+                            olThreats[radar_idx].oIntervalTIJStore.jpp_req = 1.0
                         else:
-                            threatList[radar_idx].lIntervalTIJStore.jpp_req = Njamming/cpiSize
+                            olThreats[radar_idx].oIntervalTIJStore.jpp_req = Njamming/cpiSize
                     else:
-                        threatList[radar_idx].lIntervalTIJStore.jpp_req = intermittentJammingAvg
+                        olThreats[radar_idx].oIntervalTIJStore.jpp_req = intermittentJammingAvg
                     break
                 else:
-                    threatList[radar_idx].lIntervalTIJStore.jpp_req = 1.0
+                    olThreats[radar_idx].oIntervalTIJStore.jpp_req = 1.0
 
-            threatList[radar_idx].lIntervalTIJStore.Njamming = Njamming
+            olThreats[radar_idx].oIntervalTIJStore.Njamming = Njamming
 
 
             # TIJ - JAMMING PULSE PERCENTAGE
-            threatList[radar_idx].lIntervalTIJStore.jpp = CoincidencesInCPI[0].__len__()/cpiSize
+            olThreats[radar_idx].oIntervalTIJStore.jpp = CoincidencesInCPI[0].__len__()/cpiSize
 
 
-            threatList[radar_idx].lIntervalTIJStore.jpp_dif = threatList[radar_idx].lIntervalTIJStore.jpp_req/threatList[radar_idx].lIntervalTIJStore.jpp
+            olThreats[radar_idx].oIntervalTIJStore.jpp_dif = olThreats[radar_idx].oIntervalTIJStore.jpp_req/olThreats[radar_idx].oIntervalTIJStore.jpp
 
             # TIJ - ZA
             ## calculate max range
-            SNR_m = radmath.calculateSNR(threatList[radar_idx].emitter_current[common.THREAT_PROB_DETECTION], threatList[radar_idx].emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
-            threatList[radar_idx].lIntervalTIJStore.SNR_m_dB = radmath.convertTodB(SNR_m, 10, radmath.BASE10)
-            threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km = radmath.radarEquationRange(
-                threatList[radar_idx].lIntervalTIJStore.cpi,
-                threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+            SNR_m = radmath.calculateSNR(olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION], olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
+            olThreats[radar_idx].oIntervalTIJStore.SNR_m_dB = radmath.convertTodB(SNR_m, 10, radmath.BASE10)
+            olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km = radmath.radarEquationRange(
+                olThreats[radar_idx].oIntervalTIJStore.cpi,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
-                threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                 SNR_m
             )
 
             ## calculate min intermittent jamming range
-            threatList[radar_idx].lIntervalTIJStore.minIJRadarRange_km = radmath.radarEquationRange_CPIJP(
-                    threatList[radar_idx].lIntervalTIJStore.cpi,
-                    threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+            olThreats[radar_idx].oIntervalTIJStore.minIJRadarRange_km = radmath.radarEquationRange_CPIJP(
+                    olThreats[radar_idx].oIntervalTIJStore.cpi,
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
-                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                     SNR_m,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
@@ -503,14 +378,14 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             )
 
             ## calculate the burnthrough range
-            threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km = radmath.radarEquationRange_CPIJP(
-                    threatList[radar_idx].lIntervalTIJStore.cpi,
-                    threatList[radar_idx].emitter_current[common.THREAT_PEAKPOWER_KW],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_GAIN],
-                    threatList[radar_idx].emitter_current[common.THREAT_PW_US],
+            olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km = radmath.radarEquationRange_CPIJP(
+                    olThreats[radar_idx].oIntervalTIJStore.cpi,
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
-                    threatList[radar_idx].emitter_current[common.THREAT_FREQ_MHZ],
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                     SNR_m,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
@@ -519,56 +394,57 @@ def cpiSweeper(oChannel, oPlatform, oJammer):
             )
 
             ## calculate the current range
-            threatList[radar_idx].lIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, threatList[radar_idx].location)
+            olThreats[radar_idx].oIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, olThreats[radar_idx].location)
 
             ## calcualte the ZA value
-            threatList[radar_idx].lIntervalTIJStore.za = za.calculateZoneAssessmentValue(threatList[radar_idx].lIntervalTIJStore.platformDistance_km, threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km, threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km)
+            olThreats[radar_idx].oIntervalTIJStore.za = za.calculateZoneAssessmentValue(olThreats[radar_idx].oIntervalTIJStore.platformDistance_km, olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km, olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km)
 
             #TODO: TIJ - MA
             lethalRangeVal = 0
-            if threatList[radar_idx].lIntervalTIJStore.platformDistance_km <= threatList[radar_idx].lethalRange_km:
+            if olThreats[radar_idx].oIntervalTIJStore.platformDistance_km <= olThreats[radar_idx].m_lethalRange_km:
                 lethalRangeVal = 1
-            threatList[radar_idx].lIntervalTIJStore.ma = ma.threatValueCalculation(threatList[radar_idx].mode_current, threatList[radar_idx].lIntervalTIJStore.za, lethalRangeVal, threatList[radar_idx].lIntervalTIJStore.jpp_dif )
+            olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current, olThreats[radar_idx].oIntervalTIJStore.za, lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
 
             # logging.debug( "************************\n")
 
-            loggingTijData.append(
+            __loggingTijData.append(
             [
                 " ",
                 coincPulseIdx+1,
-                threatList[radar_idx].lIntervalTIJStore.radar_id,
-                threatList[radar_idx].lIntervalTIJStore.SNR_dB,
-                threatList[radar_idx].lIntervalTIJStore.SNR_NJ_dB,
-                threatList[radar_idx].lIntervalTIJStore.SNR_INJ_dB,
-                threatList[radar_idx].lIntervalTIJStore.Pd_min_achieved,
+                olThreats[radar_idx].oIntervalTIJStore.radar_id,
+                olThreats[radar_idx].oIntervalTIJStore.SNR_dB,
+                olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB,
+                olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB,
+                olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved,
                 coincPulse.pulse_number,
                 CoincidencesInCPI[0].__len__(),
-                threatList[radar_idx].lIntervalTIJStore.Njamming,
+                olThreats[radar_idx].oIntervalTIJStore.Njamming,
                 0, #TODO: How many signals that will be jammed in cpi
-                threatList[radar_idx].lIntervalTIJStore.jpp_req,
-                threatList[radar_idx].lIntervalTIJStore.jpp,
-                threatList[radar_idx].lIntervalTIJStore.jpp_dif,
-                threatList[radar_idx].lIntervalTIJStore.platformDistance_km,
-                threatList[radar_idx].lIntervalTIJStore.maxRadarRange_km,
-                threatList[radar_idx].lIntervalTIJStore.minIJRadarRange_km,
-                threatList[radar_idx].lIntervalTIJStore.burnthroughRange_km,
-                threatList[radar_idx].lIntervalTIJStore.za,
-                threatList[radar_idx].lIntervalTIJStore.ma
+                olThreats[radar_idx].oIntervalTIJStore.jpp_req,
+                olThreats[radar_idx].oIntervalTIJStore.jpp,
+                olThreats[radar_idx].oIntervalTIJStore.jpp_dif,
+                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
+                olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km,
+                olThreats[radar_idx].oIntervalTIJStore.minIJRadarRange_km,
+                olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km,
+                olThreats[radar_idx].oIntervalTIJStore.za,
+                olThreats[radar_idx].oIntervalTIJStore.ma
                 ])
 
             #TODO: TIJ - TR
-            dictRank[coincPulseIdx] = threatList[radar_idx].lIntervalTIJStore.ma
+            dictRank[coincPulseIdx] = olThreats[radar_idx].oIntervalTIJStore.ma
 
         maxRankRadarId = max(dictRank, key=dictRank.get)
         dictRank.clear()
-        loggingTijData[maxRankRadarId][0] = ">>>>>"
+        __loggingTijData[maxRankRadarId][0] = ">>>>>"
 
-        del threatList[coincidence[maxRankRadarId].radar_idx].lIntervalPulseCoincidenceStore[np.max(np.where(threatList[coincidence[maxRankRadarId].radar_idx].lIntervalPulseCoincidenceStore == coincidence[maxRankRadarId].pulse_number))]
+        priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == coincidence[maxRankRadarId].pulse_number))
+        olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
 
-        #TODO add: bisect.insort(threatList[coincidence[maxRankRadarId].radar_idx].lIntervalPulseJammingSelectedStore, coincidence[maxRankRadarId].pulse_number)
+        #TODO add: bisect.insort(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalPulseJammingSelectedStore, coincidence[maxRankRadarId].pulse_number)
 
-        table = tabulate(loggingTijData, loggingTijHeader, tablefmt="github")
-        logging.debug( "\n\n"+table+"\n\n")
+        __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
+        logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
             #TODO: RADAR REAL
 

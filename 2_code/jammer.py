@@ -5,8 +5,6 @@ import mathRadar as radmath
 
 class cChannel:
     oInterval: None
-    oThreatLib: None
-    oCoincidences: None
     oecm_time_us: int=0
     esm_time_us: int=0
     interval_time_us: int = 0

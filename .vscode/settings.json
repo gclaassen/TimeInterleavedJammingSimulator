@@ -16,7 +16,7 @@
         "editor.background": "#323232"
     },
     "python.defaultInterpreterPath": "/usr/local/bin/python3.9",
-    "cSpell.enabled": false,
+    "cSpell.enabled": true,
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "[python]": {
