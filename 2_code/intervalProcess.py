@@ -477,4 +477,8 @@ def threatEvaluation(olThreats):
         nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
         # break into cpi chunks of available pulses
 
+
+        # do radar equation with jamming for each chunk -> determine snr or Pd?
+        # log the total detections
+        # determine if mode change is required -> or <-
     pass
