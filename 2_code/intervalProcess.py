@@ -11,7 +11,7 @@ import tijZA as za
 import tijMA as ma
 import tijTR as tr
 import mathRadar as radmath
-import bisect
+from tqdm import tqdm
 
 class cInterval:
     intervals_total: int = 0
@@ -265,7 +265,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
     __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jam required)', 'm (CPI standalone)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
     __loggingTijData = []
 
-
+    __coincBar = tqdm(total=lCoincidenceLib.__len__())
     for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
         logging.debug("------------------------------------------------------------")
         logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
@@ -466,14 +466,16 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
             #TODO: RADAR REAL
 
-        # coincBar.update(1)
+        __coincBar.update(1)
     #TODO: any radars not in coincidence?
     pass
 
 def threatEvaluation(olThreats):
     for threatidx, threat in enumerate(olThreats):
+        # increase the pulses numbers in coincidence according to radar cpi start before interval
         threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
         nplPulsesBeforeInterval = np.arange(start=1, stop=threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL], step=1)
+        # add the missed radar pulses before the interval to the coincidence list -> this is all of the pulses that the jammer missed 
         nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
         # break into cpi chunks of available pulses
 
