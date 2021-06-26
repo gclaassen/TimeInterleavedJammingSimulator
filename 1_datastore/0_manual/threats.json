@@ -21,6 +21,7 @@
             "pulse_width_us": 30,
             "pri_us": 300,
             "cpi": 64,
+            "cpi_before_interval": 10,
             "Pd": 0.5,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -34,6 +35,7 @@
             "pulse_width_us": 0.313,
             "pri_us": 357,
             "cpi": 16,
+            "cpi_before_interval": 10,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -62,6 +64,7 @@
             "pulse_width_us": 0.2,
             "pri_us": 999.8,
             "cpi": 8,
+            "cpi_before_interval": 3,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -75,6 +78,7 @@
             "pulse_width_us": 0.81,
             "pri_us": 999.19,
             "cpi": 8,
+            "cpi_before_interval": 5,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -88,6 +92,7 @@
             "pulse_width_us": 0.1,
             "pri_us": 2499.9,
             "cpi": 8,
+            "cpi_before_interval": 3,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -116,6 +121,7 @@
             "pulse_width_us": 0.587,
             "pri_us": 1507,
             "cpi": 16,
+            "cpi_before_interval": 9,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -144,6 +150,7 @@
             "pulse_width_us": 3.2,
             "pri_us": 102,
             "cpi": 128,
+            "cpi_before_interval": 78,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -157,6 +164,7 @@
             "pulse_width_us": 3.2,
             "pri_us": 102,
             "cpi": 16,
+            "cpi_before_interval": 10,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -185,6 +193,7 @@
             "pulse_width_us": 0.725,
             "pri_us": 573,
             "cpi": 32,
+            "cpi_before_interval": 9,
             "Pd": 0.5,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -213,6 +222,7 @@
             "pulse_width_us": 0.5,
             "pri_us": 566,
             "cpi": 32,
+            "cpi_before_interval": 12,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -241,6 +251,7 @@
             "pulse_width_us": 0.5,
             "pri_us": 1800,
             "cpi": 32,
+            "cpi_before_interval": 30,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -269,6 +280,7 @@
             "pulse_width_us": 0.5,
             "pri_us": 500,
             "cpi": 32,
+            "cpi_before_interval": 4,
             "Pd": 0.5,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -297,6 +309,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 573,
             "cpi": 32,
+            "cpi_before_interval": 25,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -325,6 +338,7 @@
             "pulse_width_us": 0.337,
             "pri_us": 17,
             "cpi": 64,
+            "cpi_before_interval": 17,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1
@@ -353,6 +367,7 @@
             "pulse_width_us": 4.2,
             "pri_us": 3741,
             "cpi": 32,
+            "cpi_before_interval": 31,
             "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1

@@ -11,6 +11,7 @@ class cThreat:
     m_radar_name = None
     m_location: None
     m_emitters = None
+    m_cpiStart = 0
 
     # Weapon System
     m_lethalRange_km = 0
@@ -18,14 +19,15 @@ class cThreat:
     # current mode parameters
     m_emitter_current = None
     m_mode_current = None
-    m_mode_name = None
     m_channel_current = None
 
     #interval Info
     oThreatPulseLib = np.zeros(common.INTERVAL_LIB_SIZE)
     oIntervalTIJStore = None
     lIntervalCoincidences = None
-    lIntervalJammingPulses = None
+
+    # platform detected
+    lCpiDetect = []
     
     def __init__(self, threatList):
         emitterSize = None
@@ -98,6 +100,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_PW_US, float),
                                             (common.THREAT_DUTY_CYCLE, float),
                                             (common.THREAT_CPI, int),
+                                            (common.THREAT_CPI_AT_INTERVAL, int),
                                             (common.THREAT_PROB_DETECTION, float),
                                             (common.THREAT_PROB_FALSE_ALARM, float),
                                             (common.THREAT_PROB_DETECTION_MIN, float)
@@ -119,6 +122,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_PW_US] = modeNode[common.THREAT_PW_US]
             emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radmath.calculateDutyCycle(modeNode[common.THREAT_PW_US], modeNode[common.THREAT_PRI_US])
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
+            emitters[emmiterIndex][modeIndex][common.THREAT_CPI_AT_INTERVAL] = modeNode[common.THREAT_CPI_AT_INTERVAL]
             emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER_KW] = radmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION] = modeNode[common.THREAT_PROB_DETECTION]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_FALSE_ALARM] = modeNode[common.THREAT_PROB_FALSE_ALARM]

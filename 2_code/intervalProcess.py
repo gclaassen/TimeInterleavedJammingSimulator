@@ -96,7 +96,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
         __loggingtable = tabulate(__loggingRangeData, __loggingRangeHeader, tablefmt="github")
         logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
-        updateThreatsForInterval(olThreats, oChannel) # TODO: for multiple channels
+        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size) # TODO: for multiple channels
 
         intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat)
 
@@ -109,6 +109,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
         # TODO: review interval
         ## TODO: update radar
+        threatEvaluation(olThreats)
         ## TODO: update jammer
         ## TODO: save interval data -> rerun purposes
 
@@ -119,13 +120,16 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
             threatItem.lIntervalCoincidences = None
             threatItem.lIntervalJammingPulses = None
 
-def updateThreatsForInterval(olThreats, oChannel):
+def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI):
     for __, threatItem in enumerate(olThreats):
         threatItem.oThreatPulseLib[common.INTERVAL_STOP_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
         pri = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PRI_US] = pri
         pw = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
+        jammingEnvelope = pri*jammerEnvelopeSizeToPRI
+        jammingBound_us = (jammingEnvelope-pw)/2 if jammingEnvelope > pw else 0
+        threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammingBound_us
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # always start at pulse 1 otherwise if 0 we will get division by zero
 
@@ -168,8 +172,8 @@ def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoin
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
             npArrThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
-            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
-            (npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]*npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
+            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
+            (npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
     __loggingtable = tabulate(__loggingCoincidenceData, __loggingCoincidenceHeader, tablefmt="github")
     logging.debug( "\n\n"+ __loggingtable +"\n\n")
@@ -188,9 +192,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW 
 
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] - (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
 
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
     
     Tstart = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
     Tend = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
@@ -247,9 +251,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
         # 7. update all of the pulses Tend
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
 
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift start left for jamming bins
 
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]*(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift end right for jamming bins
 
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
@@ -464,4 +468,13 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
         # coincBar.update(1)
     #TODO: any radars not in coincidence?
+    pass
+
+def threatEvaluation(olThreats):
+    for threatidx, threat in enumerate(olThreats):
+        threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
+        nplPulsesBeforeInterval = np.arange(start=1, stop=threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL], step=1)
+        nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
+        # break into cpi chunks of available pulses
+
     pass
