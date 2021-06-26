@@ -12,6 +12,7 @@ import tijMA as ma
 import tijTR as tr
 import mathRadar as radmath
 from tqdm import tqdm
+import numba
 
 class cInterval:
     intervals_total: int = 0
@@ -62,6 +63,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
+        print("Interval {0} of {1}".format(intervalIdx+1, oChannel.oInterval.intervals_total))
 
         oChannel.oInterval.interval_current = intervalIdx
         oChannel.oInterval.interval_current_Tstart_us = oChannel.interval_time_us * intervalIdx
@@ -100,12 +102,11 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
         intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat)
 
-        
         for threatIdx, threatItem in enumerate(olThreats):
             threatItem.lIntervalCoincidences = np.asarray(lAllCoincidencePerThreat[threatIdx])
             threatItem.lIntervalJammingPulses = [] #TODO: add pulses selected for jamming
 
-        cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer)
+        coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer)
 
         # TODO: review interval
         ## TODO: update radar
@@ -143,6 +144,7 @@ def moveThreatPulseLibToThreatObject(npArrThreatPulseLib, olThreats):
 
 def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat):
 
+    print("Determining coincidences...Please wait")
     arrThreatPulseLib = []
 
     timeCounter = [0]*2 # start and stop
@@ -258,7 +260,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
 
-def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
+def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
+
+    print("Sweep through coincidences...Perform tests here...")
 
     dictRank= {}
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
@@ -452,7 +456,7 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
         for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
             if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
                 dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
-    
+
         for priorityRadarKey in dictMaxRankRadar:
             priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
             olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
@@ -464,23 +468,30 @@ def cpiSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
         __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
         logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
-            #TODO: RADAR REAL
-
         __coincBar.update(1)
-    #TODO: any radars not in coincidence?
     pass
 
 def threatEvaluation(olThreats):
-    for threatidx, threat in enumerate(olThreats):
+    print("Evaluate jamming effect on threat radar...")
+
+    for __, threat in enumerate(olThreats):
         # increase the pulses numbers in coincidence according to radar cpi start before interval
         threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
         nplPulsesBeforeInterval = np.arange(start=1, stop=threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL], step=1)
-        # add the missed radar pulses before the interval to the coincidence list -> this is all of the pulses that the jammer missed 
+        # add the missed radar pulses before the interval to the coincidence list -> this is all of the pulses that the jammer missed
         nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
         # break into cpi chunks of available pulses
+        nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI]).tolist()
+        nplCpiIndices = np.zeros_like(nplCPISize)
+        for cpiSizeIdx, cpiSize in enumerate(nplCPISize):
+            nplCpiIndices[cpiSizeIdx] = util.find_nearestIndexFloor(nplPulses, cpiSize) + 1
+        npmCPI = np.array_split(nplPulses, nplCpiIndices)
 
-
+        ### TODO: numba
+        # look out of empty arrays!
         # do radar equation with jamming for each chunk -> determine snr or Pd?
         # log the total detections
         # determine if mode change is required -> or <-
+
+        # any radars not in coincidence?
     pass
