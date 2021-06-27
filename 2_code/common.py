@@ -1,4 +1,5 @@
 import math
+from os import access
 
 # CONSTANTS: RADAR
 STERADIANS = 4*math.pi
@@ -46,6 +47,8 @@ ACQUISITION         = 1 # TA
 TRACKING            = 2 # TT
 MISSILE_GUIDANCE    = 3 # MG
 
+dictModes = {SEARCH: sSEARCH, ACQUISITION: sACQUISITION, TRACKING: sTRACKING, MISSILE_GUIDANCE: sMISSILE_GUIDANCE}
+
 XCOORD                  = "X_coord"
 YCOORD                  = "Y_coord"
 ZCOORD                  = "Z_coord"
@@ -65,32 +68,34 @@ PLF_FLIGHTPATH_SIZE         = 4 #x, y, z, speed
 PLF_SPEED                   = "velocity_ms"
 
 # Threat JSON key values
-THREAT_THREATS              = 'threats'
-THREAT_ID                   = 'radar_id'
-THREAT_NAME                 = 'radar_name'
-THREAT_EMITTERS             = 'emitters'
-THREAT_MODES                = 'modes'
-THREAT_EMITTERMODES_SIZE    = 11
-THREAT_EMITTER_ID           = 'emitter_id'
-THREAT_MODE_ID              = 'mode_id'
-THREAT_MODE_TYPE            = 'type'
-THREAT_AVGPOWER_KW          = 'power_avg_kW'
-THREAT_PEAKPOWER_KW         = 'power_peak_kW'
-THREAT_GAIN                 = 'gain'
-THREAT_FREQ_MHZ             = 'frequency_MHz'
-THREAT_PRI_US               = 'pri_us'
-THREAT_PW_US                = 'pulse_width_us'
-THREAT_DUTY_CYCLE           = 'duty_cycle'
-THREAT_RANGE_KM             = 'range_max_km'
-THREAT_LETHAL_RANGE_KM      = 'ws_range_km'
-THREAT_ALT_KM               = 'altitude_max_km'
-THREAT_LOCATION             = 'location'
-THREAT_CPI                  = 'cpi'
-THREAT_CPI_AT_INTERVAL      = 'cpi_before_interval'
-THREAT_PROB_DETECTION       = 'Pd'
-THREAT_PROB_DETECTION_MIN   = 'Pd_min'
-THREAT_PROB_FALSE_ALARM     = 'Pfa'
-THREAT_LOCATION_SIZE        = 3
+THREAT_THREATS                      = 'threats'
+THREAT_ID                           = 'radar_id'
+THREAT_NAME                         = 'radar_name'
+THREAT_EMITTERS                     = 'emitters'
+THREAT_MODES                        = 'modes'
+THREAT_EMITTERMODES_SIZE            = 11
+THREAT_EMITTER_ID                   = 'emitter_id'
+THREAT_START_MODE                   = 'start_mode'
+THREAT_MODE_ID                      = 'mode_id'
+THREAT_MODE_TYPE                    = 'type'
+THREAT_AVGPOWER_KW                  = 'power_avg_kW'
+THREAT_PEAKPOWER_KW                 = 'power_peak_kW'
+THREAT_GAIN                         = 'gain'
+THREAT_FREQ_MHZ                     = 'frequency_MHz'
+THREAT_PRI_US                       = 'pri_us'
+THREAT_PW_US                        = 'pulse_width_us'
+THREAT_DUTY_CYCLE                   = 'duty_cycle'
+THREAT_RANGE_KM                     = 'range_max_km'
+THREAT_LETHAL_RANGE_KM              = 'ws_range_km'
+THREAT_ALT_KM                       = 'altitude_max_km'
+THREAT_LOCATION                     = 'location'
+THREAT_CPI                          = 'cpi'
+THREAT_CPI_AT_INTERVAL              = 'cpi_before_interval'
+THREAT_PROB_DETECTION               = 'Pd'
+THREAT_PROB_DETECTION_MIN           = 'Pd_min'
+THREAT_PROB_DETECTION_CUMULATIVE    = 'Pd_cumulative'
+THREAT_PROB_FALSE_ALARM             = 'Pfa'
+THREAT_LOCATION_SIZE                = 3
 
 JAMMER_CHANNEL              = "channels"
 JAMMER_CHANNEL_START        = "channel_start_MHz"

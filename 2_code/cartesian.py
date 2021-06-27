@@ -1,7 +1,7 @@
 import math
 import common
 import numpy as np
-import mathRadar as radmath
+import mathRadar as radarmath
 
 def initializeCartesianArray(rows):
     return np.zeros(shape=(rows), dtype=[(common.XCOORD, float), (common.YCOORD, float), (common.ZCOORD, float), (common.DISTANCE, float), (common.ANGLE_AZI, float), (common.ANGLE_ELEV, float),  (common.PLF_SPEED, float), (common.TIME, float), (common.TOTAL_TIME, float)], order='C')
@@ -37,11 +37,11 @@ def displacement3dSpace (node1, node2):
         math.pow(z, 2))
 
 def flightTimeBetweenCartesianPoints_us(r, velocity_mps):
-    return radmath.convertTime_SecondsToMicroseconds(r/velocity_mps)
+    return radarmath.convertTime_SecondsToMicroseconds(r/velocity_mps)
 
 
 def displacementInTime(velocity_mps, time_us):
-    return velocity_mps*radmath.convertTime_MicrosecondsToSeconds(time_us)
+    return velocity_mps*radarmath.convertTime_MicrosecondsToSeconds(time_us)
 
 def updateCoord(prevNode, dispNode):
     x = (prevNode[common.XCOORD] + dispNode[common.XCOORD])

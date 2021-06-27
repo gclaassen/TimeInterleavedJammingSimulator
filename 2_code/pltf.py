@@ -2,7 +2,7 @@ import numpy as np
 import ast
 import common
 import math
-import mathRadar as radmath
+import mathRadar as radarmath
 import cartesian
 
 class cPlatform:

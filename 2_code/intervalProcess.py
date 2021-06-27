@@ -10,8 +10,9 @@ from dataclasses import dataclass, astuple, asdict
 import tijZA as za
 import tijMA as ma
 import tijTR as tr
-import mathRadar as radmath
+import mathRadar as radarmath
 from tqdm import tqdm
+from numba import jit, cuda
 import numba
 
 class cInterval:
@@ -44,7 +45,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
     lCoincidenceLib = []
     lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
 
-    __loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode ID', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
+    __loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
     __loggingRangeData = []
 
     __loggingJammerHeader = ['Pj [kW]', 'Gj [dB]', 'Bj [MHz]']
@@ -61,9 +62,13 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
     oChannel.oInterval = cInterval(oChannel.oecm_time_us, oPlatform.timeStop_us)
 
+    for __, threat in enumerate(olThreats):
+        lTempIntervalLog = np.zeros(oChannel.oInterval.intervals_total+1)
+        threat.lIntervalModeChangeLog = threat.lIntervalModeChangeLog + lTempIntervalLog
+
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
-        print("Interval {0} of {1}".format(intervalIdx+1, oChannel.oInterval.intervals_total))
+        # print("Interval {0} of {1}".format(intervalIdx+1, oChannel.oInterval.intervals_total))
 
         oChannel.oInterval.interval_current = intervalIdx
         oChannel.oInterval.interval_current_Tstart_us = oChannel.interval_time_us * intervalIdx
@@ -81,7 +86,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
                 oChannel.oInterval.interval_current_Tstart_us, 
                 RadarDistance_km, 
                 threatItem.m_lethalRange_km,
-                threatItem.m_mode_current,
+                threatItem.m_mode_current_Name,
                 threatItem.m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 threatItem.m_emitter_current[common.THREAT_GAIN],
                 threatItem.m_emitter_current[common.THREAT_GAIN],
@@ -110,7 +115,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
         # TODO: review interval
         ## TODO: update radar
-        threatEvaluation(olThreats)
+        threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer)
         ## TODO: update jammer
         ## TODO: save interval data -> rerun purposes
 
@@ -120,6 +125,10 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
         for threatIdx, threatItem in enumerate(olThreats):
             threatItem.lIntervalCoincidences = None
             threatItem.lIntervalJammingPulses = None
+
+    logging.info("Post scenario stats:\n")
+    for threat in enumerate(olThreats):
+        logging.info("Threat Radar {0}: Mode Changes: {1}".format(threat.m_radar_id, threat.lModesForEmitter))
 
 def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI):
     for __, threatItem in enumerate(olThreats):
@@ -144,7 +153,7 @@ def moveThreatPulseLibToThreatObject(npArrThreatPulseLib, olThreats):
 
 def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat):
 
-    print("Determining coincidences...Please wait")
+    # print("Determining coincidences...Please wait")
     arrThreatPulseLib = []
 
     timeCounter = [0]*2 # start and stop
@@ -181,7 +190,7 @@ def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoin
     logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
     timeCounter[1] = time.perf_counter()
-    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radmath.convertTime_MicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
+    logging.info( "%s seconds to complete coincidence assessor for interval %s of size %s seconds", timeCounter[1] - timeCounter[0], oChannel.oInterval.interval_current, radarmath.convertTime_MicrosecondsToMilliseconds(oChannel.oInterval.interval_length_us) )
 
 def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat):
     TRadarIdx = 0
@@ -262,7 +271,7 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
 def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
-    print("Sweep through coincidences...Perform tests here...")
+    # print("Sweep through coincidences...Perform tests here...")
 
     dictRank= {}
     # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
@@ -271,9 +280,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
     __coincBar = tqdm(total=lCoincidenceLib.__len__())
     for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
-        logging.debug("------------------------------------------------------------")
-        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
-        logging.debug("------------------------------------------------------------")
+        # logging.debug("------------------------------------------------------------")
+        # logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
+        # logging.debug("------------------------------------------------------------")
 
         __loggingTijData = []
 
@@ -288,7 +297,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             # SNR and DETECTABILITY and INTEGRATION
             olThreats[radar_idx].oIntervalTIJStore.platformDistance_km = za.calculateplatformDistance_km(coincPulse.timeOfCoincidence_us, oPlatform.flightPath, olThreats[radar_idx].location)
 
-            olThreats[radar_idx].oIntervalTIJStore.SNR_dB = radmath.radarEquationSNR(
+            olThreats[radar_idx].oIntervalTIJStore.SNR_dB = radarmath.radarEquationSNR(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -298,7 +307,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
                 olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                 olThreats[radar_idx].oIntervalTIJStore.platformDistance_km)
 
-            olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radmath.radarEquationSNR_NoiseJamming(
+            olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radarmath.radarEquationSNR_NoiseJamming(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -320,7 +329,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
             for Njamming in range(1, cpiSize+1):
                 intermittentJammingAvg = Njamming/olThreats[radar_idx].oIntervalTIJStore.cpi
-                [bJppReached, olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB, olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved] = radmath.radarEquationSNR_CPIJP(
+                [bJppReached, olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB, olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved] = radarmath.radarEquationSNR_CPIJP(
                     olThreats[radar_idx].oIntervalTIJStore.cpi,
                     olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                     olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -352,9 +361,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
 
             # TIJ - ZA
             ## calculate max range
-            SNR_m = radmath.calculateSNR(olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION], olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
-            olThreats[radar_idx].oIntervalTIJStore.SNR_m_dB = radmath.convertTodB(SNR_m, 10, radmath.BASE10)
-            olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km = radmath.radarEquationRange(
+            SNR_m = radarmath.calculateSNR(olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION], olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM], 1, 'CI')
+            olThreats[radar_idx].oIntervalTIJStore.SNR_m_dB = radarmath.convertTodB(SNR_m, 10, radarmath.BASE10)
+            olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km = radarmath.radarEquationRange(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -366,7 +375,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             )
 
             ## calculate min intermittent jamming range
-            olThreats[radar_idx].oIntervalTIJStore.minIJRadarRange_km = radmath.radarEquationRange_CPIJP(
+            olThreats[radar_idx].oIntervalTIJStore.minIJRadarRange_km = radarmath.radarEquationRange_CPIJP(
                     olThreats[radar_idx].oIntervalTIJStore.cpi,
                     olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                     olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -382,7 +391,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             )
 
             ## calculate the burnthrough range
-            olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km = radmath.radarEquationRange_CPIJP(
+            olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km = radarmath.radarEquationRange_CPIJP(
                     olThreats[radar_idx].oIntervalTIJStore.cpi,
                     olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                     olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -417,7 +426,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
             if lethalRangeVal == 0 and (olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI):
                olThreats[radar_idx].oIntervalTIJStore.ma = 0
             else: 
-                olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current, olThreats[radar_idx].oIntervalTIJStore.za, lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
+                olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current_ID, olThreats[radar_idx].oIntervalTIJStore.za, lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
 
             # logging.debug( "************************\n")
 
@@ -465,33 +474,96 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
         dictMaxRankRadar.clear()
         dictRank.clear()
 
-        __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
-        logging.debug( "\n\n"+ __loggingtable +"\n\n")
+        # __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
+        # logging.debug( "\n\n"+ __loggingtable +"\n\n")
 
         __coincBar.update(1)
     pass
 
-def threatEvaluation(olThreats):
-    print("Evaluate jamming effect on threat radar...")
+def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
+    # print("Evaluate jamming effect on threat radar...")
 
     for __, threat in enumerate(olThreats):
-        # increase the pulses numbers in coincidence according to radar cpi start before interval
-        threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
-        nplPulsesBeforeInterval = np.arange(start=1, stop=threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL], step=1)
-        # add the missed radar pulses before the interval to the coincidence list -> this is all of the pulses that the jammer missed
-        nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
-        # break into cpi chunks of available pulses
-        nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI]).tolist()
-        nplCpiIndices = np.zeros_like(nplCPISize)
-        for cpiSizeIdx, cpiSize in enumerate(nplCPISize):
-            nplCpiIndices[cpiSizeIdx] = util.find_nearestIndexFloor(nplPulses, cpiSize) + 1
-        npmCPI = np.array_split(nplPulses, nplCpiIndices)
+        totalDetection = 0
 
-        ### TODO: numba
-        # look out of empty arrays!
-        # do radar equation with jamming for each chunk -> determine snr or Pd?
-        # log the total detections
-        # determine if mode change is required -> or <-
+        # increase the pulses numbers in coincidence according to radar cpi start before its 1st interval
+        if(threat.m_firstIntervalForMode == True):
+            threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
+            nplPulsesBeforeInterval = np.arange(start=1, stop=threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL], step=1)
+            # add the missed radar pulses before the interval to the coincidence list -> this is all of the pulses that the jammer missed
+            nplPulses = np.append(nplPulsesBeforeInterval, threat.lIntervalCoincidences)
+        else:
+            nplPulses = threat.lIntervalCoincidences
+
+        # only for 1st interval of new mode thereafter we are in sync
+        threat.m_firstIntervalForMode = False
+
+        # any pulses that are not jammed
+        if(nplPulses.size() > 0):
+            # break into cpi chunks of available pulses
+            nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI]).tolist()
+            nplCpiIndices = np.zeros_like(nplCPISize)
+            for cpiSizeIdx, cpiSize in enumerate(nplCPISize):
+                nplCpiIndices[cpiSizeIdx] = util.find_nearestIndexFloor(nplPulses, cpiSize) + 1
+            lNoJamPulsesInCPI = np.array_split(nplPulses, nplCpiIndices)
+
+            # look out of empty arrays!
+            # do radar equation with jamming for each chunk -> determine snr or Pd?
+            # log the total detections
+            lPdPerCPI = CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer)
+            # determine if mode change is required -> or <-
+            totalDetection = np.where(lPdPerCPI >= threat.m_emitter_current[common.THREAT_PROB_DETECTION])
+
+        if(totalDetection[0].size >= threat.m_emitter_current[common.THREAT_PROB_DETECTION_CUMULATIVE]):
+            if(threat.lModesForEmitter.index(threat.m_mode_current_ID) + 1 < threat.lModesForEmitter.__len__()):
+                threat.m_mode_current_ID = threat.lModesForEmitter[threat.lModesForEmitter.index(threat.m_mode_current_ID) + 1]
+                threat.m_emitter_current = threat.m_emitters[0][threat.lModesForEmitter.index(threat.m_mode_current_ID)]
+                threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
+                threat.m_firstIntervalForMode = True
+                
+        elif (totalDetection == 0):
+            if(threat.lModesForEmitter.index(threat.m_mode_current_ID) > 0):
+                threat.m_mode_current_ID = threat.lModesForEmitter[threat.lModesForEmitter.index(threat.m_mode_current_ID) - 1]
+                threat.m_emitter_current = threat.m_emitters[0][threat.lModesForEmitter.index(threat.m_mode_current_ID)]
+                threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
+                threat.m_firstIntervalForMode = True
+
+        threat.lIntervalModeChangeLog[intervalIdx + 1] = threat.m_mode_current_ID
 
         # any radars not in coincidence?
-    pass
+
+def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
+
+    lPdPerCPI = []
+    
+    for radarPulses in lNoJamPulsesInCPI:
+        jammer_avgPower_kW = ((threat.oIntervalTIJStore.cpi - radarPulses.size)/threat.oIntervalTIJStore.cpi)*oJammer.jammer_power_kW
+
+        if(jammer_avgPower_kW == 0):
+            snrAchieved_dB = radarmath.radarEquationSNR(
+            threat.oIntervalTIJStore.cpi,
+            threat.m_emitter_current[common.THREAT_PEAKPOWER_KW],
+            threat.m_emitter_current[common.THREAT_GAIN],
+            threat.m_emitter_current[common.THREAT_GAIN],
+            threat.m_emitter_current[common.THREAT_PW_US],
+            oPlatform.rcs,
+            threat.m_emitter_current[common.THREAT_FREQ_MHZ],
+            threat.oIntervalTIJStore.platformDistance_km)        
+        else:
+            snrAchieved_dB = radarmath.radarEquationSNR_NoiseJamming(
+            threat.oIntervalTIJStore.cpi,
+            threat.m_emitter_current[common.THREAT_PEAKPOWER_KW],
+            threat.m_emitter_current[common.THREAT_GAIN],
+            threat.m_emitter_current[common.THREAT_GAIN],
+            threat.m_emitter_current[common.THREAT_PW_US],
+            oPlatform.rcs,
+            threat.m_emitter_current[common.THREAT_FREQ_MHZ],
+            threat.oIntervalTIJStore.platformDistance_km,
+            jammer_avgPower_kW,
+            oJammer.jammer_gain_dB,
+            oJammer.jammer_bandwidth_MHz)
+
+
+        lPdPerCPI.append(radarmath.calculatePd(threat.m_emitter_current[common.THREAT_PROB_FALSE_ALARM], radarmath.convertFromdB(snrAchieved_dB), 'CI'))
+
+    return lPdPerCPI

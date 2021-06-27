@@ -1,7 +1,7 @@
 import numpy as np
 import common
 import math
-import mathRadar as radmath
+import mathRadar as radarmath
 import logging
 import util
 
@@ -17,14 +17,19 @@ class cThreat:
     m_lethalRange_km = 0
 
     # current mode parameters
+    m_start_mode = NotImplementedError
     m_emitter_current = None
-    m_mode_current = None
+    m_mode_current_ID = None
+    m_mode_current_Name = None
     m_channel_current = None
 
     #interval Info
     oThreatPulseLib = np.zeros(common.INTERVAL_LIB_SIZE)
     oIntervalTIJStore = None
     lIntervalCoincidences = None
+    lIntervalModeChangeLog = np.zeros(1)
+    lModesForEmitter = []
+    m_firstIntervalForMode = True
 
     # platform detected
     lCpiDetect = []
@@ -35,6 +40,7 @@ class cThreat:
         self.m_radar_id = threatList[common.THREAT_ID]
         self.m_radar_name = threatList[common.THREAT_NAME]
         self.m_lethalRange_km = threatList[common.THREAT_LETHAL_RANGE_KM]
+        self.m_start_mode = threatList[common.THREAT_START_MODE]
         logging.debug("Threat: %s id: %s",self.m_radar_name, self.m_radar_id)
         self.location = np.array((
             threatList[common.THREAT_LOCATION][common.XCOORD],
@@ -58,15 +64,21 @@ class cThreat:
             threatList[common.THREAT_EMITTERS], emitterSize)
 
         if(self.m_emitters.__len__() > 0):
-            minModeIdx = 0
-            modeSize = np.size(self.m_emitters[0])
-            if(modeSize > 1):
-                minModeIdx = np.min(np.where(self.m_emitters[0][:][common.THREAT_MODE_TYPE] == np.min(self.m_emitters[0][:][common.THREAT_MODE_TYPE])))
+            self.lModesForEmitter = listAllModesInEmitter(self.m_emitters[0][:])
             #TODO: currently only cater so a single emitter with single or multiple different modes
+            ##TODO: where does the modes for the emitter start -> min, max, varied
+            startMode = self.m_start_mode
+            self.m_mode_current_ID = startMode
+            self.m_emitter_current = self.m_emitters[0][self.lModesForEmitter.index(startMode)]
+            self.m_mode_current_Name = common.dictModes[self.m_mode_current_ID]
+            self.lIntervalModeChangeLog[0] = self.m_mode_current_ID
 
-            self.m_mode_current = self.m_emitters[0][minModeIdx][common.THREAT_MODE_ID]
-            self.m_emitter_current = self.m_emitters[0][minModeIdx]
+def listAllModesInEmitter(emitterObject):
+    lModesForEmitter = []
+    for mode in emitterObject:
+        lModesForEmitter.append(mode[common.THREAT_MODE_ID])
 
+    return lModesForEmitter
 
 def convertEmitterJsonToArray(emitterList, emitterSize):
     modeSize = 0
@@ -103,7 +115,8 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_CPI_AT_INTERVAL, int),
                                             (common.THREAT_PROB_DETECTION, float),
                                             (common.THREAT_PROB_FALSE_ALARM, float),
-                                            (common.THREAT_PROB_DETECTION_MIN, float)
+                                            (common.THREAT_PROB_DETECTION_MIN, float),
+                                            (common.THREAT_PROB_DETECTION_CUMULATIVE, int)
                                         ], order='C')
         for modeIndex in range(0, modeSize):
 
@@ -120,13 +133,14 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_FREQ_MHZ] = modeNode[common.THREAT_FREQ_MHZ]
             emitters[emmiterIndex][modeIndex][common.THREAT_PRI_US] = modeNode[common.THREAT_PRI_US]
             emitters[emmiterIndex][modeIndex][common.THREAT_PW_US] = modeNode[common.THREAT_PW_US]
-            emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radmath.calculateDutyCycle(modeNode[common.THREAT_PW_US], modeNode[common.THREAT_PRI_US])
+            emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radarmath.calculateDutyCycle(modeNode[common.THREAT_PW_US], modeNode[common.THREAT_PRI_US])
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI_AT_INTERVAL] = modeNode[common.THREAT_CPI_AT_INTERVAL]
-            emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER_KW] = radmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
+            emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER_KW] = radarmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION] = modeNode[common.THREAT_PROB_DETECTION]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_FALSE_ALARM] = modeNode[common.THREAT_PROB_FALSE_ALARM]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION_MIN] = modeNode[common.THREAT_PROB_DETECTION_MIN]
+            emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION_CUMULATIVE] = modeNode[common.THREAT_PROB_DETECTION_CUMULATIVE]
     return emitters
 
 

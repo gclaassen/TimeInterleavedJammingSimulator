@@ -2,7 +2,7 @@ import math
 import common
 import cartesian
 import numpy as np
-import mathRadar as radmath
+import mathRadar as radarmath
 
 
 def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_location):
@@ -35,7 +35,7 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
     [pltfPathArray[0][common.XCOORD], pltfPathArray[0][common.YCOORD], pltfPathArray[0][common.ZCOORD]] = cartesian.updateCoord(pltf_flightPath[prevNodeIdx], pltfPathArray[0])
 
     ## get the distance between platform and threat in km
-    return radmath.convertRange_MeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
+    return radarmath.convertRange_MeterToKiloMeter(cartesian.displacement3dSpace (pltfPathArray, threat_location))
 
 def calculateZoneAssessmentValue(Rc_km, Rm_km, Rb_km):
     """Calculate the zone assessment value

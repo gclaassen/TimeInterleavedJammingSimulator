@@ -1,7 +1,7 @@
 import numpy as np
 import common
 import jsonParser
-import mathRadar as radmath
+import mathRadar as radarmath
 
 class cChannel:
     oInterval: None
@@ -11,8 +11,8 @@ class cChannel:
     channel_range_MHz = None
 
     def __init__(self, channelList, channelRange):
-        self.oecm_time_us = radmath.convertTime_MilisecondsToMicroseconds(channelList[common.JAMMER_JAMMING_TIME])
-        self.esm_time_us = radmath.convertTime_MilisecondsToMicroseconds(channelList[common.JAMMER_LOOKTHROUGH_TIME])
+        self.oecm_time_us = radarmath.convertTime_MilisecondsToMicroseconds(channelList[common.JAMMER_JAMMING_TIME])
+        self.esm_time_us = radarmath.convertTime_MilisecondsToMicroseconds(channelList[common.JAMMER_LOOKTHROUGH_TIME])
         self.interval_time_us = self.oecm_time_us + self.esm_time_us
         self.channel_range_MHz = channelRange
 
