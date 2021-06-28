@@ -3,7 +3,7 @@
     {
       "radar_id": 1,
       "radar_name": "AN/AWG-9",
-      "ws_range_km": 0,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": -35000,
@@ -79,7 +79,7 @@
     {
       "radar_id": 2,
       "radar_name": "AN/APG",
-      "ws_range_km": 40,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": -100000,
@@ -155,7 +155,7 @@
     {
       "radar_id": 3,
       "radar_name": "SA-8",
-      "ws_range_km": 80,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": -50000,
@@ -231,7 +231,7 @@
     {
       "radar_id": 4,
       "radar_name": "AN/SPG-51",
-      "ws_range_km": 0,
+      "ws_range_km": 300,
       "start_mode": 2,
       "location": {
         "X_coord": 250000,
@@ -383,7 +383,7 @@
     {
       "radar_id": 6,
       "radar_name": "SA-6",
-      "ws_range_km": 40,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": 95000,
@@ -459,7 +459,7 @@
     {
       "radar_id": 7,
       "radar_name": "AN/SPG-32",
-      "ws_range_km": 0,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": 25000,
@@ -535,7 +535,7 @@
     {
       "radar_id": 8,
       "radar_name": "SA-6",
-      "ws_range_km": 50,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": 115000,
@@ -611,7 +611,7 @@
     {
       "radar_id": 9,
       "radar_name": "FLAPWHEEL",
-      "ws_range_km": 50,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": 130000,
@@ -687,7 +687,7 @@
     {
       "radar_id": 10,
       "radar_name": "FLAPWHEEL",
-      "ws_range_km": 0,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": 70000,
@@ -763,7 +763,7 @@
     {
       "radar_id": 11,
       "radar_name": "AN/TPS-44",
-      "ws_range_km": 100,
+      "ws_range_km": 200,
       "start_mode": 2,
       "location": {
         "X_coord": -55000,
