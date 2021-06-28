@@ -16,7 +16,7 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
     Returns:
         [float]: The current distance Rc_km
     """
-    
+
     pltfPathArray = cartesian.initializeCartesianArray(1)
 
     # determine new platform coordinates

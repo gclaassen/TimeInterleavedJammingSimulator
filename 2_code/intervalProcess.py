@@ -527,7 +527,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
                 threat.m_emitter_current = threat.m_emitters[0][threat.lModesForEmitter.index(threat.m_mode_current_ID)]
                 threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
                 threat.m_firstIntervalForMode = True
-                
+
         elif (totalDetection == 0):
             if(threat.lModesForEmitter.index(threat.m_mode_current_ID) > 0):
                 threat.m_mode_current_ID = threat.lModesForEmitter[threat.lModesForEmitter.index(threat.m_mode_current_ID) - 1]
@@ -542,7 +542,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
 def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
 
     lPdPerCPI = []
-    
+
     for radarPulses in lNoJamPulsesInCPI:
         jammer_avgPower_kW = ((threat.oIntervalTIJStore.cpi - radarPulses.size)/threat.oIntervalTIJStore.cpi)*oJammer.jammer_power_kW
 
@@ -555,7 +555,7 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             threat.m_emitter_current[common.THREAT_PW_US],
             oPlatform.rcs,
             threat.m_emitter_current[common.THREAT_FREQ_MHZ],
-            threat.oIntervalTIJStore.platformDistance_km)        
+            threat.oIntervalTIJStore.platformDistance_km)
         else:
             snrAchieved_dB = radarmath.radarEquationSNR_NoiseJamming(
             threat.oIntervalTIJStore.cpi,
