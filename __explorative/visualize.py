@@ -2,6 +2,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
 
 lThreatRadar1 = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
 lThreatRadar2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -18,6 +19,7 @@ lThreatRadar11 = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
 nplXrange = np.arange(start= 1, stop= lThreatRadar1.__len__()+1, step= 1)
 
 plt.figure()
+plt.legend()
 plt.plot(nplXrange, lThreatRadar1)
 plt.plot(nplXrange, lThreatRadar2)
 plt.plot(nplXrange, lThreatRadar3)
@@ -29,3 +31,6 @@ plt.plot(nplXrange, lThreatRadar8)
 plt.plot(nplXrange, lThreatRadar9)
 plt.plot(nplXrange, lThreatRadar10)
 plt.plot(nplXrange, lThreatRadar11)
+plt.yticks(np.arange(start = 0, stop = 4, step=1))
+
+plt.show()
