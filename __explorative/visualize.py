@@ -1,8 +1,6 @@
-import matplotlib
-# matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
+import seaborn as sb
+import matplotlib.pyplot as plt
 
 # lThreatRadar1 = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
 # lThreatRadar2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -28,21 +26,27 @@ lThreatRadar9 = [2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 2, 3, 2, 1, 0, 
 lThreatRadar10 = [2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
 lThreatRadar11 = [2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,]
 
-nplXrange = np.arange(start= 1, stop= lThreatRadar1.__len__()+1, step= 1)
+X = np.zeros((0,lThreatRadar1.__len__()))
+X = np.vstack((np.array(lThreatRadar1),X))
+X = np.vstack((np.array(lThreatRadar2),X))
+X = np.vstack((np.array(lThreatRadar3),X))
+X = np.vstack((np.array(lThreatRadar4),X))
+X = np.vstack((np.array(lThreatRadar5),X))
+X = np.vstack((np.array(lThreatRadar6),X))
+X = np.vstack((np.array(lThreatRadar7),X))
+X = np.vstack((np.array(lThreatRadar8),X))
+X = np.vstack((np.array(lThreatRadar9),X))
+X = np.vstack((np.array(lThreatRadar10),X))
+X = np.vstack((np.array(lThreatRadar11),X))
 
-plt.figure()
-plt.legend()
-plt.plot(nplXrange, lThreatRadar1)
-plt.plot(nplXrange, lThreatRadar2)
-plt.plot(nplXrange, lThreatRadar3)
-plt.plot(nplXrange, lThreatRadar4)
-plt.plot(nplXrange, lThreatRadar5)
-plt.plot(nplXrange, lThreatRadar6)
-plt.plot(nplXrange, lThreatRadar7)
-plt.plot(nplXrange, lThreatRadar8)
-plt.plot(nplXrange, lThreatRadar9)
-plt.plot(nplXrange, lThreatRadar10)
-plt.plot(nplXrange, lThreatRadar11)
-plt.yticks(np.arange(start = 0, stop = 4, step=1))
+fig,ax = plt.subplots(1,1,figsize=(18,8))
+
+my_colors=['#008000', '#fdb827', '#D11919', '#2a3439']
+# my_colors=['#008000', '#fdb827']
+sb.heatmap(X, cmap=my_colors, square=True, linewidth=1, linecolor='w')
+colorbar = ax.collections[0].colorbar
+colorbar.set_ticks([0, 1, 2, 3])
+colorbar.set_ticklabels(['TS', 'TA', 'TT', 'MG'])
+# colorbar.set_ticklabels(['TS', 'TA'])
 
 plt.show()
