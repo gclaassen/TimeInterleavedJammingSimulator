@@ -21,7 +21,11 @@ def calculateplatformDistance_km(timeOfCoincidence_us, pltf_flightPath, threat_l
 
     # determine new platform coordinates
     ## get the node to where the platform is flying towards
-    nextNodeIdx = np.min(np.where(timeOfCoincidence_us < pltf_flightPath[:][common.TOTAL_TIME]))
+    if(timeOfCoincidence_us <= pltf_flightPath[-1][common.TOTAL_TIME]):
+        nextNodeIdx = np.min(np.where(timeOfCoincidence_us < pltf_flightPath[:][common.TOTAL_TIME]))
+    else:
+        nextNodeIdx = (pltf_flightPath[-1][common.TOTAL_TIME].__len__() - 1)
+
     ## get the node where the platform was previously
     prevNodeIdx = nextNodeIdx - 1
 

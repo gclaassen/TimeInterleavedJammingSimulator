@@ -111,15 +111,13 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
             threatItem.lIntervalCoincidences = np.asarray(lAllCoincidencePerThreat[threatIdx])
             threatItem.lIntervalJammingPulses = [] #TODO: add pulses selected for jamming
 
-        coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer)
+        coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx)
 
-        # TODO: review interval
-        ## TODO: update radar
+        # review interval
+        ## update radar
         threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer)
-        ## TODO: update jammer
-        ## TODO: save interval data -> rerun purposes
 
-        ## TODO: clear
+        ## clear
         lCoincidenceLib = []
         lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
         for threatIdx, threatItem in enumerate(olThreats):
@@ -127,8 +125,10 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
             threatItem.lIntervalJammingPulses = None
 
     logging.info("Post scenario stats:\n")
-    for threat in enumerate(olThreats):
-        logging.info("Threat Radar {0}: Mode Changes: {1}".format(threat.m_radar_id, threat.lModesForEmitter))
+    for __, threat in enumerate(olThreats):
+        logging.info("Threat Radar {0}: Modes Available: {1}".format(threat.m_radar_id, threat.lModesForEmitter))
+    for __, threat in enumerate(olThreats):
+        logging.info("Threat Radar {0}: Mode Changes: {1}".format(threat.m_radar_id, threat.lIntervalModeChangeLog))
 
 def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI):
     for __, threatItem in enumerate(olThreats):
@@ -269,16 +269,16 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
 
-def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer):
+def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx):
 
     # print("Sweep through coincidences...Perform tests here...")
 
     dictRank= {}
-    # coincBar = tqdm(total=chanItem.oCoincidences.__len__())
     __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jam required)', 'm (CPI standalone)', 'JPP req', 'JPP curr', 'JPP diff', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
     __loggingTijData = []
 
-    __coincBar = tqdm(total=lCoincidenceLib.__len__())
+    __coincBarDescr = "Interval " + str(intervalIdx)
+    __coincBar = tqdm(total=lCoincidenceLib.__len__(),desc=__coincBarDescr)
     for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
         # logging.debug("------------------------------------------------------------")
         # logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
@@ -486,6 +486,8 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
     for __, threat in enumerate(olThreats):
         totalDetection = 0
 
+        #TODO: check if in max range
+
         # increase the pulses numbers in coincidence according to radar cpi start before its 1st interval
         if(threat.m_firstIntervalForMode == True):
             threat.lIntervalCoincidences = threat.lIntervalCoincidences + threat.m_emitter_current[common.THREAT_CPI_AT_INTERVAL]
@@ -499,12 +501,16 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
         threat.m_firstIntervalForMode = False
 
         # any pulses that are not jammed
-        if(nplPulses.size() > 0):
+        if(nplPulses.size > 0):
             # break into cpi chunks of available pulses
             nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI]).tolist()
             nplCpiIndices = np.zeros_like(nplCPISize)
             for cpiSizeIdx, cpiSize in enumerate(nplCPISize):
-                nplCpiIndices[cpiSizeIdx] = util.find_nearestIndexFloor(nplPulses, cpiSize) + 1
+                nearestIndex = util.find_nearestIndexFloor(nplPulses, cpiSize)
+                if(nearestIndex != None):
+                    nplCpiIndices[cpiSizeIdx] = util.find_nearestIndexFloor(nplPulses, cpiSize) + 1
+                else:
+                    nplCpiIndices[cpiSizeIdx] = 0
             lNoJamPulsesInCPI = np.array_split(nplPulses, nplCpiIndices)
 
             # look out of empty arrays!
@@ -512,9 +518,10 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
             # log the total detections
             lPdPerCPI = CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer)
             # determine if mode change is required -> or <-
-            totalDetection = np.where(lPdPerCPI >= threat.m_emitter_current[common.THREAT_PROB_DETECTION])
+            lFindDetections = np.where(lPdPerCPI >= threat.m_emitter_current[common.THREAT_PROB_DETECTION])
+            totalDetection = lFindDetections[0].size
 
-        if(totalDetection[0].size >= threat.m_emitter_current[common.THREAT_PROB_DETECTION_CUMULATIVE]):
+        if(totalDetection >= threat.m_emitter_current[common.THREAT_PROB_DETECTION_CUMULATIVE]):
             if(threat.lModesForEmitter.index(threat.m_mode_current_ID) + 1 < threat.lModesForEmitter.__len__()):
                 threat.m_mode_current_ID = threat.lModesForEmitter[threat.lModesForEmitter.index(threat.m_mode_current_ID) + 1]
                 threat.m_emitter_current = threat.m_emitters[0][threat.lModesForEmitter.index(threat.m_mode_current_ID)]

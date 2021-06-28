@@ -12,5 +12,9 @@ def find_nearestIndex(array,value):
 
 
 def find_nearestIndexFloor(array, value):
-    idx = np.max(np.where(array<=value))
+    minArrayIdxs = np.where(array<=value)
+    if minArrayIdxs[0].size != 0:
+        idx = np.max(minArrayIdxs[0])
+    else:
+        idx = None
     return idx

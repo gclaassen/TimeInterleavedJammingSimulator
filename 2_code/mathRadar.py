@@ -232,7 +232,7 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     SNR_CI = N * SNR_D0
 
-    SNR_dB = convertTodB(SNR_CI, 10, BASE10)
+    SNR_dB = convertTodB(abs(SNR_CI), 10, BASE10)
 
     return SNR_dB
 
