@@ -10,7 +10,7 @@ Boltzman_k = 1.38*math.pow(10,-23) # W/Hz
 kT0 = 4*math.pow(10,-21) # W/Hz
 kT0_dB = -204 # dBW/Hz
 
-La_dB = 1.2
+La_dB = 5
 Lt_dB = 1
 L_dB = La_dB + Lt_dB
 
@@ -31,9 +31,23 @@ Lja_dB = 0.8
 Ljt_dB = 1
 Lj_dB = Lja_dB + Ljt_dB
 
-THREATDIR   = '1_datastore/0_manual/threats.json'
-PLATFORMDIR = '1_datastore/0_manual/platform.json'
-JAMMERDIR   = '1_datastore/0_manual/jammer.json'
+THREATDIR   = '1_datastore/0_manual/'
+PLATFORMDIR = '1_datastore/0_manual/'
+JAMMERDIR   = '1_datastore/0_manual/'
+
+THREATFILE = 'threats.json'
+PLATFORMFILE = 'platform.json'
+JAMMERFILE = 'jammer.json'
+
+RESULTDIR = '4_output/data/'
+
+RESULTMODESLOG = 'modesChangeLog'
+RESULTRANGELOG = 'rangeLog'
+RESULTLETHALRANGELOG = 'lethalrangeLog'
+RESULTCOINCIDENCEPERCENTAGELOG = 'coincidenePercLog'
+RESULTJAMMINGLOG = 'resultJammingLog'
+
+RESULTFILEEXT = '.npy'
 
 #string Radar Modes
 sSEARCH              = 'TS'

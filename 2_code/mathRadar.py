@@ -122,10 +122,10 @@ def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km):
 
     Ts = common.kT0
 
-    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
-    En =  math.pow(common.STERADIANS, 3) * Ts * math.pow(Rc, 4) * La * Lt
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens) / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt)
+    En =  Ts
 
-    SNR = Es/En
+    SNR = N*Es/En
 
     SNR_dB = convertTodB(SNR, 10, BASE10)
 
@@ -150,10 +150,10 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr):
 
     kTs = common.kT0
 
-    Es =  N * Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
-    En =  math.pow(common.STERADIANS, 3) * kTs * snr * La * Lt
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens )/ (math.pow(common.STERADIANS, 3) * snr * La * Lt)
+    En =  kTs 
 
-    Rx_m = math.pow(Es/En,(1/4))
+    Rx_m = math.pow(N*Es/En,(1/4))
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
@@ -161,7 +161,7 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr):
 def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, cpiJammingAvg):
     # Return the range value
     Gt = convertFromdB(Gt_dB)
-    Gr = convertFromdB(Gr_dB)
+    Gr = convertFromdB(Gt_dB)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
 
@@ -186,10 +186,7 @@ def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr,
 
     kTs = common.kT0
 
-    Es =  N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * Bj * Lja * Ljt
-    En =  common.STERADIANS * snr * La * Lt *  ( cpiJammingAvg * common.Qj * Pj * Gj * Fjl * Fjp )
-
-    Rx_m = math.pow(Es/En,(1/2))
+    Rx_m =  math.pow( (N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * (Bj * Lja * Ljt) )/ (common.STERADIANS * snr * La * Lt * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjl * Fjp )), 1/2)
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
@@ -225,14 +222,14 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     Ts = Tj
 
-    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
-    En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
+    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
+    En =  common.Boltzman_k * Ts
 
     SNR_D0 = Es/En
 
     SNR_CI = N * SNR_D0
 
-    SNR_dB = convertTodB(abs(SNR_CI), 10, BASE10)
+    SNR_dB = convertTodB(SNR_CI, 10, BASE10)
 
     return SNR_dB
 
@@ -268,10 +265,10 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     Tj_ij = cpiJammingAvg * Tj
 
-    Ts = Tj_ij + common.T0
+    Ts = Tj_ij
 
-    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens
-    En =  math.pow(common.STERADIANS, 3) * common.Boltzman_k * Ts * math.pow(Rc, 4) * La * Lt
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
+    En =  common.Boltzman_k * Ts
 
     SNR = Es/En
 

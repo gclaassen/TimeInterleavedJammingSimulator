@@ -28,6 +28,10 @@ class cThreat:
     oIntervalTIJStore = None
     lIntervalCoincidences = None
     lIntervalModeChangeLog = np.zeros(1)
+    lIntervalCoincidencePercentageLog = None
+    lIntervalZoneAssessmentLog = None
+    lIntervalLethalRangeLog = None
+    lIntervalJammingLog = None
     lModesForEmitter = []
     m_firstIntervalForMode = True
 

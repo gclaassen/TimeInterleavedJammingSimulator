@@ -8,8 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        // "program": "tester.py",
-        // "args": ["-v"],
+        "args": ["-i", "TrackingStart"],
         "console": "integratedTerminal"
     }]
 }

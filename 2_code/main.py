@@ -9,6 +9,9 @@ import numpy as np
 import intervalProcess as interval
 import logging
 import tij
+# save numpy array as npy file
+from numpy import asarray
+from numpy import save
 
 # logging.basicConfig(level = logging.DEBUG)
 # comment to print to console, uncomment to save to log file
@@ -17,40 +20,49 @@ np.set_printoptions(precision=5, suppress=True)
 
 def argumentExtraction(argv):
     setViz = False
+    interFile = None
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "h:v", ["help", "visualize"])
+            argv, "hv:i:", ["help", "visualize, intermediaryDirectory="])
     except getopt.GetoptError:
         helpPrints()
         return None
-    for opt, _ in opts:
+    for opt, arg in opts:
         if opt == '-h':
             helpPrints()
             exit()
         elif opt in ("-v", "--visualize"):
             setViz = True
             logging.info('Visualization set to True')
+        elif opt in ("-i", "--intermediaryDirectory"):
+            interFile = arg + '/'
+            logging.info('Intermediary File: {0}'.format(interFile))
+            
 
-    return setViz
+    return [interFile, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
     logging.info('~~~ARGUMENT LIST~~~\n')
     logging.info('-v:\tvisualize\n')
+    logging.info('-i:\tintermediary directory\n')
 
 def main(argv):
     doViz = False
+    interFile = None
 
-    doViz = argumentExtraction(argv)
+    [interFile, doViz] = argumentExtraction(argv)
 
     # Initialize
-    [oPlatform, oJammer, olThreats] = initEnvironment()
+    [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
 
     initThreatsForTij(olThreats, oJammer)
 
     #! Single jamming channel
     interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
+    # save data
+    saveThreatData(olThreats, interFile, oJammer.oChannel[0].oInterval.intervals_total)
 
     #! TODO: Multiple jamming channels
     #     logging.info("Number of processors: %s", mp.Pool(mp.cpu_count()))
@@ -70,13 +82,13 @@ def initThreatsForTij(threat, jammer):
         threatItem.oIntervalTIJStore = new_cTij
 
 
-def initEnvironment():
+def initEnvironment(interFile):
     # init platform class instance
-    oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR))
+    oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR + interFile + common.PLATFORMFILE))
     # init threats (mulitple instances of threat class)
-    olThreats = threats.convertThreatJsonToClass(jsonParser.parseJsonFile(common.THREATDIR))
+    olThreats = threats.convertThreatJsonToClass(jsonParser.parseJsonFile(common.THREATDIR + interFile + common.THREATFILE))
 
-    oJammer = jammer.cJammer(jsonParser.parseJsonFile(common.JAMMERDIR))
+    oJammer = jammer.cJammer(jsonParser.parseJsonFile(common.JAMMERDIR + interFile + common.JAMMERFILE))
 
     # profile creator
     for itChannel in oJammer.oChannel:
@@ -84,6 +96,27 @@ def initEnvironment():
 
     return [oPlatform, oJammer, olThreats]
 
+def saveThreatData(olThreats, interFile, intervalSize):
+    vlModeLog = np.zeros((0,intervalSize+1))
+    vlRangeLog = np.zeros((0,intervalSize))
+    vlLethalRangeLog = np.zeros((0,intervalSize))
+    vlCoincPercLog = np.zeros((0,intervalSize))
+    vlJammingLog = np.zeros((0,intervalSize))
+
+    for __, threat in enumerate(olThreats):
+        vlModeLog = np.vstack(( threat.lIntervalModeChangeLog , vlModeLog))
+        vlRangeLog = np.vstack(( threat.lIntervalZoneAssessmentLog , vlRangeLog))
+        vlLethalRangeLog = np.vstack(( threat.lIntervalLethalRangeLog , vlLethalRangeLog))
+        vlCoincPercLog = np.vstack(( threat.lIntervalCoincidencePercentageLog , vlCoincPercLog))
+        vlJammingLog = np.vstack((threat.lIntervalJammingLog, vlJammingLog))
+
+    os.makedirs(os.path.join(common.RESULTDIR, interFile))
+
+    save(common.RESULTDIR + interFile + common.RESULTMODESLOG + common.RESULTFILEEXT, vlModeLog)
+    save(common.RESULTDIR + interFile + common.RESULTRANGELOG + common.RESULTFILEEXT, vlRangeLog)
+    save(common.RESULTDIR + interFile + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog)
+    save(common.RESULTDIR + interFile + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog)
+    save(common.RESULTDIR + interFile + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

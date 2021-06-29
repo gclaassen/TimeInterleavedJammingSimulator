@@ -1,0 +1,20 @@
+{
+    "platform" :{
+        "rcs"           : 10,
+        "flightpath"    :
+        [
+            {
+                "X_coord"           : -9000,
+                "Y_coord"           : 0,
+                "Z_coord"           : 5000,
+                "velocity_ms"       : 0
+            },
+            {
+                "X_coord"           : 0,
+                "Y_coord"           : 5000,
+                "Z_coord"           : 2000,
+                "velocity_ms"       : 500
+            }
+        ]
+    }
+}
