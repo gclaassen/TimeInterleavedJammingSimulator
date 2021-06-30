@@ -89,6 +89,7 @@ THREAT_EMITTERS                     = 'emitters'
 THREAT_MODES                        = 'modes'
 THREAT_EMITTERMODES_SIZE            = 11
 THREAT_EMITTER_ID                   = 'emitter_id'
+THREAT_EMITTER_NOISEFIGURE_DB       = 'noise_figure_dB'
 THREAT_START_MODE                   = 'start_mode'
 THREAT_MODE_ID                      = 'mode_id'
 THREAT_MODE_TYPE                    = 'type'

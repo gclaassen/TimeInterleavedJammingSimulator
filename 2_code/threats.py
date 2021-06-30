@@ -106,6 +106,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
         emitters[emmiterIndex] = np.zeros(modeSize, dtype=
                                         [
                                             (common.THREAT_EMITTER_ID,int),
+                                            (common.THREAT_EMITTER_NOISEFIGURE_DB,float),
                                             (common.THREAT_MODE_ID,int),
                                             (common.THREAT_MODE_TYPE,int),
                                             (common.THREAT_PEAKPOWER_KW, int),
@@ -130,6 +131,7 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                 modeNode = emitterNode[common.THREAT_MODES]
 
             emitters[emmiterIndex][modeIndex][common.THREAT_EMITTER_ID] = emitterNode[common.THREAT_EMITTER_ID]
+            emitters[emmiterIndex][modeIndex][common.THREAT_EMITTER_NOISEFIGURE_DB] = emitterNode[common.THREAT_EMITTER_NOISEFIGURE_DB]
             emitters[emmiterIndex][modeIndex][common.THREAT_MODE_ID] = modeNode[common.THREAT_MODE_ID]
             emitters[emmiterIndex][modeIndex][common.THREAT_MODE_TYPE] = modeNode[common.THREAT_MODE_TYPE]
             emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW] = modeNode[common.THREAT_PEAKPOWER_KW]

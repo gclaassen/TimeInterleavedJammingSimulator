@@ -12,6 +12,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":8.5,
         "modes": [
           {
             "mode_id": 0,
@@ -88,6 +89,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -164,6 +166,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -240,6 +243,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -316,6 +320,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -392,6 +397,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -468,6 +474,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -544,6 +551,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -620,6 +628,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -696,6 +705,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -772,6 +782,7 @@
       },
       "emitters": {
         "emitter_id": 0,
+        "noise_figure_dB":7,
         "modes": [
           {
             "mode_id": 0,
@@ -832,6 +843,68 @@
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
+          },
+          {
+            "radar_id": 12,
+            "radar_name": "CMR-90",
+            "ws_range_km": 0,
+            "start_mode": 2,
+            "location": {
+              "X_coord": -3500,
+              "Y_coord": 8000,
+              "Z_coord": 0
+            },
+            "emitters": {
+              "emitter_id": 0,
+              "noise_figure_dB":8.5,
+              "modes": [
+                {
+                  "mode_id": 0,
+                  "type": 0,
+                  "power_peak_kW": 12,
+                  "gain": 35,
+                  "frequency_MHz": 9375,
+                  "pulse_width_us": 0.5,
+                  "pri_us": 800,
+                  "cpi": 32,
+                  "cpi_before_interval": 50,
+                  "Pd": 0.9,
+                  "Pfa": 1e-6,
+                  "Pd_min": 0.1,
+                  "Pd_cumulative": 1
+                },
+                {
+                  "mode_id": 1,
+                  "type": 1,
+                  "power_peak_kW": 10,
+                  "gain": 35,
+                  "frequency_MHz": 9375,
+                  "pulse_width_us": 0.5,
+                  "pri_us": 400,
+                  "cpi": 32,
+                  "cpi_before_interval": 8,
+                  "Pd": 0.9,
+                  "Pfa": 1e-6,
+                  "Pd_min": 0.1,
+                  "Pd_cumulative": 1
+                },
+                {
+                  "mode_id": 2,
+                  "type": 2,
+                  "power_peak_kW": 12,
+                  "gain": 35,
+                  "frequency_MHz": 9375,
+                  "pulse_width_us": 0.06,
+                  "pri_us": 400,
+                  "cpi": 32,
+                  "cpi_before_interval": 12,
+                  "Pd": 0.5,
+                  "Pfa": 1e-6,
+                  "Pd_min": 0.1,
+                  "Pd_cumulative": 1
+                }
+              ]
+            }
           }
         ]
       }
