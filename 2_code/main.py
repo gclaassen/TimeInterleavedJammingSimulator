@@ -38,7 +38,6 @@ def argumentExtraction(argv):
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
             logging.info('Intermediary File: {0}'.format(interFile))
-            
 
     return [interFile, setViz]
 
@@ -76,7 +75,7 @@ def main(argv):
     pass
 
 def initThreatsForTij(threat, jammer):
-    for threatItem in threat: 
+    for threatItem in threat:
         threatItem.oThreatPulseLib = np.array(threats.initListThreatPulseLib(threatItem, jammer), dtype=object)
         new_cTij = tij.cTIJ(threatItem.m_radar_id, threatItem.m_emitter_current[common.THREAT_CPI], threatItem.m_emitter_current[common.THREAT_PROB_FALSE_ALARM], threatItem.m_emitter_current[common.THREAT_PROB_DETECTION], threatItem.m_emitter_current[common.THREAT_PROB_DETECTION_MIN])
         threatItem.oIntervalTIJStore = new_cTij
@@ -84,11 +83,16 @@ def initThreatsForTij(threat, jammer):
 
 def initEnvironment(interFile):
     # init platform class instance
-    oPlatform = platform.cPlatform(jsonParser.parseJsonFile(common.PLATFORMDIR + interFile + common.PLATFORMFILE))
-    # init threats (mulitple instances of threat class)
-    olThreats = threats.convertThreatJsonToClass(jsonParser.parseJsonFile(common.THREATDIR + interFile + common.THREATFILE))
+    platformPath = os.path.join(common.PLATFORMDIR, interFile)
+    oPlatform = platform.cPlatform(jsonParser.parseJsonFile( platformPath + common.PLATFORMFILE))
 
-    oJammer = jammer.cJammer(jsonParser.parseJsonFile(common.JAMMERDIR + interFile + common.JAMMERFILE))
+    # init threats (mulitple instances of threat class)
+    threatPath = os.path.join(common.THREATDIR, interFile)
+    olThreats = threats.convertThreatJsonToClass(jsonParser.parseJsonFile(threatPath + common.THREATFILE))
+
+    # init jammer
+    jammerPath = os.path.join(common.JAMMERDIR, interFile)
+    oJammer = jammer.cJammer(jsonParser.parseJsonFile(jammerPath + common.JAMMERFILE))
 
     # profile creator
     for itChannel in oJammer.oChannel:
@@ -110,13 +114,21 @@ def saveThreatData(olThreats, interFile, intervalSize):
         vlCoincPercLog = np.vstack(( threat.lIntervalCoincidencePercentageLog , vlCoincPercLog))
         vlJammingLog = np.vstack((threat.lIntervalJammingLog, vlJammingLog))
 
-    os.makedirs(os.path.join(common.RESULTDIR, interFile))
+    resultPath = os.path.join(common.RESULTDIR, interFile)
+    if os.path.exists(resultPath):
+        os.remove(resultPath + common.RESULTMODESLOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.RESULTRANGELOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT)
+    else:
+        os.makedirs(resultPath)
 
-    save(common.RESULTDIR + interFile + common.RESULTMODESLOG + common.RESULTFILEEXT, vlModeLog)
-    save(common.RESULTDIR + interFile + common.RESULTRANGELOG + common.RESULTFILEEXT, vlRangeLog)
-    save(common.RESULTDIR + interFile + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog)
-    save(common.RESULTDIR + interFile + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog)
-    save(common.RESULTDIR + interFile + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog)
+    save(resultPath + common.RESULTMODESLOG + common.RESULTFILEEXT, vlModeLog)
+    save(resultPath + common.RESULTRANGELOG + common.RESULTFILEEXT, vlRangeLog)
+    save(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog)
+    save(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog)
+    save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
