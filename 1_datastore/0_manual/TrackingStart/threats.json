@@ -122,8 +122,8 @@
           {
             "mode_id": 2,
             "type": 2,
-            "power_peak_kW": 16,
-            "gain": 35,
+            "power_peak_kW": 500,
+            "gain": 50,
             "frequency_MHz": 9700,
             "pulse_width_us": 0.1,
             "pri_us": 2499.9,

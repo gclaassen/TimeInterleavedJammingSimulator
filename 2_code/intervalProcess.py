@@ -353,8 +353,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                olThreats[radar_idx].oIntervalTIJStore.SNR_n
+                olThreats[radar_idx].oIntervalTIJStore.SNR_1
             )
+
 
             ## calculate the burnthrough range
             olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km = radarmath.radarEquationRange_CPIJP(
@@ -365,7 +366,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                     olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
                     olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                    olThreats[radar_idx].oIntervalTIJStore.SNR_n,
+                    olThreats[radar_idx].oIntervalTIJStore.SNR_1,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
@@ -403,11 +404,11 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             #TODO: TIJ - MA
             # Lethal range flag is set to 1 if inside weapon system range
             olThreats[radar_idx].oIntervalTIJStore.lethalRangeVal = 1 if olThreats[radar_idx].oIntervalTIJStore.platformDistance_km <= olThreats[radar_idx].m_lethalRange_km else 0
-            
+
             # Ignore pulse if outside WS range AND effective intermittent jamming is achievable with standalone pulses ELSE determine mode assessment
             if olThreats[radar_idx].oIntervalTIJStore.lethalRangeVal == 0 and (olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI):
                olThreats[radar_idx].oIntervalTIJStore.ma = 0
-            else: 
+            else:
                 olThreats[radar_idx].oIntervalTIJStore.ma = ma.threatValueCalculation(olThreats[radar_idx].m_mode_current_ID, olThreats[radar_idx].oIntervalTIJStore.za, olThreats[radar_idx].oIntervalTIJStore.lethalRangeVal, olThreats[radar_idx].oIntervalTIJStore.jpp_dif )
 
             # logging.debug( "************************\n")
