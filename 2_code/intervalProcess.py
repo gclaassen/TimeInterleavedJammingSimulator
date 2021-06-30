@@ -96,6 +96,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
                 oPlatform.rcs,
                 threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
                 threatItem.oIntervalTIJStore.SNR_1,
+                threatItem.m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB]
             )
 
             ## calculate the burnthrough range
@@ -111,6 +112,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
+                    threatItem.m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
                     1.0
             )
 
@@ -355,7 +357,8 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km)
+                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB])
 
             olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radarmath.radarEquationSNR_NoiseJamming(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
@@ -366,6 +369,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 oPlatform.rcs,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                 olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
                 oJammer.jammer_power_kW,
                 oJammer.jammer_gain_dB,
                 oJammer.jammer_bandwidth_MHz)
@@ -392,6 +396,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                     oPlatform.rcs,
                     olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
                     olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
+                    olThreats[radar_idx].m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
@@ -541,7 +546,8 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             threat.m_emitter_current[common.THREAT_PW_US],
             oPlatform.rcs,
             threat.m_emitter_current[common.THREAT_FREQ_MHZ],
-            threat.oIntervalTIJStore.platformDistance_km)
+            threat.oIntervalTIJStore.platformDistance_km,
+            threat.m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB])
         else:
             snrAchieved_dB = radarmath.radarEquationSNR_NoiseJamming(
             threat.oIntervalTIJStore.cpi,
@@ -552,6 +558,7 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             oPlatform.rcs,
             threat.m_emitter_current[common.THREAT_FREQ_MHZ],
             threat.oIntervalTIJStore.platformDistance_km,
+            threat.m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
             jammer_avgPower_kW,
             oJammer.jammer_gain_dB,
             oJammer.jammer_bandwidth_MHz)

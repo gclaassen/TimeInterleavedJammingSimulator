@@ -102,7 +102,7 @@ def calculateSNR(Pd, Pfa, n, integration):
         NotImplementedError
 
 
-def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km):
+def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF):
     # Return the detectability factor (Max SNR for a single detection)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
@@ -132,7 +132,7 @@ def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km):
     return SNR_dB
 
 
-def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr):
+def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB):
     # Return the range value
     waveLength = calculateWaveLength(common.c, Fc_MHz)
     Gt = convertFromdB(Gt_dB)
@@ -148,7 +148,9 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr):
     La = convertFromdB(common.La_dB)
     Lt = convertFromdB(common.Lt_dB)
 
-    kTs = common.kT0
+    NF = convertFromdB(NF_dB)
+
+    kTs = common.kT0*NF
 
     Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens )/ (math.pow(common.STERADIANS, 3) * snr * La * Lt)
     En =  kTs 
@@ -158,7 +160,7 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr):
     return convertRange_MeterToKiloMeter(Rx_m)
 
 
-def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, cpiJammingAvg):
+def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, NF_dB, cpiJammingAvg):
     # Return the range value
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gt_dB)
@@ -184,13 +186,15 @@ def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr,
     Lja = convertFromdB(common.Lja_dB)
     Ljt = convertFromdB(common.Ljt_dB)
 
-    kTs = common.kT0
+    NF = convertFromdB(NF_dB)
+
+    kTs = common.kT0*NF
 
     Rx_m =  math.pow( (N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * (Bj * Lja * Ljt) )/ (common.STERADIANS * snr * La * Lt * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjl * Fjp )), 1/2)
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
-def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz) :
+def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -218,9 +222,11 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
     Lja = convertFromdB(common.Lja_dB)
     Ljt = convertFromdB(common.Ljt_dB)
 
+    NF = convertFromdB(NF_dB)
+
     Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
 
-    Ts = Tj
+    Ts = common.kT0*NF + Tj
 
     Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
     En =  common.Boltzman_k * Ts
@@ -233,7 +239,7 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     return SNR_dB
 
-def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg) :
+def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -261,11 +267,13 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
     Lja = convertFromdB(common.Lja_dB)
     Ljt = convertFromdB(common.Ljt_dB)
 
+    NF = convertFromdB(NF_dB)
+
     Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
 
     Tj_ij = cpiJammingAvg * Tj
 
-    Ts = Tj_ij
+    Ts = common.kT0*NF + Tj_ij
 
     Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
     En =  common.Boltzman_k * Ts
