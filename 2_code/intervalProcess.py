@@ -43,7 +43,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
     lCoincidenceLib = []
     lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
 
-    __loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rc [km]', 'Rws [km]', 'Mode', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
+    __loggingRangeHeader = ['Threat ID', 'Interval Start Time [us]', 'Rm [km]', 'Rb km', 'Rc [km]', 'Rws [km]', 'Mode', 'Pp [kW]', 'Gtx [dBi]', 'Grx [dBi]', 'PW [us]', 'RCS [m^2]', 'Fc [MHz]', 'Ts [K]', 'CPI', 'Pfa', 'Pd', 'Pd jamming']
     __loggingRangeData = []
 
     __loggingJammerHeader = ['Pj [kW]', 'Gj [dB]', 'Bj [MHz]']
@@ -78,14 +78,48 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
         else:
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart_us + oJammer.oChannel[0].interval_time_us
 
+        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size) # TODO: for multiple channels
+
+        # __logging__
         # Get the starting ranges at each new interval
         __loggingRangeData = []
         for threatIdx, threatItem in enumerate(olThreats):
             RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart_us, oPlatform.flightPath, threatItem.location)
+
+            ## calculate max range
+            threatItem.oIntervalTIJStore.maxRadarRange_km = radarmath.radarEquationRange(
+                threatItem.oIntervalTIJStore.cpi,
+                threatItem.m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                threatItem.m_emitter_current[common.THREAT_GAIN],
+                threatItem.m_emitter_current[common.THREAT_GAIN],
+                threatItem.m_emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
+                threatItem.oIntervalTIJStore.SNR_1,
+            )
+
+            ## calculate the burnthrough range
+            threatItem.oIntervalTIJStore.burnthroughRange_km = radarmath.radarEquationRange_CPIJP(
+                    threatItem.oIntervalTIJStore.cpi,
+                    threatItem.m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                    threatItem.m_emitter_current[common.THREAT_GAIN],
+                    threatItem.m_emitter_current[common.THREAT_GAIN],
+                    threatItem.m_emitter_current[common.THREAT_PW_US],
+                    oPlatform.rcs,
+                    threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
+                    threatItem.oIntervalTIJStore.SNR_1,
+                    oJammer.jammer_power_kW,
+                    oJammer.jammer_gain_dB,
+                    oJammer.jammer_bandwidth_MHz,
+                    1.0
+            )
+
             __loggingRangeData.append([
-                threatIdx+1, 
+                threatIdx+1,
                 oChannel.oInterval.interval_current_Tstart_us, 
-                RadarDistance_km, 
+                threatItem.oIntervalTIJStore.maxRadarRange_km,
+                threatItem.oIntervalTIJStore.burnthroughRange_km,
+                RadarDistance_km,
                 threatItem.m_lethalRange_km,
                 threatItem.m_mode_current_Name,
                 threatItem.m_emitter_current[common.THREAT_PEAKPOWER_KW],
@@ -103,8 +137,6 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
         __loggingtable = tabulate(__loggingRangeData, __loggingRangeHeader, tablefmt="github")
         logging.debug( "\n\n"+ __loggingtable +"\n\n")
-
-        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size) # TODO: for multiple channels
 
         intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoincidencePerThreat, intervalIdx)
 
@@ -343,35 +375,6 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 cpiSize = int(coincPulse.pulse_number)
             else:
                 cpiSize = int(olThreats[radar_idx].oIntervalTIJStore.cpi)
-
-            ## calculate max range
-            olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km = radarmath.radarEquationRange(
-                olThreats[radar_idx].oIntervalTIJStore.cpi,
-                olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
-                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
-                oPlatform.rcs,
-                olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                olThreats[radar_idx].oIntervalTIJStore.SNR_1
-            )
-
-
-            ## calculate the burnthrough range
-            olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km = radarmath.radarEquationRange_CPIJP(
-                    olThreats[radar_idx].oIntervalTIJStore.cpi,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
-                    oPlatform.rcs,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                    olThreats[radar_idx].oIntervalTIJStore.SNR_1,
-                    oJammer.jammer_power_kW,
-                    oJammer.jammer_gain_dB,
-                    oJammer.jammer_bandwidth_MHz,
-                    1.0
-            )
 
             ## calculate the ZA value
             olThreats[radar_idx].oIntervalTIJStore.za = za.calculateZoneAssessmentValue(olThreats[radar_idx].oIntervalTIJStore.platformDistance_km, olThreats[radar_idx].oIntervalTIJStore.maxRadarRange_km, olThreats[radar_idx].oIntervalTIJStore.burnthroughRange_km)
