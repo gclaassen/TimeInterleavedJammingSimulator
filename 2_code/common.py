@@ -7,7 +7,7 @@ c = 299792458 #Speed of Light (m/s)
 RadarEquationConstant = 239.3 # Range in km
 T0 = 290 # [K]
 Boltzman_k = 1.38*math.pow(10,-23) # W/Hz
-kT0 = 4*math.pow(10,-21) # W/Hz
+kT0 = Boltzman_k*290 # W/Hz
 kT0_dB = -204 # dBW/Hz
 
 Lp_1D_dB = 1.6

@@ -95,7 +95,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
                 threatItem.m_emitter_current[common.THREAT_PW_US],
                 oPlatform.rcs,
                 threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
-                threatItem.oIntervalTIJStore.SNR_1,
+                threatItem.oIntervalTIJStore.SNR_n,
                 threatItem.m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
                 threatItem.m_mode_current_ID,
                 threatItem.m_emitter_current[common.THREAT_PRI_US]
@@ -110,7 +110,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
                     threatItem.m_emitter_current[common.THREAT_PW_US],
                     oPlatform.rcs,
                     threatItem.m_emitter_current[common.THREAT_FREQ_MHZ],
-                    threatItem.oIntervalTIJStore.SNR_1,
+                    threatItem.oIntervalTIJStore.SNR_n,
                     oJammer.jammer_power_kW,
                     oJammer.jammer_gain_dB,
                     oJammer.jammer_bandwidth_MHz,
