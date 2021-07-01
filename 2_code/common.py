@@ -10,26 +10,21 @@ Boltzman_k = 1.38*math.pow(10,-23) # W/Hz
 kT0 = 4*math.pow(10,-21) # W/Hz
 kT0_dB = -204 # dBW/Hz
 
-La_dB = 5
-Lt_dB = 1
-L_dB = La_dB + Lt_dB
+Lp_1D_dB = 1.6
+Lp_2D_dB = 3.2
+La_dB = 0.01
 
-Fp_dB = 1
-Frdr_dB= 1
-Flens_dB = 1
-F_dB = Fp_dB + Frdr_dB + Flens_dB
+Fr_dB= 1
+Ft_dB = 1
 
 # CONSTANS: JAMMER
-Qj = 0.3
+Qj = 0.3 #0.3 - 0.6 worst to best jamming quality factor
 
-Fjl_dB = -0.1
-# Fjpp_dB = -20
+Lja_dB = 0.01
+
+Fjt_dB = 1
 Fjp_dB = -3 # circular antenna
-Fj_dB = Fjl_dB + Fjp_dB
 
-Lja_dB = 0.8
-Ljt_dB = 1
-Lj_dB = Lja_dB + Ljt_dB
 
 THREATDIR   = '1_datastore/0_manual/'
 PLATFORMDIR = '1_datastore/0_manual/'

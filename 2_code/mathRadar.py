@@ -102,7 +102,7 @@ def calculateSNR(Pd, Pfa, n, integration):
         NotImplementedError
 
 
-def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF):
+def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF, mode):
     # Return the detectability factor (Max SNR for a single detection)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
@@ -113,16 +113,17 @@ def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF):
     pw = convertTime_MicrosecondsToSeconds(pw_us)
     Rc = convertRange_KilometerToMeter(Rc_km)
 
-    Fp = convertFromdB(common.Fp_dB)
-    Frdr = convertFromdB(common.Frdr_dB)
-    Flens = convertFromdB(common.Flens_dB)
+    Ft = convertFromdB(common.Ft_dB)
+    Fr = convertFromdB(common.Fr_dB)
 
     La = convertFromdB(common.La_dB)
-    Lt = convertFromdB(common.Lt_dB)
+    Lp = convertFromdB(common.Lp_1D_dB) if mode <= 1 else 1
+    La = convertFromdB(common.La_dB*Rc_km)
 
-    Ts = common.kT0
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens) / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt)
+    Ts = common.kT0*NF
+
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fr * Ft) / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp * La)
     En =  Ts
 
     SNR = N*Es/En
@@ -132,7 +133,7 @@ def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF):
     return SNR_dB
 
 
-def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB):
+def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB, mode):
     # Return the range value
     waveLength = calculateWaveLength(common.c, Fc_MHz)
     Gt = convertFromdB(Gt_dB)
@@ -141,18 +142,17 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB
     Pt = convertPower_KiloWattToWatt(Pt_kw)
     pw = convertTime_MicrosecondsToSeconds(pw_us)
 
-    Fp = convertFromdB(common.Fp_dB)
-    Frdr = convertFromdB(common.Frdr_dB)
-    Flens = convertFromdB(common.Flens_dB)
+    Ft = convertFromdB(common.Ft_dB)
+    Fr = convertFromdB(common.Fr_dB)
 
     La = convertFromdB(common.La_dB)
-    Lt = convertFromdB(common.Lt_dB)
+    Lp = convertFromdB(common.Lp_1D_dB) if mode <= 1 else 1
 
     NF = convertFromdB(NF_dB)
 
     kTs = common.kT0*NF
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens )/ (math.pow(common.STERADIANS, 3) * snr * La * Lt)
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr )/ (math.pow(common.STERADIANS, 3) * snr * La * Lp)
     En =  kTs 
 
     Rx_m = math.pow(N*Es/En,(1/4))
@@ -160,7 +160,7 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB
     return convertRange_MeterToKiloMeter(Rx_m)
 
 
-def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, NF_dB, cpiJammingAvg):
+def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, NF_dB, cpiJammingAvg, mode):
     # Return the range value
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gt_dB)
@@ -170,31 +170,28 @@ def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr,
     Pt = convertPower_KiloWattToWatt(Pt_kw)
     pw = convertTime_MicrosecondsToSeconds(pw_us)
 
-    Fp = convertFromdB(common.Fp_dB)
-    Frdr = convertFromdB(common.Frdr_dB)
-    Flens = convertFromdB(common.Flens_dB)
+    Ft = convertFromdB(common.Ft_dB)
+    Fr = convertFromdB(common.Fr_dB)
 
     La = convertFromdB(common.La_dB)
-    Lt = convertFromdB(common.Lt_dB)
+    Lp = convertFromdB(common.Lp_1D_dB) if mode <= 1 else 1
 
     Pj= convertPower_KiloWattToWatt(Pj_kW)
     Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
 
-    Fjl = 1
     Fjp = convertFromdB(common.Fjp_dB)
-    Lja = convertFromdB(common.Lja_dB)
-    Ljt = convertFromdB(common.Ljt_dB)
+    Fjt = convertFromdB(common.Fjt_dB)
 
     NF = convertFromdB(NF_dB)
 
     kTs = common.kT0*NF
 
-    Rx_m =  math.pow( (N * Pt * pw * Gt * rcs_m2 * Fp * Frdr * Flens * (Bj * Lja * Ljt) )/ (common.STERADIANS * snr * La * Lt * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjl * Fjp )), 1/2)
+    Rx_m =  math.pow( (N * Pt * pw * Gt * rcs_m2 * Ft * Fr * (Bj) )/ (common.STERADIANS * snr * La * Lp * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjt * Fjp )), 1/2)
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
-def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz) :
+def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, mode) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -206,29 +203,32 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
     pw = convertTime_MicrosecondsToSeconds(pw_us)
     Rc = convertRange_KilometerToMeter(Rc_km)
 
-    Fp = convertFromdB(common.Fp_dB)
-    Frdr = convertFromdB(common.Frdr_dB)
-    Flens = convertFromdB(common.Flens_dB)
+    Pj= convertPower_KiloWattToWatt(Pj_kW)
+    Bj = convertFrequency_MHzToHz(Bj_MHz)
+    Gj = convertFromdB(Gj_dB)
 
-    La = convertFromdB(common.La_dB)
-    Lt = convertFromdB(common.Lt_dB)
+    Ft = convertFromdB(common.Ft_dB)
+    Fr = convertFromdB(common.Fr_dB)
+
+    La = convertFromdB(common.La_dB * Rc_km)
+    Lp = convertFromdB(common.Lp_1D_dB) if mode <= 1 else 1
 
     Pj= convertPower_KiloWattToWatt(Pj_kW)
     Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
 
-    Fjl = 1
     Fjp = convertFromdB(common.Fjp_dB)
-    Lja = convertFromdB(common.Lja_dB)
-    Ljt = convertFromdB(common.Ljt_dB)
+    Fjt = convertFromdB(common.Fjt_dB)
+
+    Lja = convertFromdB(common.Lja_dB * Rc_km)
 
     NF = convertFromdB(NF_dB)
 
-    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
+    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fr * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja )
 
     Ts = common.kT0*NF + Tj
 
-    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
+    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
     En =  common.Boltzman_k * Ts
 
     SNR_D0 = Es/En
@@ -239,7 +239,7 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     return SNR_dB
 
-def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg) :
+def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg, mode) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -251,32 +251,35 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
     pw = convertTime_MicrosecondsToSeconds(pw_us)
     Rc = convertRange_KilometerToMeter(Rc_km)
 
-    Fp = convertFromdB(common.Fp_dB)
-    Frdr = convertFromdB(common.Frdr_dB)
-    Flens = convertFromdB(common.Flens_dB)
+    Pj= convertPower_KiloWattToWatt(Pj_kW)
+    Bj = convertFrequency_MHzToHz(Bj_MHz)
+    Gj = convertFromdB(Gj_dB)
 
-    La = convertFromdB(common.La_dB)
-    Lt = convertFromdB(common.Lt_dB)
+    Ft = convertFromdB(common.Ft_dB)
+    Fr = convertFromdB(common.Fr_dB)
+
+    La = convertFromdB(common.La_dB * Rc_km)
+    Lp = convertFromdB(common.Lp_1D_dB) if mode <= 1 else 1
 
     Pj= convertPower_KiloWattToWatt(Pj_kW)
     Bj = convertFrequency_MHzToHz(Bj_MHz)
     Gj = convertFromdB(Gj_dB)
 
-    Fjl = 1
     Fjp = convertFromdB(common.Fjp_dB)
-    Lja = convertFromdB(common.Lja_dB)
-    Ljt = convertFromdB(common.Ljt_dB)
+    Fjt = convertFromdB(common.Fjt_dB)
+
+    Lja = convertFromdB(common.Lja_dB * Rc_km)
 
     NF = convertFromdB(NF_dB)
 
-    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjl * Fjp) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja * Ljt )
+    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fjp * Fr) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja )
 
     Tj_ij = cpiJammingAvg * Tj
 
     Ts = common.kT0*NF + Tj_ij
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fp * Frdr * Flens)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lt )
-    En =  common.Boltzman_k * Ts
+    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
+    En =  Ts
 
     SNR = Es/En
 
