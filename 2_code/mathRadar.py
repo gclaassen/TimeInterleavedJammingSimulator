@@ -94,7 +94,7 @@ def calculatePd(Pfa, Nsnr, integration):
     elif integration == 'NCI':
         NotImplementedError
 
-def calculatPsNR(Pd, Pfa, n, integration):
+def calculateSNR(Pd, Pfa, n, integration):
     if integration == 'CI':
         return (1/(2*n))*math.pow(phiInv(Pfa) - phiInv(Pd), 2)
 
