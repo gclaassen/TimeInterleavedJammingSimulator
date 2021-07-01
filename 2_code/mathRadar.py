@@ -7,7 +7,7 @@ import scipy.stats
 import scipy.special
 import numpy as np
 
-#log base enum values
+#log base enum valuPs
 BASENORMAL          = 0 # log()
 BASE10              = 1 # log10()
 
@@ -75,7 +75,7 @@ def calculateErpW(numPower, numGain):
 def attenuation(numWavelength, numRc):
     return ((common.STERADIANS*numRc)/numWavelength) ^ 2
 
-def calculateSpreadingLoss(range_m, frequency_MHz):
+def calculatPspreadingLoss(range_m, frequency_MHz):
     return 32 + convertTodB(range_m, 20, BASE10) + convertTodB(frequency_MHz, 20, BASE10)
 
 def calculateWaveLength(velocity_ms, frequency_MHz):
@@ -94,7 +94,7 @@ def calculatePd(Pfa, Nsnr, integration):
     elif integration == 'NCI':
         NotImplementedError
 
-def calculateSNR(Pd, Pfa, n, integration):
+def calculatPsNR(Pd, Pfa, n, integration):
     if integration == 'CI':
         return (1/(2*n))*math.pow(phiInv(Pfa) - phiInv(Pd), 2)
 
@@ -102,15 +102,19 @@ def calculateSNR(Pd, Pfa, n, integration):
         NotImplementedError
 
 
-def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF, mode):
+def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF, mode, PRI_us):
     # Return the detectability factor (Max SNR for a single detection)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gr_dB)
 
+    DC = pw_us/PRI_us
     Pt = convertPower_KiloWattToWatt(Pt_kw)
-    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Pavg = Pt * DC
+
+    CPI = N * convertTime_MicrosecondsToSeconds(PRI_us)
+
     Rc = convertRange_KilometerToMeter(Rc_km)
 
     Ft = convertFromdB(common.Ft_dB)
@@ -123,24 +127,27 @@ def radarEquationSNR(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF, m
 
     Ts = common.kT0*NF
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fr * Ft) / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp * La)
+    Ps =  (Pavg * CPI * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Fr * Ft) / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp * La)
     En =  Ts
 
-    SNR = N*Es/En
+    SNR = N*Ps/En
 
     SNR_dB = convertTodB(SNR, 10, BASE10)
 
     return SNR_dB
 
 
-def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB, mode):
+def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB, mode, PRI_us):
     # Return the range value
     waveLength = calculateWaveLength(common.c, Fc_MHz)
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gr_dB)
 
+    DC = pw_us/PRI_us
     Pt = convertPower_KiloWattToWatt(Pt_kw)
-    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Pavg = Pt * DC
+
+    CPI = N * convertTime_MicrosecondsToSeconds(PRI_us)
 
     Ft = convertFromdB(common.Ft_dB)
     Fr = convertFromdB(common.Fr_dB)
@@ -152,23 +159,26 @@ def radarEquationRange(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, NF_dB
 
     kTs = common.kT0*NF
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr )/ (math.pow(common.STERADIANS, 3) * snr * La * Lp)
-    En =  kTs 
+    Ps =  (Pavg * CPI * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr )/ (math.pow(common.STERADIANS, 3) * snr * La * Lp)
+    Pn =  kTs 
 
-    Rx_m = math.pow(N*Es/En,(1/4))
+    Rx_m = math.pow(N*Ps/Pn,(1/4))
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
 
-def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, NF_dB, cpiJammingAvg, mode):
+def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr, Pj_kW, Gj_dB, Bj_MHz, NF_dB, cpiJammingAvg, mode, PRI_us):
     # Return the range value
     Gt = convertFromdB(Gt_dB)
     Gr = convertFromdB(Gt_dB)
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
 
+    DC = pw_us/PRI_us
     Pt = convertPower_KiloWattToWatt(Pt_kw)
-    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Pavg = Pt * DC
+
+    CPI = N * convertTime_MicrosecondsToSeconds(PRI_us)
 
     Ft = convertFromdB(common.Ft_dB)
     Fr = convertFromdB(common.Fr_dB)
@@ -187,11 +197,11 @@ def radarEquationRange_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, snr,
 
     kTs = common.kT0*NF
 
-    Rx_m =  math.pow( (N * Pt * pw * Gt * rcs_m2 * Ft * Fr * (Bj) )/ (common.STERADIANS * snr * La * Lp * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjt * Fjp )), 1/2)
+    Rx_m =  math.pow( (Pavg * CPI * Gt * rcs_m2 * Ft * Fr * (Bj) )/ (common.STERADIANS * snr * La * Lp * (common.Qj * (cpiJammingAvg * Pj) * Gj * Fjt * Fjp )), 1/2)
 
     return convertRange_MeterToKiloMeter(Rx_m)
 
-def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, mode) :
+def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, mode, PRI_us) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -199,8 +209,12 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
 
+    DC = pw_us/PRI_us
     Pt = convertPower_KiloWattToWatt(Pt_kw)
-    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Pavg = Pt * DC
+
+    CPI = N * convertTime_MicrosecondsToSeconds(PRI_us)
+
     Rc = convertRange_KilometerToMeter(Rc_km)
 
     Pj= convertPower_KiloWattToWatt(Pj_kW)
@@ -228,10 +242,10 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     Ts = common.kT0*NF + Tj
 
-    Es =  Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
-    En =  common.Boltzman_k * Ts
+    Ps =  Pavg * CPI * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr / (math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
+    Pn =  common.Boltzman_k * Ts
 
-    SNR_D0 = Es/En
+    SNR_D0 = Ps/Pn
 
     SNR_CI = N * SNR_D0
 
@@ -239,7 +253,7 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     return SNR_dB
 
-def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg, mode) :
+def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg, mode, PRI_us) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -247,8 +261,12 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     waveLength = calculateWaveLength(common.c, Fc_MHz)
 
+    DC = pw_us/PRI_us
     Pt = convertPower_KiloWattToWatt(Pt_kw)
-    pw = convertTime_MicrosecondsToSeconds(pw_us)
+    Pavg = Pt * DC
+
+    CPI = N * convertTime_MicrosecondsToSeconds(PRI_us)
+
     Rc = convertRange_KilometerToMeter(Rc_km)
 
     Pj= convertPower_KiloWattToWatt(Pj_kW)
@@ -278,10 +296,10 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     Ts = common.kT0*NF + Tj_ij
 
-    Es =  (Pt * pw * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
-    En =  Ts
+    Ps =  (Pavg * CPI * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
+    Pn =  Ts
 
-    SNR = Es/En
+    SNR = Ps/Pn
 
     SNR_CI = N*SNR
 
