@@ -345,8 +345,8 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             radar_idx = coincPulse.radar_idx
             coincidencesInCPI = np.where(np.logical_and(olThreats[radar_idx].lIntervalCoincidences > (coincPulse.pulse_number - olThreats[radar_idx].oIntervalTIJStore.cpi), olThreats[radar_idx].lIntervalCoincidences <= coincPulse.pulse_number ))
 
-            currentCPISize = olThreats[radar_idx].oIntervalTIJStore.cpi if coincPulse.pulse_number > olThreats[radar_idx].oIntervalTIJStore.cpi else coincPulse.pulse_number
-            standalonePulsesInCPI = currentCPISize - coincidencesInCPI[0].__len__()
+            OuterIntervalPulses = 0 if coincPulse.pulse_number > olThreats[radar_idx].oIntervalTIJStore.cpi else (olThreats[radar_idx].oIntervalTIJStore.cpi - coincPulse.pulse_number) 
+            standalonePulsesInCPI = olThreats[radar_idx].oIntervalTIJStore.cpi - coincidencesInCPI[0].__len__() + OuterIntervalPulses
 
             # SNR and DETECTABILITY and INTEGRATION
             # TIJ - ZA
