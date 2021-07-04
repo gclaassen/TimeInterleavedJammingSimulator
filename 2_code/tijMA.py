@@ -16,7 +16,7 @@ class cModeWeigth:
     TT: float = 0.75
     MG: float = 1.0
 
-def threatValueCalculation(mode, ZA, inLethalRange, JPdifference_norm):
+def threatValueCalculation(mode, ZA, inLethalRange, JCP):
     modeVal = 0
     if mode == common.SEARCH:
         modeVal = cModeWeigth.TS
@@ -29,4 +29,4 @@ def threatValueCalculation(mode, ZA, inLethalRange, JPdifference_norm):
     else:
         None
 
-    return (cWeights.mode_weight * modeVal) + (cWeights.za_weight * ZA) + (cWeights.lethalRange_weight * inLethalRange) + (cWeights.JammingPercentage_weight * JPdifference_norm)
+    return (cWeights.mode_weight * modeVal) + (cWeights.za_weight * ZA) + (cWeights.lethalRange_weight * inLethalRange) + (cWeights.JammingPercentage_weight * JCP)

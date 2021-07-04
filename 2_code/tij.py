@@ -13,9 +13,7 @@ class cTIJ:
     ma: float = 0
 
     # JPP
-    jpp: float = 0
-    jpp_req: float = 0
-    jpp_dif: float = 0
+    jcp: float = 0
 
     cpi: float = 0
     cpi_startAt: int = 0
