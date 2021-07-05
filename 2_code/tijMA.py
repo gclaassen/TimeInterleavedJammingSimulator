@@ -4,10 +4,10 @@ import common
 # Sum should always equal to 1
 @dataclass(frozen=True, order=True)
 class cWeights:
-    mode_weight: float = 0.34
-    za_weight: float = 0.33
-    lethalRange_weight: float = 0.33
-    JammingPercentage_weight: float = 0.0
+    mode_weight: float = 0.3
+    za_weight: float = 0.1
+    lethalRange_weight: float = 0.2
+    JammingPercentage_weight: float = 0.4
 
 @dataclass(frozen=True, order=True)
 class cModeWeigth:

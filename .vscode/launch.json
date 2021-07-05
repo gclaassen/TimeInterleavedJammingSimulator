@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        "args": ["-i", "TrackingStart", "-t", "0"],
+        "args": ["-i", "JammingBin_01PRI_05Pdij_modeTest", "-t", "1"],
         "console": "integratedTerminal"
     }]
 }
