@@ -24,7 +24,7 @@ def argumentExtraction(argv):
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hv:i:", ["help", "visualize, intermediaryDirectory="])
+            argv, "hv:i:t:", ["help", "visualize", "intermediaryDirectory=", "testType="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -38,20 +38,25 @@ def argumentExtraction(argv):
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
             logging.info('Intermediary File: {0}'.format(interFile))
+        elif opt in ("-t", "--testType"):
+            TestType = int(arg)
+            logging.info('Test Type: {0}'.format(arg))
 
-    return [interFile, setViz]
+    return [interFile, TestType ,setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
     logging.info('~~~ARGUMENT LIST~~~\n')
     logging.info('-v:\tvisualize\n')
     logging.info('-i:\tintermediary directory\n')
+    logging.info('-t:\ttest type\n')
 
 def main(argv):
     doViz = False
     interFile = None
+    TestType = 0
 
-    [interFile, doViz] = argumentExtraction(argv)
+    [interFile, TestType, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
@@ -59,7 +64,7 @@ def main(argv):
     initThreatsForTij(olThreats, oJammer)
 
     #! Single jamming channel
-    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
+    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0], TestType)
     # save data
     saveThreatData(olThreats, interFile, oJammer.oChannel[0].oInterval.intervals_total)
 

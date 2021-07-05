@@ -103,15 +103,15 @@ colorbar.set_ticklabels(['TS', 'TA', 'TT', 'MG'])
 # ax.collections[0].colorbar.remove()
 
 coincidences = np.load(folder_selected+'/'+RESULTCOINCIDENCEPERCENTAGELOG+RESULTFILEEXT)
-sb.heatmap(coincidences, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax2)
+sb.heatmap(coincidences, cmap="Greys", square=True, linewidth=1, linecolor='w', ax=ax2)
 colorbar = ax2.collections[0].colorbar
 
 jamming = np.load(folder_selected+'/'+RESULTJAMMINGLOG+RESULTFILEEXT)
-sb.heatmap(jamming, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax3, vmin=0)
+sb.heatmap(jamming, cmap="Greys", square=True, linewidth=1, linecolor='w', ax=ax3, vmin=0)
 colorbar = ax3.collections[0].colorbar
 
 za = np.load(folder_selected+'/'+RESULTRANGELOG+RESULTFILEEXT)
-sb.heatmap(za, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax4)
+sb.heatmap(za, cmap="Greys", square=True, linewidth=1, linecolor='w', ax=ax4)
 colorbar = ax4.collections[0].colorbar
 
 Rws = np.load(folder_selected+'/'+RESULTLETHALRANGELOG+RESULTFILEEXT)

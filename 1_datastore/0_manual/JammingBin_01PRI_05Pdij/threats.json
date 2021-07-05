@@ -1,0 +1,928 @@
+{
+  "threats": [
+    {
+      "radar_id": 1,
+      "radar_name": "AN/AWG-9",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": -35000,
+        "Y_coord": 80000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":8.5,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 25,
+            "gain": 35,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 30,
+            "pri_us": 300,
+            "cpi": 64,
+            "cpi_before_interval": 50,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "power_peak_kW": 25,
+            "gain": 35,
+            "frequency_MHz": 7400,
+            "pulse_width_us": 1.0,
+            "pri_us": 150,
+            "cpi": 64,
+            "cpi_before_interval": 8,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 25,
+            "gain": 35,
+            "frequency_MHz": 7400,
+            "pulse_width_us": 0.3,
+            "pri_us": 50,
+            "cpi": 128,
+            "cpi_before_interval": 64,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 3,
+            "power_peak_kW": 25,
+            "gain": 35,
+            "frequency_MHz": 7400,
+            "pulse_width_us": 0.1,
+            "pri_us": 5,
+            "cpi": 128,
+            "cpi_before_interval": 10,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 2,
+      "radar_name": "AN/APG",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": -100000,
+        "Y_coord": 50000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 200,
+            "gain": 30,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.2,
+            "pri_us": 999.8,
+            "cpi": 32,
+            "cpi_before_interval": 3,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "power_peak_kW": 200,
+            "gain": 30,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.81,
+            "pri_us": 999.19,
+            "cpi": 64,
+            "cpi_before_interval": 5,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 200,
+            "gain": 30,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.1,
+            "pri_us": 2499.9,
+            "cpi": 128,
+            "cpi_before_interval": 3,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 3,
+            "power_peak_kW": 200,
+            "gain": 30,
+            "frequency_MHz": 7400,
+            "pulse_width_us": 0.1,
+            "pri_us": 1.9,
+            "cpi": 64,
+            "cpi_before_interval": 30,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 3,
+      "radar_name": "SA-8",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": -50000,
+        "Y_coord": 100000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 25,
+            "gain": 31,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 100,
+            "pri_us": 1900,
+            "cpi": 128,
+            "cpi_before_interval": 3,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "power_peak_kW": 25,
+            "gain": 31,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.1,
+            "pri_us": 999.1,
+            "cpi": 128,
+            "cpi_before_interval": 100,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 25,
+            "gain": 31,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.1,
+            "pri_us": 49.9,
+            "cpi": 128,
+            "cpi_before_interval": 39,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 25,
+            "gain": 31,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.587,
+            "pri_us": 1507,
+            "cpi": 128,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 4,
+      "radar_name": "AN/SPG-51",
+      "ws_range_km": 300,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 250000,
+        "Y_coord": 80000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 1,
+            "power_peak_kW": 100,
+            "gain": 32,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 4,
+            "pri_us": 1500,
+            "cpi": 32,
+            "cpi_before_interval": 2,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 100,
+            "gain": 32,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 4,
+            "pri_us": 1500,
+            "cpi": 32,
+            "cpi_before_interval": 2,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 100,
+            "gain": 32,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 2,
+            "pri_us": 1000,
+            "cpi": 128,
+            "cpi_before_interval": 34,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 100,
+            "gain": 32,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 2,
+            "pri_us": 1000,
+            "cpi": 128,
+            "cpi_before_interval": 64,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 5,
+      "radar_name": "FLAPWHEEL",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 150000,
+        "Y_coord": -10000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 40,
+            "gain": 35,
+            "frequency_MHz": 9200,
+            "pulse_width_us": 0.725,
+            "pri_us": 125,
+            "cpi": 32,
+            "cpi_before_interval": 9,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 40,
+            "gain": 35,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.04,
+            "pri_us": 125,
+            "cpi": 32,
+            "cpi_before_interval": 10,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 40,
+            "gain": 35,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.04,
+            "pri_us": 125,
+            "cpi": 128,
+            "cpi_before_interval": 47,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 40,
+            "gain": 35,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.04,
+            "pri_us": 125,
+            "cpi": 64,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 6,
+      "radar_name": "SA-6",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 95000,
+        "Y_coord": 8000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 200,
+            "gain": 44,
+            "frequency_MHz": 7800,
+            "pulse_width_us": 0.05,
+            "pri_us": 925,
+            "cpi": 64,
+            "cpi_before_interval": 12,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 200,
+            "gain": 44,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.05,
+            "pri_us": 925,
+            "cpi": 64,
+            "cpi_before_interval": 4,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 200,
+            "gain": 44,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.05,
+            "pri_us": 952,
+            "cpi": 64,
+            "cpi_before_interval": 2,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 200,
+            "gain": 44,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.05,
+            "pri_us": 925,
+            "cpi": 64,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 7,
+      "radar_name": "AN/SPG-32",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 25000,
+        "Y_coord": 150000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 10,
+            "gain": 27,
+            "frequency_MHz": 5100,
+            "pulse_width_us": 0.05,
+            "pri_us": 100,
+            "cpi": 64,
+            "cpi_before_interval": 30,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 27,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 0.05,
+            "pri_us": 100,
+            "cpi": 64,
+            "cpi_before_interval": 10,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 27,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 0.05,
+            "pri_us": 100,
+            "cpi": 128,
+            "cpi_before_interval": 40,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 10,
+            "gain": 27,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 0.05,
+            "pri_us": 100,
+            "cpi": 128,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 8,
+      "radar_name": "SA-6",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 115000,
+        "Y_coord": 15000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 50,
+            "gain": 27,
+            "frequency_MHz": 5000,
+            "pulse_width_us": 0.05,
+            "pri_us": 500,
+            "cpi": 32,
+            "cpi_before_interval": 4,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 50,
+            "gain": 27,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.5,
+            "pri_us": 250,
+            "cpi": 64,
+            "cpi_before_interval": 10,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 50,
+            "gain": 27,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.08,
+            "pri_us": 125,
+            "cpi": 128,
+            "cpi_before_interval": 22,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 50,
+            "gain": 27,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.5,
+            "pri_us": 60,
+            "cpi": 128,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 9,
+      "radar_name": "FLAPWHEEL",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 130000,
+        "Y_coord": -1100,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 10,
+            "gain": 34,
+            "frequency_MHz": 9200,
+            "pulse_width_us": 0.85,
+            "pri_us": 1000,
+            "cpi": 64,
+            "cpi_before_interval": 25,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 34,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.85,
+            "pri_us": 1000,
+            "cpi": 64,
+            "cpi_before_interval": 10,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 34,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.85,
+            "pri_us": 1000,
+            "cpi": 64,
+            "cpi_before_interval": 47,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 10,
+            "gain": 34,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.85,
+            "pri_us": 1000,
+            "cpi": 64,
+            "cpi_before_interval": 9,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 10,
+      "radar_name": "FLAPWHEEL",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": 70000,
+        "Y_coord": -5500,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 150,
+            "gain": 28,
+            "frequency_MHz": 9200,
+            "pulse_width_us": 0.337,
+            "pri_us": 337,
+            "cpi": 64,
+            "cpi_before_interval": 17,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 150,
+            "gain": 28,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.337,
+            "pri_us": 337,
+            "cpi": 64,
+            "cpi_before_interval": 10,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 150,
+            "gain": 28,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 0.337,
+            "pri_us": 100,
+            "cpi": 128,
+            "cpi_before_interval": 10,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 150,
+            "gain": 28,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 0.337,
+            "pri_us": 50,
+            "cpi": 64,
+            "cpi_before_interval": 4,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 11,
+      "radar_name": "AN/TPS-44",
+      "ws_range_km": 200,
+      "start_mode": 2,
+      "location": {
+        "X_coord": -55000,
+        "Y_coord": -80000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":7,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 10,
+            "gain": 18,
+            "frequency_MHz": 1250,
+            "pulse_width_us": 4.2,
+            "pri_us": 3741,
+            "cpi": 32,
+            "cpi_before_interval": 31,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 18,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 4.2,
+            "pri_us": 2741,
+            "cpi": 32,
+            "cpi_before_interval": 10,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 10,
+            "gain": 18,
+            "frequency_MHz": 9700,
+            "pulse_width_us": 4.2,
+            "pri_us": 1741,
+            "cpi": 128,
+            "cpi_before_interval": 27,
+            "Pd": 0.8,
+            "Pfa": 1e-6,
+            "Pd_min": 0.3,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 1,
+            "power_peak_kW": 10,
+            "gain": 18,
+            "frequency_MHz": 9000,
+            "pulse_width_us": 4.2,
+            "pri_us": 741,
+            "cpi": 128,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    },
+    {
+      "radar_id": 12,
+      "radar_name": "CMR-90",
+      "ws_range_km": 100,
+      "start_mode": 2,
+      "location": {
+        "X_coord": -3500,
+        "Y_coord": 8000,
+        "Z_coord": 0
+      },
+      "emitters": {
+        "emitter_id": 0,
+        "noise_figure_dB":8.5,
+        "modes": [
+          {
+            "mode_id": 0,
+            "type": 0,
+            "power_peak_kW": 12,
+            "gain": 35,
+            "frequency_MHz": 9375,
+            "pulse_width_us": 0.5,
+            "pri_us": 800,
+            "cpi": 32,
+            "cpi_before_interval": 50,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 1,
+            "type": 1,
+            "power_peak_kW": 10,
+            "gain": 35,
+            "frequency_MHz": 9375,
+            "pulse_width_us": 0.5,
+            "pri_us": 400,
+            "cpi": 32,
+            "cpi_before_interval": 8,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 2,
+            "type": 2,
+            "power_peak_kW": 12,
+            "gain": 35,
+            "frequency_MHz": 9375,
+            "pulse_width_us": 0.06,
+            "pri_us": 400,
+            "cpi": 64,
+            "cpi_before_interval": 12,
+            "Pd": 0.5,
+            "Pfa": 1e-6,
+            "Pd_min": 0.1,
+            "Pd_cumulative": 1
+          },
+          {
+            "mode_id": 3,
+            "type": 3,
+            "power_peak_kW": 12,
+            "gain": 35,
+            "frequency_MHz": 9375,
+            "pulse_width_us": 0.06,
+            "pri_us": 400,
+            "cpi": 64,
+            "cpi_before_interval": 9,
+            "Pd": 0.9,
+            "Pfa": 1e-6,
+            "Pd_min": 0.5,
+            "Pd_cumulative": 1
+          }
+        ]
+      }
+    }
+  ]
+}

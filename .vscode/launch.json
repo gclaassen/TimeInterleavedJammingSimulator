@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        "args": ["-i", "TrackingStart"],
+        "args": ["-i", "TrackingStart", "-t", "0"],
         "console": "integratedTerminal"
     }]
 }

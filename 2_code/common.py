@@ -44,6 +44,9 @@ RESULTJAMMINGLOG = 'resultJammingLog'
 
 RESULTFILEEXT = '.npy'
 
+TEST_TIJ = 0
+TEST_HIGHESTMODE = 1
+
 #string Radar Modes
 sSEARCH              = 'TS'
 sACQUISITION         = 'TA'
