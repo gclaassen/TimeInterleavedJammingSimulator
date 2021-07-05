@@ -124,11 +124,11 @@ def saveThreatData(olThreats, interFile, intervalSize):
     else:
         os.makedirs(resultPath)
 
-    save(resultPath + common.RESULTMODESLOG + common.RESULTFILEEXT, vlModeLog)
-    save(resultPath + common.RESULTRANGELOG + common.RESULTFILEEXT, vlRangeLog)
-    save(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog)
-    save(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog)
-    save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog)
+    save(resultPath + common.RESULTMODESLOG + common.RESULTFILEEXT, vlModeLog[::-1])
+    save(resultPath + common.RESULTRANGELOG + common.RESULTFILEEXT, vlRangeLog[::-1])
+    save(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog[::-1])
+    save(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog[::-1])
+    save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog[::-1])
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -596,4 +596,4 @@ def intervalThreatLoggingData(olThreats, index):
         threat.lIntervalLethalRangeLog[index] = threat.oIntervalTIJStore.lethalRangeVal 
 
         # intermittent jamming requirement
-        threat.lIntervalJammingLog[index] = threat.oIntervalTIJStore.jammingPercentage 
+        threat.lIntervalJammingLog[index] = threat.oIntervalTIJStore.Njamming

@@ -290,11 +290,11 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     NF = convertFromdB(NF_dB)
 
-    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fjp * Fr) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * common.Boltzman_k * Bj * Lja )
+    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fjp * Fr) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * Bj * Lja )
 
     Tj_ij = cpiJammingAvg * Tj
 
-    Ts = common.kT0*NF + Tj_ij
+    Ts = common.kT0*NF + common.Boltzman_k*Tj_ij
 
     Ps =  (Pavg * CPI * Gt * Gr * rcs_m2 * math.pow(waveLength,2) * Ft * Fr)/(math.pow(common.STERADIANS, 3) * math.pow(Rc, 4) * La * Lp )
     Pn =  Ts

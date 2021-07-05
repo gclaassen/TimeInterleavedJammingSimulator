@@ -1,9 +1,10 @@
 import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
-import tkinter as tk
 from tkinter import filedialog
+from tkinter import *
 import os
+import matplotlib.gridspec as gridspec
 
 def set_size(width, fraction=1, subplots=(1, 1)):
     """Set figure dimensions to avoid scaling in LaTeX.
@@ -65,33 +66,60 @@ tex_fonts = {
 
 plt.rcParams.update(tex_fonts)
 
-root = tk.Tk()
+root = Tk()
 root.withdraw()
+folder_selected = filedialog.askdirectory()
 
-file_path = filedialog.askopenfilename()
+RESULTMODESLOG = 'modesChangeLog'
+RESULTRANGELOG = 'rangeLog'
+RESULTLETHALRANGELOG = 'lethalrangeLog'
+RESULTCOINCIDENCEPERCENTAGELOG = 'coincidenePercLog'
+RESULTJAMMINGLOG = 'resultJammingLog'
 
-X = np.load(file_path)
-file_name = os.path.basename(os.path.normpath(file_path))
+RESULTFILEEXT = '.npy'
 
-[file_name_wo_ext, ext] = os.path.splitext(file_name)
+# Here we create a figure instance, and multiple subplots
+# fig = plt.figure(figsize=set_size('thesis'))
+fig = plt.figure(constrained_layout=True)
+gs = fig.add_gridspec(3, 2)
+ax1 = fig.add_subplot(gs[0, :])
+ax1.set_title('Mode change per interval')
+ax2 = fig.add_subplot(gs[1, 0])
+ax2.set_title('Coincidences percentage per interval')
+ax3 = fig.add_subplot(gs[2, 0])
+ax3.set_title('Minimum jamming pulses per CPI')
+ax4 = fig.add_subplot(gs[1, 1])
+ax4.set_title('Zone assessment per interval')
+ax5 = fig.add_subplot(gs[2, 1])
+ax5.set_title('Lethal range flag')
 
-if(file_name == "modesChangeLog.npy"):
-    fig,ax = plt.subplots(1,1,figsize=set_size('thesis'))
+modes = np.load(folder_selected+'/'+RESULTMODESLOG+RESULTFILEEXT)
+my_colors=['#008000', '#fdb827', '#D11919', '#2a3439']
+# my_colors=['#008000', '#fdb827']
+sb.heatmap(modes, cmap=my_colors, square=True, linewidth=1, linecolor='w', ax=ax1, vmin=0, vmax=3)
+colorbar = ax1.collections[0].colorbar
+colorbar.set_ticks([0, 1, 2, 3])
+colorbar.set_ticklabels(['TS', 'TA', 'TT', 'MG'])
+# ax.collections[0].colorbar.remove()
 
-    my_colors=['#008000', '#fdb827', '#D11919', '#2a3439']
-    # my_colors=['#008000', '#fdb827']
-    sb.heatmap(X, cmap=my_colors, square=True, linewidth=1, linecolor='w')
-    colorbar = ax.collections[0].colorbar
-    colorbar.set_ticks([0, 1, 2, 3])
-    colorbar.set_ticklabels(['TS', 'TA', 'TT', 'MG'])
-    ax.collections[0].colorbar.remove()
+coincidences = np.load(folder_selected+'/'+RESULTCOINCIDENCEPERCENTAGELOG+RESULTFILEEXT)
+sb.heatmap(coincidences, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax2)
+colorbar = ax2.collections[0].colorbar
 
-    plt.savefig(file_name_wo_ext + '.pdf', orientation='landscape')
-    plt.show()
+jamming = np.load(folder_selected+'/'+RESULTJAMMINGLOG+RESULTFILEEXT)
+sb.heatmap(jamming, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax3, vmin=0)
+colorbar = ax3.collections[0].colorbar
 
-else:
-    fig,ax = plt.subplots(1,1,figsize=set_size('thesis'))
-    sb.heatmap(X, cmap="rocket_r", square=True, linewidth=1, linecolor='w')
-    colorbar = ax.collections[0].colorbar
-    plt.savefig(file_name_wo_ext + '.pdf', orientation='landscape')
-    plt.show()
+za = np.load(folder_selected+'/'+RESULTRANGELOG+RESULTFILEEXT)
+sb.heatmap(za, cmap="rocket_r", square=True, linewidth=1, linecolor='w', ax=ax4)
+colorbar = ax4.collections[0].colorbar
+
+Rws = np.load(folder_selected+'/'+RESULTLETHALRANGELOG+RESULTFILEEXT)
+Rws_colors=['#008000', '#D11919']
+sb.heatmap(Rws, cmap=Rws_colors, square=True, linewidth=1, linecolor='w', ax=ax5, vmin=0, vmax=1)
+colorbar = ax5.collections[0].colorbar
+colorbar.set_ticks([0, 1])
+
+
+# plt.savefig(file_name_wo_ext + '.pdf', orientation='landscape')
+plt.show()
