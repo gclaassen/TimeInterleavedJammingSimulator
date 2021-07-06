@@ -192,7 +192,7 @@
             "pulse_width_us": 0.5,
             "pri_us": 566,
             "cpi": 64,
-            "cpi_before_interval": 30,
+            "cpi_before_interval": 10,
             "Pd": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
