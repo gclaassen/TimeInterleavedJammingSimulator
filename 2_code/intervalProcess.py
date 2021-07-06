@@ -66,7 +66,9 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
         threat.lIntervalLethalRangeLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lIntervalJammingLog = np.zeros(oChannel.oInterval.intervals_total)
         lTempIntervalLog = np.zeros(oChannel.oInterval.intervals_total+1)
-        threat.lIntervalModeChangeLog = threat.lIntervalModeChangeLog + lTempIntervalLog
+        threat.lIntervalJammingLog 
+        threat.lIntervalModeChangeLog = np.zeros(oChannel.oInterval.intervals_total+1)
+        threat.lIntervalModeChangeLog[0] = threat.m_mode_current_ID
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)

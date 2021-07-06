@@ -27,7 +27,7 @@ class cThreat:
     oThreatPulseLib = np.zeros(common.INTERVAL_LIB_SIZE)
     oIntervalTIJStore = None
     lIntervalCoincidences = None
-    lIntervalModeChangeLog = np.zeros(1)
+    lIntervalModeChangeLog = None
     lIntervalCoincidencePercentageLog = None
     lIntervalZoneAssessmentLog = None
     lIntervalLethalRangeLog = None
@@ -75,7 +75,6 @@ class cThreat:
             self.m_mode_current_ID = startMode
             self.m_emitter_current = self.m_emitters[0][self.lModesForEmitter.index(startMode)]
             self.m_mode_current_Name = common.dictModes[self.m_mode_current_ID]
-            self.lIntervalModeChangeLog[0] = self.m_mode_current_ID
 
 def listAllModesInEmitter(emitterObject):
     lModesForEmitter = []
