@@ -337,9 +337,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
     __coincBarDescr = "Interval " + str(intervalIdx)
     __coincBar = tqdm(total=lCoincidenceLib.__len__(),desc=__coincBarDescr)
     for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
-        # logging.debug("------------------------------------------------------------")
-        # logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
-        # logging.debug("------------------------------------------------------------")
+        logging.debug("------------------------------------------------------------")
+        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
+        logging.debug("------------------------------------------------------------")
 
         __loggingTijData = []
 
@@ -349,7 +349,8 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             coincidencesInCPI = np.where(np.logical_and(olThreats[radar_idx].lIntervalCoincidences > (coincPulse.pulse_number - olThreats[radar_idx].oIntervalTIJStore.cpi), olThreats[radar_idx].lIntervalCoincidences <= coincPulse.pulse_number ))
 
             OuterIntervalPulses = 0 if coincPulse.pulse_number > olThreats[radar_idx].oIntervalTIJStore.cpi else (olThreats[radar_idx].oIntervalTIJStore.cpi - coincPulse.pulse_number) 
-            standalonePulsesInCPI = olThreats[radar_idx].oIntervalTIJStore.cpi - coincidencesInCPI[0].__len__() + OuterIntervalPulses
+            coincidencesInCPI = coincidencesInCPI[0].__len__() + OuterIntervalPulses
+            standalonePulsesInCPI = olThreats[radar_idx].oIntervalTIJStore.cpi - coincidencesInCPI
 
             # SNR and DETECTABILITY and INTEGRATION
             # TIJ - ZA
@@ -398,26 +399,25 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             Njamming = 0
             for Njamming in range(1, olThreats[radar_idx].oIntervalTIJStore.cpi+1):
                 olThreats[radar_idx].oIntervalTIJStore.jammingPercentage = Njamming/olThreats[radar_idx].oIntervalTIJStore.cpi
-                [bJppReached, olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB, olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved] = radarmath.radarEquationSNR_CPIJP(
-                    olThreats[radar_idx].oIntervalTIJStore.cpi,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
-                    oPlatform.rcs,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
-                    olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
-                    oJammer.jammer_power_kW,
-                    oJammer.jammer_gain_dB,
-                    oJammer.jammer_bandwidth_MHz,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION_MIN],
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM],
-                    olThreats[radar_idx].oIntervalTIJStore.jammingPercentage,
-                    olThreats[radar_idx].m_mode_current_ID,
-                    olThreats[radar_idx].m_emitter_current[common.THREAT_PRI_US])
+                olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                olThreats[radar_idx].oIntervalTIJStore.cpi,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PW_US],
+                oPlatform.rcs,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_FREQ_MHZ],
+                olThreats[radar_idx].oIntervalTIJStore.platformDistance_km,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_EMITTER_NOISEFIGURE_DB],
+                olThreats[radar_idx].oIntervalTIJStore.jammingPercentage * oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz,
+                olThreats[radar_idx].m_mode_current_ID,
+                olThreats[radar_idx].m_emitter_current[common.THREAT_PRI_US])
 
-                if bJppReached == True:
+                olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved = radarmath.calculatePd(olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_FALSE_ALARM], radarmath.convertFromdB(olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB), 'CI')
+
+                if(olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved <= olThreats[radar_idx].m_emitter_current[common.THREAT_PROB_DETECTION_MIN]):
                     break
 
             olThreats[radar_idx].oIntervalTIJStore.Njamming = Njamming
@@ -432,7 +432,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             else:
                 # jamming coincidence percentage
                 if olThreats[radar_idx].oIntervalTIJStore.Njamming > standalonePulsesInCPI:
-                    olThreats[radar_idx].oIntervalTIJStore.jcp = (olThreats[radar_idx].oIntervalTIJStore.Njamming - standalonePulsesInCPI)/coincidencesInCPI[0].__len__()
+                    snp = standalonePulsesInCPI / olThreats[radar_idx].oIntervalTIJStore.cpi
+                    olThreats[radar_idx].oIntervalTIJStore.jcp = olThreats[radar_idx].oIntervalTIJStore.Njamming / olThreats[radar_idx].oIntervalTIJStore.cpi - snp
+                    cn = coincidencesInCPI / olThreats[radar_idx].oIntervalTIJStore.cpi
                 elif olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI:
                     olThreats[radar_idx].oIntervalTIJStore.jcp = 0
 
@@ -451,7 +453,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB,
                 olThreats[radar_idx].oIntervalTIJStore.Pd_min_achieved,
                 coincPulse.pulse_number,
-                coincidencesInCPI[0].__len__(),
+                coincidencesInCPI,
                 olThreats[radar_idx].oIntervalTIJStore.Njamming,
                 standalonePulsesInCPI,
                 olThreats[radar_idx].oIntervalTIJStore.jcp,
