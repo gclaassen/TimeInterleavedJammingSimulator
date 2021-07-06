@@ -337,9 +337,9 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
     __coincBarDescr = "Interval " + str(intervalIdx)
     __coincBar = tqdm(total=lCoincidenceLib.__len__(),desc=__coincBarDescr)
     for coincidenceIdx, coincidence in enumerate(lCoincidenceLib):
-        logging.debug("------------------------------------------------------------")
-        logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
-        logging.debug("------------------------------------------------------------")
+        # logging.debug("------------------------------------------------------------")
+        # logging.debug( "COINCIDENCE NUMBER: %d SIZE: %d", coincidenceIdx, lCoincidenceLib.__len__())
+        # logging.debug("------------------------------------------------------------")
 
         __loggingTijData = []
 
