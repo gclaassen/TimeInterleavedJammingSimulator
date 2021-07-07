@@ -65,10 +65,10 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
         threat.lIntervalZoneAssessmentLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lIntervalLethalRangeLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lIntervalJammingLog = np.zeros(oChannel.oInterval.intervals_total)
-        lTempIntervalLog = np.zeros(oChannel.oInterval.intervals_total+1)
-        threat.lIntervalJammingLog 
         threat.lIntervalModeChangeLog = np.zeros(oChannel.oInterval.intervals_total+1)
         threat.lIntervalModeChangeLog[0] = threat.m_mode_current_ID
+
+    logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer)
 
     for intervalIdx in range(0, oChannel.oInterval.intervals_total):
         logging.info("\nInterval %s of %s\n", intervalIdx+1, oChannel.oInterval.intervals_total)
@@ -85,9 +85,10 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
         # __logging__
         # Get the starting ranges at each new interval
         __loggingRangeData = []
-        for threatIdx, threatItem in enumerate(olThreats):
-            RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart_us, oPlatform.flightPath, threatItem.location)
 
+        for threatIdx, threatItem in enumerate(olThreats):
+            ## calculate current range
+            RadarDistance_km = za.calculateplatformDistance_km(oChannel.oInterval.interval_current_Tstart_us, oPlatform.flightPath, threatItem.location)
             ## calculate max range
             threatItem.oIntervalTIJStore.maxRadarRange_km = radarmath.radarEquationRange(
                 threatItem.oIntervalTIJStore.cpi,
@@ -621,3 +622,110 @@ def intervalThreatLoggingData(olThreats, index):
 
         # intermittent jamming requirement
         threat.lIntervalJammingLog[index] = threat.oIntervalTIJStore.jammingPercentage
+
+def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
+    
+    __loggingThreatHeader = ['Threat ID', 'Mode ID', 'Rm [km]', 'Rb km', 'Rc [km]', 'Pd min Rm', 'Pd Rc', 'IJ Rm', 'IJ Rc']
+    __loggingThreatData = []
+
+    for __, threat in enumerate(olThreats):
+        for __, mode in enumerate(threat.m_emitters[0]):
+            SNR_n = radarmath.calculateSNR(mode[common.THREAT_PROB_DETECTION], mode[common.THREAT_PROB_FALSE_ALARM], mode[common.THREAT_CPI], 'CI')
+
+            platformDistance_km = za.calculateplatformDistance_km(0, oPlatform.flightPath, threat.location)
+
+            ## calculate max range
+            maxRadarRange_km = radarmath.radarEquationRange(
+                mode[common.THREAT_CPI],
+                mode[common.THREAT_PEAKPOWER_KW],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_PW_US],
+                oPlatform.rcs,
+                mode[common.THREAT_FREQ_MHZ],
+                SNR_n,
+                mode[common.THREAT_EMITTER_NOISEFIGURE_DB],
+                mode[common.THREAT_MODE_ID],
+                mode[common.THREAT_PRI_US]
+            )
+
+            ## calculate the burnthrough range
+            burnthroughRange_km = radarmath.radarEquationRange_CPIJP(
+                    mode[common.THREAT_CPI],
+                    mode[common.THREAT_PEAKPOWER_KW],
+                    mode[common.THREAT_GAIN],
+                    mode[common.THREAT_GAIN],
+                    mode[common.THREAT_PW_US],
+                    oPlatform.rcs,
+                    mode[common.THREAT_FREQ_MHZ],
+                    SNR_n,
+                    oJammer.jammer_power_kW,
+                    oJammer.jammer_gain_dB,
+                    oJammer.jammer_bandwidth_MHz,
+                    mode[common.THREAT_EMITTER_NOISEFIGURE_DB],
+                    1.0,
+                    mode[common.THREAT_MODE_ID],
+                    mode[common.THREAT_PRI_US]
+            )
+
+            Njamming = 0
+            for Njamming in range(1, mode[common.THREAT_CPI],+1):
+                jammingPercentage = Njamming/mode[common.THREAT_CPI]
+                SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                mode[common.THREAT_CPI],
+                mode[common.THREAT_PEAKPOWER_KW],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_PW_US],
+                oPlatform.rcs,
+                mode[common.THREAT_FREQ_MHZ],
+                platformDistance_km,
+                mode[common.THREAT_EMITTER_NOISEFIGURE_DB],
+                jammingPercentage * oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz,
+                mode[common.THREAT_MODE_ID],
+                mode[common.THREAT_PRI_US])
+
+                Pd_min_achieved_plf_range = radarmath.calculatePd(mode[common.THREAT_PROB_FALSE_ALARM], radarmath.convertFromdB(SNR_INJ_dB), 'CI')
+
+                if(Pd_min_achieved_plf_range <= mode[common.THREAT_PROB_DETECTION_MIN]):
+                    break
+
+            Njamming_maxRange = 0
+            for Njamming_maxRange in range(1, mode[common.THREAT_CPI],+1):
+                jammingPercentage = Njamming_maxRange/mode[common.THREAT_CPI]
+                SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                mode[common.THREAT_CPI],
+                mode[common.THREAT_PEAKPOWER_KW],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_GAIN],
+                mode[common.THREAT_PW_US],
+                oPlatform.rcs,
+                mode[common.THREAT_FREQ_MHZ],
+                maxRadarRange_km,
+                mode[common.THREAT_EMITTER_NOISEFIGURE_DB],
+                jammingPercentage * oJammer.jammer_power_kW,
+                oJammer.jammer_gain_dB,
+                oJammer.jammer_bandwidth_MHz,
+                mode[common.THREAT_MODE_ID],
+                mode[common.THREAT_PRI_US])
+
+                Pd_min_achieved_max_range = radarmath.calculatePd(mode[common.THREAT_PROB_FALSE_ALARM], radarmath.convertFromdB(SNR_INJ_dB), 'CI')
+
+                if(Pd_min_achieved_max_range <= mode[common.THREAT_PROB_DETECTION_MIN]):
+                    break
+
+            __loggingThreatData.append([
+                threat.m_radar_id,
+                mode[common.THREAT_MODE_ID],
+                maxRadarRange_km,
+                burnthroughRange_km,
+                platformDistance_km,
+                Pd_min_achieved_max_range,
+                Pd_min_achieved_plf_range,
+                Njamming_maxRange,
+                Njamming])
+
+    __loggingtable = tabulate(__loggingThreatData, __loggingThreatHeader, tablefmt="github")
+    logging.debug( "\n\n"+ __loggingtable +"\n\n")

@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        "args": ["-i", "JammingBin_mixModes", "-t", "0"],
+        "args": ["-i", "Default", "-t", "0"],
         "console": "integratedTerminal"
     }]
 }
