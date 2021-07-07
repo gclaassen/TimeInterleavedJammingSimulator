@@ -1,5 +1,5 @@
 {
-    "jamming_envelope_bin_size": 0.05,
+    "jamming_envelope_bin_size": 0.10,
     "power_peak_kw":0.2,
     "gain_dB":10,
     "bandwidth_MHz":50,
