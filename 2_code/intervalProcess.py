@@ -433,9 +433,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             else:
                 # jamming coincidence percentage
                 if olThreats[radar_idx].oIntervalTIJStore.Njamming > standalonePulsesInCPI:
-                    snp = standalonePulsesInCPI / olThreats[radar_idx].oIntervalTIJStore.cpi
-                    olThreats[radar_idx].oIntervalTIJStore.jcp = olThreats[radar_idx].oIntervalTIJStore.Njamming / olThreats[radar_idx].oIntervalTIJStore.cpi - snp
-                    cn = coincidencesInCPI / olThreats[radar_idx].oIntervalTIJStore.cpi
+                    olThreats[radar_idx].oIntervalTIJStore.jcp = (olThreats[radar_idx].oIntervalTIJStore.Njamming - standalonePulsesInCPI) /coincidencesInCPI
                 elif olThreats[radar_idx].oIntervalTIJStore.Njamming <= standalonePulsesInCPI:
                     olThreats[radar_idx].oIntervalTIJStore.jcp = 0
 
