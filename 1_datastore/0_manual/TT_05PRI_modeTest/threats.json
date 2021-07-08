@@ -3,10 +3,10 @@
     {
       "radar_id": 1,
       "radar_name": "FW",
-      "ws_range_km": 200,
+      "ws_range_km": 50,
       "start_mode": 2,
       "location": {
-        "X_coord": -5000,
+        "X_coord": -100000,
         "Y_coord": 30000,
         "Z_coord": 0
       },
@@ -80,7 +80,7 @@
     {
       "radar_id": 2,
       "radar_name": "LR",
-      "ws_range_km": 200,
+      "ws_range_km": 75,
       "start_mode": 2,
       "location": {
         "X_coord": -75000,
@@ -157,7 +157,7 @@
     {
       "radar_id": 3,
       "radar_name": "SA6",
-      "ws_range_km": 200,
+      "ws_range_km": 40,
       "start_mode": 2,
       "location": {
         "X_coord": -50000,
@@ -311,7 +311,7 @@
     {
       "radar_id": 5,
       "radar_name": "GD",
-      "ws_range_km": 200,
+      "ws_range_km": 50,
       "start_mode": 2,
       "location": {
         "X_coord": 25000,
@@ -465,7 +465,7 @@
     {
       "radar_id": 7,
       "radar_name": "Hedgehog",
-      "ws_range_km": 200,
+      "ws_range_km": 150,
       "start_mode": 2,
       "location": {
         "X_coord": 25000,
@@ -542,7 +542,7 @@
     {
       "radar_id": 8,
       "radar_name": "Jerry",
-      "ws_range_km": 200,
+      "ws_range_km": 150,
       "start_mode": 2,
       "location": {
         "X_coord": 115000,
@@ -619,7 +619,7 @@
     {
       "radar_id": 9,
       "radar_name": "Casper",
-      "ws_range_km": 200,
+      "ws_range_km": 145,
       "start_mode": 2,
       "location": {
         "X_coord": 130000,
@@ -696,7 +696,7 @@
     {
       "radar_id": 10,
       "radar_name": "Low Song",
-      "ws_range_km": 200,
+      "ws_range_km": 80,
       "start_mode": 2,
       "location": {
         "X_coord": 70000,
@@ -773,7 +773,7 @@
     {
       "radar_id": 11,
       "radar_name": "AN/SPQ-9B Spppk 9",
-      "ws_range_km": 200,
+      "ws_range_km": 100,
       "start_mode": 2,
       "location": {
         "X_coord": -55000,
@@ -850,7 +850,7 @@
     {
       "radar_id": 12,
       "radar_name": "CMR-90",
-      "ws_range_km": 100,
+      "ws_range_km": 30,
       "start_mode": 2,
       "location": {
         "X_coord": -35000,
@@ -927,7 +927,7 @@
     {
       "radar_id": 13,
       "radar_name": "SCANTER",
-      "ws_range_km": 100,
+      "ws_range_km": 80,
       "start_mode": 2,
       "location": {
         "X_coord": 65500,
@@ -1004,7 +1004,7 @@
     {
       "radar_id": 14,
       "radar_name": "Bar Lock 170",
-      "ws_range_km": 100,
+      "ws_range_km": 50,
       "start_mode": 2,
       "location": {
         "X_coord": 50000,
@@ -1081,7 +1081,7 @@
     {
       "radar_id": 15,
       "radar_name": "AN/SPS-55",
-      "ws_range_km": 100,
+      "ws_range_km": 80,
       "start_mode": 2,
       "location": {
         "X_coord": 11000,
@@ -1158,7 +1158,7 @@
     {
       "radar_id": 16,
       "radar_name": "GCN1",
-      "ws_range_km": 150,
+      "ws_range_km": 125,
       "start_mode": 2,
       "location": {
         "X_coord": 100000,
@@ -1235,7 +1235,7 @@
     {
       "radar_id": 17,
       "radar_name": "GCN2",
-      "ws_range_km": 200,
+      "ws_range_km": 150,
       "start_mode": 2,
       "location": {
         "X_coord": 100000,
@@ -1312,7 +1312,7 @@
     {
       "radar_id": 18,
       "radar_name": "GCN3",
-      "ws_range_km": 200,
+      "ws_range_km": 25,
       "start_mode": 2,
       "location": {
         "X_coord": 1000,
@@ -1389,7 +1389,7 @@
     {
       "radar_id": 19,
       "radar_name": "GCN4",
-      "ws_range_km": 200,
+      "ws_range_km": 25,
       "start_mode": 2,
       "location": {
         "X_coord": 0,
