@@ -235,7 +235,7 @@
       "radar_id": 4,
       "radar_name": "SA11",
       "ws_range_km": 100,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 50000,
         "Y_coord": 100000,
@@ -312,7 +312,7 @@
       "radar_id": 5,
       "radar_name": "GD",
       "ws_range_km": 50,
-      "start_mode": 2,
+      "start_mode": 3,
       "location": {
         "X_coord": 25000,
         "Y_coord": -10500,
@@ -466,7 +466,7 @@
       "radar_id": 7,
       "radar_name": "Hedgehog",
       "ws_range_km": 150,
-      "start_mode": 2,
+      "start_mode": 0,
       "location": {
         "X_coord": 25000,
         "Y_coord": 150000,
@@ -543,7 +543,7 @@
       "radar_id": 8,
       "radar_name": "Jerry",
       "ws_range_km": 150,
-      "start_mode": 2,
+      "start_mode": 0,
       "location": {
         "X_coord": 115000,
         "Y_coord": 15000,
@@ -620,7 +620,7 @@
       "radar_id": 9,
       "radar_name": "Casper",
       "ws_range_km": 145,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 130000,
         "Y_coord": -1100,
@@ -697,7 +697,7 @@
       "radar_id": 10,
       "radar_name": "Low Song",
       "ws_range_km": 80,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 70000,
         "Y_coord": -5500,
@@ -774,7 +774,7 @@
       "radar_id": 11,
       "radar_name": "AN/SPQ-9B Spppk 9",
       "ws_range_km": 100,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": -55000,
         "Y_coord": -80000,
@@ -851,7 +851,7 @@
       "radar_id": 12,
       "radar_name": "CMR-90",
       "ws_range_km": 30,
-      "start_mode": 2,
+      "start_mode": 3,
       "location": {
         "X_coord": -35000,
         "Y_coord": 20000,
@@ -928,7 +928,7 @@
       "radar_id": 13,
       "radar_name": "SCANTER",
       "ws_range_km": 80,
-      "start_mode": 2,
+      "start_mode": 0,
       "location": {
         "X_coord": 65500,
         "Y_coord": -25000,
@@ -1082,7 +1082,7 @@
       "radar_id": 15,
       "radar_name": "AN/SPS-55",
       "ws_range_km": 80,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 11000,
         "Y_coord": -81000,
@@ -1159,7 +1159,7 @@
       "radar_id": 16,
       "radar_name": "GCN1",
       "ws_range_km": 125,
-      "start_mode": 2,
+      "start_mode": 0,
       "location": {
         "X_coord": 100000,
         "Y_coord": -55000,
@@ -1236,7 +1236,7 @@
       "radar_id": 17,
       "radar_name": "GCN2",
       "ws_range_km": 150,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 100000,
         "Y_coord": 100000,
@@ -1313,7 +1313,7 @@
       "radar_id": 18,
       "radar_name": "GCN3",
       "ws_range_km": 25,
-      "start_mode": 2,
+      "start_mode": 3,
       "location": {
         "X_coord": 1000,
         "Y_coord": 10000,
@@ -1467,7 +1467,7 @@
       "radar_id": 20,
       "radar_name": "GCN5",
       "ws_range_km": 50,
-      "start_mode": 2,
+      "start_mode": 1,
       "location": {
         "X_coord": 85000,
         "Y_coord": 0,
