@@ -253,7 +253,7 @@ def radarEquationSNR_NoiseJamming(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz,
 
     return SNR_dB
 
-def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, minPd, Pfa, cpiJammingAvg, mode, PRI_us) :
+def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km, NF_dB, Pj_kW, Gj_dB, Bj_MHz, mode, PRI_us) :
     #  Return the JPP value
 
     Gt = convertFromdB(Gt_dB)
@@ -290,9 +290,7 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     NF = convertFromdB(NF_dB)
 
-    Tj = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fjp * Fr) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * Bj * Lja )
-
-    Tj_ij = cpiJammingAvg * Tj
+    Tj_ij = (common.Qj * Pj * Gj * Gr * math.pow(waveLength,2) * Fjt * Fjp * Fr) / (math.pow(common.STERADIANS, 2) * math.pow(Rc, 2) * Bj * common.Boltzman_k * Lja )
 
     Ts = common.kT0*NF + common.Boltzman_k*Tj_ij
 
@@ -301,14 +299,6 @@ def radarEquationSNR_CPIJP(N, Pt_kw, Gt_dB, Gr_dB, pw_us, rcs_m2, Fc_MHz, Rc_km,
 
     SNR = Ps/Pn
 
-    SNR_CI = N*SNR
+    SNR_dB = convertTodB(N*SNR, 10, BASE10)
 
-    SNR_dB = convertTodB(SNR, 10, BASE10)
-    SNR_CI_db = convertTodB(SNR_CI, 10, BASE10)
-
-    PdCurrent = calculatePd(Pfa, SNR_CI, 'CI')
-
-    if(PdCurrent >= minPd):
-        return [False, SNR_CI_db, PdCurrent]
-    else:
-        return [True, SNR_CI_db, PdCurrent]
+    return SNR_dB

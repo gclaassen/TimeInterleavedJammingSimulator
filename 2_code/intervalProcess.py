@@ -371,7 +371,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
                 olThreats[radar_idx].m_mode_current_ID,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PRI_US])
 
-            olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+            olThreats[radar_idx].oIntervalTIJStore.SNR_NJ_dB = radarmath.radarEquationSNR_CPIJP(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -400,7 +400,7 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
             Njamming = 0
             for Njamming in range(1, olThreats[radar_idx].oIntervalTIJStore.cpi+1):
                 olThreats[radar_idx].oIntervalTIJStore.jammingPercentage = Njamming/olThreats[radar_idx].oIntervalTIJStore.cpi
-                olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                olThreats[radar_idx].oIntervalTIJStore.SNR_INJ_dB = radarmath.radarEquationSNR_CPIJP(
                 olThreats[radar_idx].oIntervalTIJStore.cpi,
                 olThreats[radar_idx].m_emitter_current[common.THREAT_PEAKPOWER_KW],
                 olThreats[radar_idx].m_emitter_current[common.THREAT_GAIN],
@@ -588,7 +588,7 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             threat.m_mode_current_ID,
             threat.m_emitter_current[common.THREAT_PRI_US])
         else:
-            snrAchieved_dB = radarmath.radarEquationSNR_NoiseJamming(
+            snrAchieved_dB = radarmath.radarEquationSNR_CPIJP(
             threat.oIntervalTIJStore.cpi,
             threat.m_emitter_current[common.THREAT_PEAKPOWER_KW],
             threat.m_emitter_current[common.THREAT_GAIN],
@@ -623,7 +623,7 @@ def intervalThreatLoggingData(olThreats, index):
 
 def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
     
-    __loggingThreatHeader = ['Threat ID', 'Mode ID', 'Rm [km]', 'Rb km', 'Rc [km]', 'Pd min Rm', 'Pd Rc', 'IJ Rm', 'IJ Rc']
+    __loggingThreatHeader = ['Threat ID', 'Mode ID', 'Rm [km]', 'Rb km', 'Rc [km]', 'Pd min Rm', 'Pd Rc', 'CPI', 'IJ Rm', 'IJ Rc']
     __loggingThreatData = []
 
     for __, threat in enumerate(olThreats):
@@ -669,7 +669,7 @@ def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
             Njamming = 0
             for Njamming in range(1, mode[common.THREAT_CPI],+1):
                 jammingPercentage = Njamming/mode[common.THREAT_CPI]
-                SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                SNR_INJ_dB = radarmath.radarEquationSNR_CPIJP(
                 mode[common.THREAT_CPI],
                 mode[common.THREAT_PEAKPOWER_KW],
                 mode[common.THREAT_GAIN],
@@ -693,7 +693,7 @@ def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
             Njamming_maxRange = 0
             for Njamming_maxRange in range(1, mode[common.THREAT_CPI],+1):
                 jammingPercentage = Njamming_maxRange/mode[common.THREAT_CPI]
-                SNR_INJ_dB = radarmath.radarEquationSNR_NoiseJamming(
+                SNR_INJ_dB = radarmath.radarEquationSNR_CPIJP(
                 mode[common.THREAT_CPI],
                 mode[common.THREAT_PEAKPOWER_KW],
                 mode[common.THREAT_GAIN],
@@ -722,6 +722,7 @@ def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
                 platformDistance_km,
                 Pd_min_achieved_max_range,
                 Pd_min_achieved_plf_range,
+                mode[common.THREAT_CPI],
                 Njamming_maxRange,
                 Njamming])
 
