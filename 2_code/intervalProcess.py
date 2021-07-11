@@ -623,7 +623,7 @@ def intervalThreatLoggingData(olThreats, index):
 
 def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
     
-    __loggingThreatHeader = ['Threat ID', 'Mode ID', 'Rm [km]', 'Rb km', 'Rc [km]', 'Pd min Rm', 'Pd Rc', 'CPI', 'IJ Rm', 'IJ Rc']
+    __loggingThreatHeader = ['Threat ID', 'Mode ID', 'Rm [km]', 'Rb km', 'Rc [km]', 'Pd min Rm', 'Pd Rc', 'CPI', 'IJ Rm', 'IJ Rc', 'PRF']
     __loggingThreatData = []
 
     for __, threat in enumerate(olThreats):
@@ -724,7 +724,8 @@ def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
                 Pd_min_achieved_plf_range,
                 mode[common.THREAT_CPI],
                 Njamming_maxRange,
-                Njamming])
+                Njamming,
+                mode[common.THREAT_PRI_US]*0.05])
 
     __loggingtable = tabulate(__loggingThreatData, __loggingThreatHeader, tablefmt="github")
     logging.debug( "\n\n"+ __loggingtable +"\n\n")
