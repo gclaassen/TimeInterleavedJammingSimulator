@@ -81,26 +81,24 @@ RESULTFILEEXT = '.npy'
 # Here we create a figure instance, and multiple subplots
 # fig = plt.figure(figsize=set_size('thesis'))
 fig = plt.figure(constrained_layout=True)
-# gs = fig.add_gridspec(3, 2)
-# ax1 = fig.add_subplot(gs[0, :])
+gs = fig.add_gridspec(3, 2)
+ax1 = fig.add_subplot(gs[0, :])
 ax1 = plt.subplot2grid((3,2), (0,0), colspan = 1, rowspan = 1)
 ax1.set_title('Mode change per interval')
-# ax2 = fig.add_subplot(gs[1, 0])
+
 ax2 = plt.subplot2grid((3,2), (1,0), colspan = 1, rowspan = 1)
 ax2.set_title('Coincidences percentage per interval')
-# ax3 = fig.add_subplot(gs[2, 0])
+
 ax3 = plt.subplot2grid((3,2), (2,0), colspan = 1, rowspan = 1)
 ax3.set_title('Percentage minimum jamming pulses per CPI')
-# ax4 = fig.add_subplot(gs[1, 1])
+
 ax4 = plt.subplot2grid((3,2), (1,1), colspan = 1, rowspan = 1)
 ax4.set_title('Zone assessment per interval')
-# ax5 = fig.add_subplot(gs[2, 1])
+
 ax5 = plt.subplot2grid((3,2), (2,1), colspan = 1, rowspan = 1)
 ax5.set_title('Lethal range flag')
 
 modes = np.load(folder_selected+'/'+RESULTMODESLOG+RESULTFILEEXT)
-
-
 # the content of labels of these yticks
 yticklabels = np.arange(1, len(modes)+1, 1)
 
@@ -122,7 +120,7 @@ sb.heatmap(jamming, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', 
 colorbar = ax3.collections[0].colorbar
 
 za = np.load(folder_selected+'/'+RESULTRANGELOG+RESULTFILEEXT)
-sb.heatmap(za, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', ax=ax4, vmin=0, yticklabels=yticklabels)
+sb.heatmap(za, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', ax=ax4, vmin=0.7, yticklabels=yticklabels)
 colorbar = ax4.collections[0].colorbar
 
 Rws = np.load(folder_selected+'/'+RESULTLETHALRANGELOG+RESULTFILEEXT)
@@ -130,5 +128,13 @@ Rws_colors=['#008000', '#D11919']
 sb.heatmap(Rws, cmap=Rws_colors, square=True, linewidth=0.1, linecolor='w', ax=ax5, vmin=0, vmax=1, yticklabels=yticklabels)
 colorbar = ax5.collections[0].colorbar
 colorbar.set_ticks([0, 1])
+
+coincidences_avg = np.round(np.average(coincidences, axis=1), decimals=3)
+coincidences_med = np.round(np.median(coincidences, axis=1), decimals=3)
+
+za_avg = np.round(np.average(za, axis=1), decimals=3)
+za_med = np.round(np.median(za, axis=1), decimals=3)
+za_min = np.round(np.min(za, axis=1), decimals=3)
+za_max = np.round(np.max(za, axis=1), decimals=3)
 
 plt.show()
