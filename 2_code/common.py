@@ -25,6 +25,11 @@ Lja_dB = 0.01
 Fjt_dB = 1
 Fjp_dB = -3 # circular antenna
 
+MA_MODE_WEIGHT = 0.25
+MA_ZA_WEIGHT = 0.25
+MA_LETHALRANGE_WEIGHT = 0.25
+MA_INTERMITTENTJAMMING_WEIGHT = 0.25
+
 
 THREATDIR   = '1_datastore/0_manual/'
 PLATFORMDIR = '1_datastore/0_manual/'
@@ -118,7 +123,8 @@ JAMMER_GAIN_DB              = "gain_dB"
 JAMMER_BANDWIDTH_MHZ        = "bandwidth_MHz"
 JAMMER_JAMMING_TIME         = "oecm_time_ms"
 JAMMER_LOOKTHROUGH_TIME     = "esm_time_ms"
-JAMMER_ENVELOPE_BIN_SIZE    = "jamming_envelope_bin_size"
+JAMMER_ENVELOPE_BIN_SIZE_PRI    = "jamming_envelope_bin_size_PRI"
+JAMMER_ENVELOPE_BIN_SIZE_PW     = "jamming_envelope_bin_size_PW"
 JAMMER_CHANNEL_RANGE_SIZE   = 2 #start, stop
 
 def convertRadarTypeStringToInt(strRadarType):

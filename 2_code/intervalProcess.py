@@ -38,7 +38,7 @@ class cCoincidence:
 def intervalsInFlight(numIntervalLength_us, numFlightTime_us):
     return math.ceil(numFlightTime_us/numIntervalLength_us)
 
-def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, TestType):
+def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
 
     lCoincidenceLib = []
     lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
@@ -80,7 +80,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
         else:
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart_us + oJammer.oChannel[0].interval_time_us
 
-        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size) # TODO: for multiple channels
+        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size_pri, oJammer.jammer_bin_size_pw) # TODO: for multiple channels
 
         # __logging__
         # Get the starting ranges at each new interval
@@ -153,7 +153,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
             threatItem.lIntervalCoincidences = np.asarray(lAllCoincidencePerThreat[threatIdx])
             threatItem.lIntervalJammingPulses = [] #TODO: add pulses selected for jamming
 
-        coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx, TestType)
+        coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx)
 
         # review interval
         ## update radar
@@ -175,15 +175,16 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, Test
     for __, threat in enumerate(olThreats):
         logging.info("Threat Radar {0}: Mode Changes: {1}".format(threat.m_radar_id, threat.lIntervalModeChangeLog))
 
-def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI):
+def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jammerEnvelopeSizeToPW):
     for __, threatItem in enumerate(olThreats):
         threatItem.oThreatPulseLib[common.INTERVAL_STOP_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
         pri = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PRI_US] = pri
         pw = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
-        jammingEnvelope = pri*jammerEnvelopeSizeToPRI
-        jammingBound_us = (jammingEnvelope-pw)/2 if jammingEnvelope > pw else 0
+        jammingEnvelope = pw*jammerEnvelopeSizeToPW # TODO: choose between pri and pw
+        # jammingBound_us = (jammingEnvelope-pw)/2 if jammingEnvelope > pw else 0
+        jammingBound_us = (jammingEnvelope)/2
         threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammingBound_us
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # always start at pulse 1 otherwise if 0 we will get division by zero
@@ -240,8 +241,8 @@ def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoin
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
             npArrThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
-            npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
-            (npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
+            npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2,
+            (npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_ENVELOPE]*2)/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
     __loggingtable = tabulate(__loggingCoincidenceData, __loggingCoincidenceHeader, tablefmt="github")
     logging.debug( "\n\n"+ __loggingtable +"\n\n")
@@ -260,9 +261,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW 
 
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] - (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]/2 - (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift start left for jamming bins
 
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP]  - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US]/2 + (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_ENVELOPE]) # shift end right for jamming bins
     
     Tstart = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
     Tend = np.min(npArrThreatPulseLib[:, common.INTERVAL_LIB_NOISE_PULSE_START])
@@ -319,19 +320,19 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
         # 7. update all of the pulses Tend
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
 
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift start left for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]/2  - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift start left for jamming bins
 
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift end right for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]/2  + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_ENVELOPE] # shift end right for jamming bins
 
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
 
-def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx, TestType):
+def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx):
 
     # print("Sweep through coincidences...Perform tests here...")
 
     dictRank = {}
-    modeRank = []
+    # modeRank = []
     __loggingTijHeader = ['Selected', 'Coinc Pulse', 'Threat ID', 'D(n) [dB]', 'Dj(n) [dB]', 'Dij(n) IJ [dB]', 'Pd IJ', 'Pulse history', 'c (CPI in coincidence)', 'j (CPI jam required)', 'm (CPI standalone)', 'JCP', 'Rc [km]', 'Rm [km]', 'Rij [km]', 'Rb [km]', 'ZA', 'MA']
     __loggingTijData = []
 
@@ -466,42 +467,42 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
 
             #TODO: TIJ - TR
             dictRank[coincPulseIdx] = olThreats[radar_idx].oIntervalTIJStore.ma
-            modeRank.append([olThreats[radar_idx].oIntervalTIJStore.radar_id, olThreats[radar_idx].m_mode_current_ID, olThreats[radar_idx].oIntervalTIJStore.za])
+            # modeRank.append([olThreats[radar_idx].oIntervalTIJStore.radar_id, olThreats[radar_idx].m_mode_current_ID, olThreats[radar_idx].oIntervalTIJStore.za])
 
-        if(TestType == common.TEST_TIJ):
-            maxRankRadarId = max(dictRank, key=dictRank.get)
+        maxRankRadarId = max(dictRank, key=dictRank.get)
 
-            # check to see of multiple of same radar in coincidence
-            maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
-            dictMaxRankRadar = {}
-            for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
-                if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
-                    dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
+        # check to see of multiple of same radar in coincidence
+        maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
+        dictMaxRankRadar = {}
+        for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
+            if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
+                dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
 
-            for priorityRadarKey in dictMaxRankRadar:
-                priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
-                olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
-                __loggingTijData[priorityRadarKey][0] = ">>>>>"
+        for priorityRadarKey in dictMaxRankRadar:
+            priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
+            olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+            __loggingTijData[priorityRadarKey][0] = ">>>>>"
 
-            dictMaxRankRadar.clear()
-
-        if(TestType == common.TEST_HIGHESTMODE):
-
-            npModeRank = np.array(modeRank)
-            npModeRank = npModeRank[npModeRank[:, 1].argsort()][::-1]
-            npModeRank = npModeRank[npModeRank[:,2].argsort(kind='mergesort')][::-1]
-
-            threatId = npModeRank[0,0]
-
-            for coincidenceThreatIdx, coincidenceThreat in enumerate(coincidence):
-                if(int(threatId) == coincidenceThreat.radar_id):
-                    threatIdx = coincidenceThreat.radar_idx
-                    priorityPulseIdx = np.max(np.where(olThreats[threatIdx].lIntervalCoincidences == coincidenceThreat.pulse_number))
-                    olThreats[threatIdx].lIntervalCoincidences = np.delete(olThreats[threatIdx].lIntervalCoincidences, priorityPulseIdx)
-                    __loggingTijData[coincidenceThreatIdx][0] = ">>>>>"
-
+        dictMaxRankRadar.clear()
         dictRank.clear()
-        modeRank = []
+
+        # if(TestType == common.TEST_HIGHESTMODE):
+
+        #     npModeRank = np.array(modeRank)
+        #     npModeRank = npModeRank[npModeRank[:, 1].argsort()][::-1]
+        #     npModeRank = npModeRank[npModeRank[:,2].argsort(kind='mergesort')][::-1]
+
+        #     threatId = npModeRank[0,0]
+
+        #     for coincidenceThreatIdx, coincidenceThreat in enumerate(coincidence):
+        #         if(int(threatId) == coincidenceThreat.radar_id):
+        #             threatIdx = coincidenceThreat.radar_idx
+        #             priorityPulseIdx = np.max(np.where(olThreats[threatIdx].lIntervalCoincidences == coincidenceThreat.pulse_number))
+        #             olThreats[threatIdx].lIntervalCoincidences = np.delete(olThreats[threatIdx].lIntervalCoincidences, priorityPulseIdx)
+        #             __loggingTijData[coincidenceThreatIdx][0] = ">>>>>"
+
+        # modeRank = []
+
 
         # __loggingtable = tabulate(__loggingTijData, __loggingTijHeader, tablefmt="github")
         # logging.debug( "\n\n"+ __loggingtable +"\n\n")

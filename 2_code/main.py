@@ -21,10 +21,14 @@ np.set_printoptions(precision=5, suppress=True)
 def argumentExtraction(argv):
     setViz = False
     interFile = None
+    Wm = 0
+    Wz = 0
+    Wl = 0
+    Wj = 0
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hv:i:t:", ["help", "visualize", "intermediaryDirectory=", "testType="])
+            argv, "hv:i:m:z:l:j:", ["help", "visualize", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -38,25 +42,36 @@ def argumentExtraction(argv):
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
             logging.info('Intermediary File: {0}'.format(interFile))
-        elif opt in ("-t", "--testType"):
-            TestType = int(arg)
-            logging.info('Test Type: {0}'.format(arg))
+        elif opt in ("-m", "--modeWeight"):
+            Wm = float(arg)
+            logging.info('Mode weight: {0}'.format(arg))
+        elif opt in ("-z", "--zoneWeight"):
+            Wz = float(arg)
+            logging.info('Zone assessment weight: {0}'.format(arg))
+        elif opt in ("-l", "--lethalrangeWeight"):
+            Wl = float(arg)
+            logging.info('Lethal range weight: {0}'.format(arg))
+        elif opt in ("-j", "--intermittentJammingWeight"):
+            Wj = float(arg)
+            logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, TestType ,setViz]
+    return [interFile, Wm, Wz, Wl, Wj, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
     logging.info('~~~ARGUMENT LIST~~~\n')
     logging.info('-v:\tvisualize\n')
     logging.info('-i:\tintermediary directory\n')
-    logging.info('-t:\ttest type\n')
+    logging.info('-m:\tmode weight\n')
+    logging.info('-z:\zone assessment weight\n')
+    logging.info('-l:\lethal range weight\n')
+    logging.info('-j:\intermittent jamming weight\n')
 
 def main(argv):
     doViz = False
     interFile = None
-    TestType = 0
 
-    [interFile, TestType, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
@@ -64,7 +79,7 @@ def main(argv):
     initThreatsForTij(olThreats, oJammer)
 
     #! Single jamming channel
-    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0], TestType)
+    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
     # save data
     saveThreatData(olThreats, interFile, oJammer.oChannel[0].oInterval.intervals_total)
 

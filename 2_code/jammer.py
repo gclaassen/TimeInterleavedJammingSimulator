@@ -21,7 +21,8 @@ class cJammer:
     oChannel = []
     channel_size: int = 0
     channel_ranges_MHz = None
-    jammer_bin_size: float = 0
+    jammer_bin_size_pri: float = 0
+    jammer_bin_size_pw: float = 0
     jammer_power_kW: float = 0
     jammer_bandwidth_MHz: float = 0
     jammer_gain_dB: float = 0
@@ -30,7 +31,8 @@ class cJammer:
         self.channel_ranges_MHz = convertJammerChannelsJsonToArray(
             jammerList[common.JAMMER_CHANNEL])
         self.channel_size = jammerList[common.JAMMER_CHANNEL].__len__()
-        self.jammer_bin_size = jammerList[common.JAMMER_ENVELOPE_BIN_SIZE]
+        self.jammer_bin_size_pri = jammerList[common.JAMMER_ENVELOPE_BIN_SIZE_PRI]
+        self.jammer_bin_size_pw = jammerList[common.JAMMER_ENVELOPE_BIN_SIZE_PW]
         self.jammer_bandwidth_MHz = jammerList[common.JAMMER_BANDWIDTH_MHZ]
         self.jammer_gain_dB = jammerList[common.JAMMER_GAIN_DB]
         self.jammer_power_kW = jammerList[common.JAMMER_POWER_KW]

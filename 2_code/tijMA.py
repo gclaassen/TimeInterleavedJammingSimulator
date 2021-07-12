@@ -29,4 +29,4 @@ def threatValueCalculation(mode, ZA, inLethalRange, JCP):
     else:
         None
 
-    return (cWeights.mode_weight * modeVal) + (cWeights.za_weight * ZA) + (cWeights.lethalRange_weight * inLethalRange) + (cWeights.JammingPercentage_weight * JCP)
+    return (common.MA_MODE_WEIGHT * modeVal) + (common.MA_ZA_WEIGHT * ZA) + (common.MA_LETHALRANGE_WEIGHT * inLethalRange) + (common.MA_INTERMITTENTJAMMING_WEIGHT * JCP)

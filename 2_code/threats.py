@@ -174,7 +174,7 @@ def initListThreatPulseLib(threatItem, jammer):
     threatPulseLib[common.INTERVAL_LIB_NOISE_PULSE_STOP] = 0 # pulse end
     threatPulseLib[common.INTERVAL_LIB_PRI_US] = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
     threatPulseLib[common.INTERVAL_LIB_PW_US] = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
-    threatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammer.jammer_bin_size
+    threatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammer.jammer_bin_size_pw # TODO: choose between pri bin or pw bin
     threatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # current pulse number/total pulses
     threatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0 # total coincidence
     threatPulseLib[common.INTERVAL_INTERVAL_COINCIDENCE_PERC] = 0 # pulse coincidence/total pulses in interval perc
