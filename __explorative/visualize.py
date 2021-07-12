@@ -87,10 +87,10 @@ ax1 = plt.subplot2grid((3,2), (0,0), colspan = 1, rowspan = 1)
 ax1.set_title('Mode change per interval')
 
 ax2 = plt.subplot2grid((3,2), (1,0), colspan = 1, rowspan = 1)
-ax2.set_title('Coincidences percentage per interval')
+ax2.set_title('Coincidences per interval rate')
 
 ax3 = plt.subplot2grid((3,2), (2,0), colspan = 1, rowspan = 1)
-ax3.set_title('Percentage minimum jamming pulses per CPI')
+ax3.set_title('Minimum jamming pulses per CPI rate')
 
 ax4 = plt.subplot2grid((3,2), (1,1), colspan = 1, rowspan = 1)
 ax4.set_title('Zone assessment per interval')
@@ -111,7 +111,7 @@ colorbar.set_ticklabels(['TS', 'TA', 'TT', 'MG'])
 # ax.collections[0].colorbar.remove()
 
 coincidences = np.load(folder_selected+'/'+RESULTCOINCIDENCEPERCENTAGELOG+RESULTFILEEXT)
-sb.heatmap(coincidences, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', ax=ax2, vmin=0, yticklabels=yticklabels)
+sb.heatmap(coincidences, cmap="flare", square=True, linewidth=0.1, linecolor='w', ax=ax2, yticklabels=yticklabels)
 
 colorbar = ax2.collections[0].colorbar
 
@@ -119,8 +119,9 @@ jamming = np.load(folder_selected+'/'+RESULTJAMMINGLOG+RESULTFILEEXT)
 sb.heatmap(jamming, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', ax=ax3, vmin=0, yticklabels=yticklabels)
 colorbar = ax3.collections[0].colorbar
 
+za_colors=['#329932', '#236B23', '#ffa700', '#b37400', '#fb4340', '#962826']
 za = np.load(folder_selected+'/'+RESULTRANGELOG+RESULTFILEEXT)
-sb.heatmap(za, cmap="coolwarm", square=True, linewidth=0.1, linecolor='w', ax=ax4, vmin=0.7, yticklabels=yticklabels)
+sb.heatmap(za, cmap=za_colors, square=True, linewidth=0.1, linecolor='w', ax=ax4, vmin=0.7, yticklabels=yticklabels)
 colorbar = ax4.collections[0].colorbar
 
 Rws = np.load(folder_selected+'/'+RESULTLETHALRANGELOG+RESULTFILEEXT)
@@ -136,5 +137,7 @@ za_avg = np.round(np.average(za, axis=1), decimals=3)
 za_med = np.round(np.median(za, axis=1), decimals=3)
 za_min = np.round(np.min(za, axis=1), decimals=3)
 za_max = np.round(np.max(za, axis=1), decimals=3)
+za_start = np.round(za[:,0], decimals=3)
+za_stop = np.round(za[:,-1], decimals=3)
 
 plt.show()
