@@ -261,8 +261,8 @@ def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoin
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US]/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100,
             npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER],
             npArrThreatPulseLib[logIdx, common.INTERVAL_INTERVAL_COINCIDENCE_PERC]*100,
-            npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE] + npArrThreatPulseLib[common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE],
-            (npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE] + npArrThreatPulseLib[common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE])/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
+            npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE],
+            (npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE] + npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PW_US] + npArrThreatPulseLib[logIdx, common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE])/npArrThreatPulseLib[logIdx, common.INTERVAL_LIB_PRI_US]*100])
 
     __loggingtable = tabulate(__loggingCoincidenceData, __loggingCoincidenceHeader, tablefmt="github")
     logging.debug( "\n\n"+ __loggingtable +"\n\n")
