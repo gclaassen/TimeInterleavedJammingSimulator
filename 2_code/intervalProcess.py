@@ -583,7 +583,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
                 threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
                 threat.m_firstIntervalForMode = True
 
-        threat.lDetectionsInIntervalLog[intervalIdx] = totalDetection
+        threat.lDetectionsInIntervalLog[intervalIdx] = threat.lDetectionsInIntervalLog[intervalIdx] + totalDetection
 
         threat.lIntervalModeChangeLog[intervalIdx + 1] = threat.m_mode_current_ID
 
