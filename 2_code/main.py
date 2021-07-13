@@ -137,6 +137,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
     vlCoincPercLog = np.zeros((0,intervalSize))
     vlJammingLog = np.zeros((0,intervalSize))
     vlDetectionLog = np.zeros((0,intervalSize))
+    vlCPILog = np.zeros((0,intervalSize))
 
     for __, threat in enumerate(olThreats):
         vlModeLog = np.vstack(( threat.lIntervalModeChangeLog , vlModeLog))
@@ -145,6 +146,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
         vlCoincPercLog = np.vstack(( threat.lIntervalCoincidencePercentageLog , vlCoincPercLog))
         vlJammingLog = np.vstack((threat.lIntervalJammingLog, vlJammingLog))
         vlDetectionLog = np.vstack((threat.lDetectionsInIntervalLog, vlDetectionLog))
+        vlCPILog = np.vstack((threat.lTotalCPIsInIntervalLog, vlCPILog))
 
     resultPath = os.path.join(common.RESULTDIR, interFile)
     if os.path.exists(resultPath):
@@ -154,6 +156,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
         os.remove(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT)
         os.remove(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT)
         os.remove(resultPath + common.DETECTIONSLOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.CPILOG + common.RESULTFILEEXT)
     else:
         os.makedirs(resultPath)
 
@@ -163,6 +166,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
     save(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog[::-1])
     save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog[::-1])
     save(resultPath + common.DETECTIONSLOG + common.RESULTFILEEXT, vlDetectionLog[::,-1])
+    save(resultPath + common.CPILOG + common.RESULTFILEEXT, vlCPILog[::,-1])
 
 if __name__ == "__main__":
     main(sys.argv[1:])

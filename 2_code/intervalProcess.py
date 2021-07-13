@@ -66,6 +66,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
         threat.lIntervalLethalRangeLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lIntervalJammingLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lDetectionsInIntervalLog = np.zeros(oChannel.oInterval.intervals_total)
+        threat.lTotalCPIsInIntervalLog = np.zeros(oChannel.oInterval.intervals_total)
         threat.lIntervalModeChangeLog = np.zeros(oChannel.oInterval.intervals_total+1)
         threat.lIntervalModeChangeLog[0] = threat.m_mode_current_ID
 
@@ -583,7 +584,8 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
                 threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
                 threat.m_firstIntervalForMode = True
 
-        threat.lDetectionsInIntervalLog[intervalIdx] = threat.lDetectionsInIntervalLog[intervalIdx] + totalDetection
+        threat.lDetectionsInIntervalLog[intervalIdx] = totalDetection
+        threat.lTotalCPIsInIntervalLog[intervalIdx] = len(lPdPerCPI)
 
         threat.lIntervalModeChangeLog[intervalIdx + 1] = threat.m_mode_current_ID
 

@@ -33,6 +33,7 @@ class cThreat:
     lIntervalLethalRangeLog = None
     lIntervalJammingLog = None
     lDetectionsInIntervalLog = None
+    lTotalCPIsInIntervalLog = None
     lModesForEmitter = []
     m_firstIntervalForMode = True
 

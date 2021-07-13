@@ -50,6 +50,7 @@ RESULTLETHALRANGELOG = 'lethalrangeLog'
 RESULTCOINCIDENCEPERCENTAGELOG = 'coincidenePercLog'
 RESULTJAMMINGLOG = 'resultJammingLog'
 DETECTIONSLOG = 'decetionsLog'
+CPILOG = 'cpiLog'
 
 RESULTFILEEXT = '.npy'
 
