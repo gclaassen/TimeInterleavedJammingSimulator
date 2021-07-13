@@ -136,6 +136,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
     vlLethalRangeLog = np.zeros((0,intervalSize))
     vlCoincPercLog = np.zeros((0,intervalSize))
     vlJammingLog = np.zeros((0,intervalSize))
+    vlDetectionLog = np.zeros((0,intervalSize))
 
     for __, threat in enumerate(olThreats):
         vlModeLog = np.vstack(( threat.lIntervalModeChangeLog , vlModeLog))
