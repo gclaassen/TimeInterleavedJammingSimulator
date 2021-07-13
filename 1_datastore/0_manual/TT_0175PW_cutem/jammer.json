@@ -1,6 +1,6 @@
 {
-    "jamming_envelope_bin_size_PRI": 0.05,
-    "jamming_envelope_bin_size_PW": 1.75,
+    "jamming_envelope_bin_size_PRI": 0.0,
+    "jamming_envelope_bin_size_PW": 2.5,
     "power_peak_kw":0.2,
     "gain_dB":10,
     "bandwidth_MHz":50,
