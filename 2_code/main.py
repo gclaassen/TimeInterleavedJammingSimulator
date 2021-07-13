@@ -26,10 +26,11 @@ def argumentExtraction(argv):
     Wl = 0
     Wj = 0
     choosePRIJamming = False
+    cutPulseAtEnd = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hvp:i:m:z:l:j:", ["help", "visualize", "PRIBin" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvpc:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -42,6 +43,9 @@ def argumentExtraction(argv):
             logging.info('Visualization set to True')
         elif opt in ("-p", "--PRIBin"):
             choosePRIJamming = True
+            logging.info('PRI bin size selected')
+        elif opt in ("-c", "--cutPulseAtEnd"):
+            cutPulseAtEnd = True
             logging.info('PRI bin size selected')
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
@@ -59,12 +63,14 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
     logging.info('~~~ARGUMENT LIST~~~\n')
     logging.info('-v:\tvisualize\n')
+    logging.info('-p:\tselect jamming window to PRI\n')
+    logging.info('-c:\tCut pulse at end\n')
     logging.info('-i:\tintermediary directory\n')
     logging.info('-m:\tmode weight\n')
     logging.info('-z:\zone assessment weight\n')
@@ -74,9 +80,8 @@ def helpPrints():
 def main(argv):
     doViz = False
     interFile = None
-    choosePRIJamming = False
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, choosePRIJamming, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
@@ -84,7 +89,7 @@ def main(argv):
     initThreatsForTij(olThreats, oJammer)
 
     #! Single jamming channel
-    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0], choosePRIJamming)
+    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
     # save data
     saveThreatData(olThreats, interFile, oJammer.oChannel[0].oInterval.intervals_total)
 
@@ -138,6 +143,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
         vlLethalRangeLog = np.vstack(( threat.lIntervalLethalRangeLog , vlLethalRangeLog))
         vlCoincPercLog = np.vstack(( threat.lIntervalCoincidencePercentageLog , vlCoincPercLog))
         vlJammingLog = np.vstack((threat.lIntervalJammingLog, vlJammingLog))
+        vlDetectionLog = np.vstack((threat.lDetectionsInIntervalLog, vlDetectionLog))
 
     resultPath = os.path.join(common.RESULTDIR, interFile)
     if os.path.exists(resultPath):
@@ -146,6 +152,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
         os.remove(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT)
         os.remove(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT)
         os.remove(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT)
+        os.remove(resultPath + common.DETECTIONSLOG + common.RESULTFILEEXT)
     else:
         os.makedirs(resultPath)
 
@@ -154,6 +161,7 @@ def saveThreatData(olThreats, interFile, intervalSize):
     save(resultPath + common.RESULTLETHALRANGELOG + common.RESULTFILEEXT, vlLethalRangeLog[::-1])
     save(resultPath + common.RESULTCOINCIDENCEPERCENTAGELOG + common.RESULTFILEEXT, vlCoincPercLog[::-1])
     save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog[::-1])
+    save(resultPath + common.DETECTIONSLOG + common.RESULTFILEEXT, vlDetectionLog[::,-1])
 
 if __name__ == "__main__":
     main(sys.argv[1:])
