@@ -25,10 +25,11 @@ def argumentExtraction(argv):
     Wz = 0
     Wl = 0
     Wj = 0
+    choosePRIJamming = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hv:i:m:z:l:j:", ["help", "visualize", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvp:i:m:z:l:j:", ["help", "visualize", "PRIBin" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -39,6 +40,9 @@ def argumentExtraction(argv):
         elif opt in ("-v", "--visualize"):
             setViz = True
             logging.info('Visualization set to True')
+        elif opt in ("-p", "--PRIBin"):
+            choosePRIJamming = True
+            logging.info('PRI bin size selected')
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
             logging.info('Intermediary File: {0}'.format(interFile))
@@ -55,7 +59,7 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
@@ -70,8 +74,9 @@ def helpPrints():
 def main(argv):
     doViz = False
     interFile = None
+    choosePRIJamming = False
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, choosePRIJamming, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
@@ -79,7 +84,7 @@ def main(argv):
     initThreatsForTij(olThreats, oJammer)
 
     #! Single jamming channel
-    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
+    interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0], choosePRIJamming)
     # save data
     saveThreatData(olThreats, interFile, oJammer.oChannel[0].oInterval.intervals_total)
 

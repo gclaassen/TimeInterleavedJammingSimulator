@@ -38,7 +38,7 @@ class cCoincidence:
 def intervalsInFlight(numIntervalLength_us, numFlightTime_us):
     return math.ceil(numFlightTime_us/numIntervalLength_us)
 
-def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
+def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel, choosePRIJamming):
 
     lCoincidenceLib = []
     lAllCoincidencePerThreat = util.initSeparateListOfObjects(olThreats.__len__())
@@ -80,7 +80,7 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
         else:
             oChannel.oInterval.interval_current_Tstop_us = oChannel.oInterval.interval_current_Tstart_us + oJammer.oChannel[0].interval_time_us
 
-        updateThreatsForInterval(olThreats, oChannel, oJammer.jammer_bin_size_pri, oJammer.jammer_bin_size_pw) # TODO: for multiple channels
+        updateThreatsForInterval(olThreats, oChannel, choosePRIJamming, oJammer.jammer_bin_size_pri, oJammer.jammer_bin_size_pw) # TODO: for multiple channels
 
         # __logging__
         # Get the starting ranges at each new interval
@@ -175,16 +175,19 @@ def intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oChannel):
     for __, threat in enumerate(olThreats):
         logging.info("Threat Radar {0}: Mode Changes: {1}".format(threat.m_radar_id, threat.lIntervalModeChangeLog))
 
-def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jammerEnvelopeSizeToPW):
+def updateThreatsForInterval(olThreats, oChannel, choosePRIJamming, jammerEnvelopeSizeToPRI, jammerEnvelopeSizeToPW):
     for __, threatItem in enumerate(olThreats):
         threatItem.oThreatPulseLib[common.INTERVAL_STOP_TIME_US] = oChannel.oInterval.interval_current_Tstop_us
         pri = threatItem.m_emitter_current[common.THREAT_PRI_US] # pri
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PRI_US] = pri
         pw = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
-        jammingEnvelope = pw*jammerEnvelopeSizeToPW # TODO: choose between pri and pw
-        # jammingBound_us = (jammingEnvelope-pw)/2 if jammingEnvelope > pw else 0
-        jammingBound_us = (jammingEnvelope)/2
+        if choosePRIJamming:
+            jammingEnvelope = pri * jammerEnvelopeSizeToPRI
+            jammingBound_us = (jammingEnvelope-pw)/2 if jammingEnvelope > pw else pw*0.75
+        else:
+            jammingEnvelope = pw * jammerEnvelopeSizeToPW # TODO: choose between pri and pw
+            jammingBound_us = (jammingEnvelope)/2
         threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_ENVELOPE] = jammingBound_us
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # always start at pulse 1 otherwise if 0 we will get division by zero
