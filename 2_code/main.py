@@ -12,6 +12,7 @@ import tij
 # save numpy array as npy file
 from numpy import asarray
 from numpy import save
+import shutil
 
 # logging.basicConfig(level = logging.DEBUG)
 # comment to print to console, uncomment to save to log file
@@ -167,6 +168,8 @@ def saveThreatData(olThreats, interFile, intervalSize):
     save(resultPath + common.RESULTJAMMINGLOG + common.RESULTFILEEXT, vlJammingLog[::-1])
     save(resultPath + common.DETECTIONSLOG + common.RESULTFILEEXT, vlDetectionLog[::,-1])
     save(resultPath + common.CPILOG + common.RESULTFILEEXT, vlCPILog[::,-1])
+
+    shutil.move(r'tij.log', resultPath+'tij.log')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
