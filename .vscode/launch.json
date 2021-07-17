@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        "args": ["-i", "Default", "-p", "-m", "0.2", "-z", "0.1", "-l", "0.2", "-j", "0.5"],
+        "args": ["-i", "TT_0175PW_cutem_cpiOver", "-m", "0.2", "-z", "0.1", "-l", "0.2", "-j", "0.5"],
         "console": "integratedTerminal"
     }]
 }

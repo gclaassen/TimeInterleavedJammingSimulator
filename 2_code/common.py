@@ -114,11 +114,14 @@ THREAT_LETHAL_RANGE_KM              = 'ws_range_km'
 THREAT_ALT_KM                       = 'altitude_max_km'
 THREAT_LOCATION                     = 'location'
 THREAT_CPI                          = 'cpi'
+THREAT_CPI_REAL                     = 'cpi_real'
 THREAT_CPI_AT_INTERVAL              = 'cpi_before_interval'
 THREAT_PROB_DETECTION               = 'Pd'
+THREAT_PROB_DETECTION_REAL          = 'Pd_real'
 THREAT_PROB_DETECTION_MIN           = 'Pd_min'
 THREAT_PROB_DETECTION_CUMULATIVE    = 'Pd_cumulative'
 THREAT_PROB_FALSE_ALARM             = 'Pfa'
+THREAT_PROB_FALSE_ALARM_REAL        = 'Pfa_real'
 THREAT_LOCATION_SIZE                = 3
 
 JAMMER_CHANNEL              = "channels"

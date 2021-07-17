@@ -1268,7 +1268,7 @@
             "gain": 31,
             "frequency_MHz": 5200,
             "pulse_width_us": 12.75,
-            "pri_us": 1234.75,
+            "pri_us": 1134.75,
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.8,

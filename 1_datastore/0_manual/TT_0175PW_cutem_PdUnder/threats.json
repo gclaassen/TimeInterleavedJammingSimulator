@@ -25,6 +25,7 @@
             "cpi": 128,
             "cpi_before_interval": 35,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -40,6 +41,7 @@
             "cpi": 128,
             "cpi_before_interval": 30,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -55,6 +57,7 @@
             "cpi": 128,
             "cpi_before_interval": 31,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -70,6 +73,7 @@
             "cpi": 128,
             "cpi_before_interval": 25,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -102,6 +106,7 @@
             "cpi": 64,
             "cpi_before_interval": 54,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -117,6 +122,7 @@
             "cpi": 64,
             "cpi_before_interval": 48,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -132,6 +138,7 @@
             "cpi": 128,
             "cpi_before_interval": 78,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -147,6 +154,7 @@
             "cpi": 128,
             "cpi_before_interval": 48,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -179,6 +187,7 @@
             "cpi": 128,
             "cpi_before_interval": 60,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -194,6 +203,7 @@
             "cpi": 64,
             "cpi_before_interval": 48,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -209,6 +219,7 @@
             "cpi": 64,
             "cpi_before_interval": 44,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -224,6 +235,7 @@
             "cpi": 32,
             "cpi_before_interval": 9,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -256,6 +268,7 @@
             "cpi": 64,
             "cpi_before_interval": 20,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -271,6 +284,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -286,6 +300,7 @@
             "cpi": 128,
             "cpi_before_interval": 32,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -301,6 +316,7 @@
             "cpi": 64,
             "cpi_before_interval": 28,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -333,6 +349,7 @@
             "cpi": 128,
             "cpi_before_interval": 50,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -348,6 +365,7 @@
             "cpi": 128,
             "cpi_before_interval": 90,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -363,6 +381,7 @@
             "cpi": 128,
             "cpi_before_interval": 75,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -378,6 +397,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -410,6 +430,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -425,6 +446,7 @@
             "cpi": 64,
             "cpi_before_interval": 21,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -440,6 +462,7 @@
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -455,6 +478,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -487,6 +511,7 @@
             "cpi": 64,
             "cpi_before_interval": 30,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -502,6 +527,7 @@
             "cpi": 64,
             "cpi_before_interval": 25,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -517,6 +543,7 @@
             "cpi": 256,
             "cpi_before_interval": 130,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -532,6 +559,7 @@
             "cpi": 256,
             "cpi_before_interval": 150,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -564,6 +592,7 @@
             "cpi": 32,
             "cpi_before_interval": 12,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -579,6 +608,7 @@
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -594,6 +624,7 @@
             "cpi": 64,
             "cpi_before_interval": 20,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -609,6 +640,7 @@
             "cpi": 128,
             "cpi_before_interval": 40,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -641,6 +673,7 @@
             "cpi": 64,
             "cpi_before_interval": 20,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -656,6 +689,7 @@
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -671,6 +705,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -686,6 +721,7 @@
             "cpi": 64,
             "cpi_before_interval": 14,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -718,6 +754,7 @@
             "cpi": 64,
             "cpi_before_interval": 17,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -733,6 +770,7 @@
             "cpi": 64,
             "cpi_before_interval": 10,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -748,6 +786,7 @@
             "cpi": 128,
             "cpi_before_interval": 10,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -763,6 +802,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -795,6 +835,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -810,6 +851,7 @@
             "cpi": 64,
             "cpi_before_interval": 20,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -825,6 +867,7 @@
             "cpi": 128,
             "cpi_before_interval": 12,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -840,6 +883,7 @@
             "cpi": 128,
             "cpi_before_interval": 5,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -872,6 +916,7 @@
             "cpi": 32,
             "cpi_before_interval": 5,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -887,6 +932,7 @@
             "cpi": 32,
             "cpi_before_interval": 8,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -902,6 +948,7 @@
             "cpi": 64,
             "cpi_before_interval": 4,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -917,6 +964,7 @@
             "cpi": 64,
             "cpi_before_interval": 3,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -949,6 +997,7 @@
             "cpi": 32,
             "cpi_before_interval": 5,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -964,6 +1013,7 @@
             "cpi": 32,
             "cpi_before_interval": 8,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -979,6 +1029,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -994,6 +1045,7 @@
             "cpi": 64,
             "cpi_before_interval": 9,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1026,6 +1078,7 @@
             "cpi": 64,
             "cpi_before_interval": 25,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1041,6 +1094,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1056,6 +1110,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1071,6 +1126,7 @@
             "cpi": 64,
             "cpi_before_interval": 19,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1103,6 +1159,7 @@
             "cpi": 50,
             "cpi_before_interval": 5,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1118,6 +1175,7 @@
             "cpi": 50,
             "cpi_before_interval": 8,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1133,6 +1191,7 @@
             "cpi": 100,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1148,6 +1207,7 @@
             "cpi": 50,
             "cpi_before_interval": 9,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1180,6 +1240,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -1195,6 +1256,7 @@
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -1210,6 +1272,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -1225,6 +1288,7 @@
             "cpi": 64,
             "cpi_before_interval": 9,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -1257,6 +1321,7 @@
             "cpi": 64,
             "cpi_before_interval": 12,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1272,6 +1337,7 @@
             "cpi": 64,
             "cpi_before_interval": 15,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1287,6 +1353,7 @@
             "cpi": 64,
             "cpi_before_interval": 18,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1302,6 +1369,7 @@
             "cpi": 64,
             "cpi_before_interval": 9,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1334,6 +1402,7 @@
             "cpi": 128,
             "cpi_before_interval": 20,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1349,6 +1418,7 @@
             "cpi": 128,
             "cpi_before_interval": 35,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1364,6 +1434,7 @@
             "cpi": 128,
             "cpi_before_interval": 24,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1379,6 +1450,7 @@
             "cpi": 128,
             "cpi_before_interval": 9,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1411,6 +1483,7 @@
             "cpi": 64,
             "cpi_before_interval": 10,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1426,6 +1499,7 @@
             "cpi": 64,
             "cpi_before_interval": 14,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1441,6 +1515,7 @@
             "cpi": 64,
             "cpi_before_interval": 13,
             "Pd": 0.8,
+            "Pd_real": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1456,6 +1531,7 @@
             "cpi": 32,
             "cpi_before_interval": 14,
             "Pd": 0.5,
+            "Pd_real": 0.8,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
@@ -1488,6 +1564,7 @@
             "cpi": 128,
             "cpi_before_interval": 25,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1503,6 +1580,7 @@
             "cpi": 128,
             "cpi_before_interval": 30,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1518,6 +1596,7 @@
             "cpi": 128,
             "cpi_before_interval": 35,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1533,6 +1612,7 @@
             "cpi": 128,
             "cpi_before_interval": 38,
             "Pd": 0.9,
+            "Pd_real": 0.999,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1

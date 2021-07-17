@@ -554,7 +554,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
         # any pulses that are not jammed
         if(nplPulses.size > 0):
             # break into cpi chunks of available pulses
-            nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI]).tolist()
+            nplCPISize = np.arange(start=threat.m_emitter_current[common.THREAT_CPI_REAL], stop=nplPulses[-1], step=threat.m_emitter_current[common.THREAT_CPI_REAL]).tolist()
             nplCpiIndices = np.zeros_like(nplCPISize)
             for cpiSizeIdx, cpiSize in enumerate(nplCPISize):
                 nearestIndex = util.find_nearestIndexFloor(nplPulses, cpiSize)
@@ -569,7 +569,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
             # log the total detections
             lPdPerCPI = CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer)
             # determine if mode change is required -> or <-
-            lFindDetections = np.where(lPdPerCPI >= threat.m_emitter_current[common.THREAT_PROB_DETECTION])
+            lFindDetections = np.where(lPdPerCPI >= threat.m_emitter_current[common.THREAT_PROB_DETECTION_REAL])
             totalDetection = lFindDetections[0].size
 
         if(totalDetection >= threat.m_emitter_current[common.THREAT_PROB_DETECTION_CUMULATIVE]):
@@ -596,11 +596,11 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
     lPdPerCPI = []
 
     for radarPulses in lNoJamPulsesInCPI:
-        jammer_avgPower_kW = ((threat.oIntervalTIJStore.cpi - radarPulses.size)/threat.oIntervalTIJStore.cpi)*oJammer.jammer_power_kW
+        jammer_avgPower_kW = ((threat.m_emitter_current[common.THREAT_CPI_REAL] - radarPulses.size)/threat.m_emitter_current[common.THREAT_CPI_REAL])*oJammer.jammer_power_kW
 
         if(jammer_avgPower_kW == 0):
             snrAchieved_dB = radarmath.radarEquationSNR(
-            threat.oIntervalTIJStore.cpi,
+            threat.m_emitter_current[common.THREAT_CPI_REAL],
             threat.m_emitter_current[common.THREAT_PEAKPOWER_KW],
             threat.m_emitter_current[common.THREAT_GAIN],
             threat.m_emitter_current[common.THREAT_GAIN],
@@ -613,7 +613,7 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             threat.m_emitter_current[common.THREAT_PRI_US])
         else:
             snrAchieved_dB = radarmath.radarEquationSNR_CPIJP(
-            threat.oIntervalTIJStore.cpi,
+            threat.m_emitter_current[common.THREAT_CPI_REAL],
             threat.m_emitter_current[common.THREAT_PEAKPOWER_KW],
             threat.m_emitter_current[common.THREAT_GAIN],
             threat.m_emitter_current[common.THREAT_GAIN],
@@ -629,7 +629,7 @@ def CheckForThreatDetectionInCPI(lNoJamPulsesInCPI, threat, oPlatform, oJammer):
             threat.m_emitter_current[common.THREAT_PRI_US])
 
 
-        lPdPerCPI.append(radarmath.calculatePd(threat.m_emitter_current[common.THREAT_PROB_FALSE_ALARM], radarmath.convertFromdB(snrAchieved_dB), 'CI'))
+        lPdPerCPI.append(radarmath.calculatePd(threat.m_emitter_current[common.THREAT_PROB_FALSE_ALARM_REAL], radarmath.convertFromdB(snrAchieved_dB), 'CI'))
 
     return lPdPerCPI
 
@@ -652,7 +652,7 @@ def logInitialThreatParametersForAllModes(olThreats, oPlatform, oJammer):
 
     for __, threat in enumerate(olThreats):
         for __, mode in enumerate(threat.m_emitters[0]):
-            SNR_n = radarmath.calculateSNR(mode[common.THREAT_PROB_DETECTION], mode[common.THREAT_PROB_FALSE_ALARM], mode[common.THREAT_CPI], 'CI')
+            SNR_n = radarmath.calculateSNR(mode[common.THREAT_PROB_DETECTION], mode[common.THREAT_PROB_FALSE_ALARM], mode[common.THREAT_CPI_REAL], 'CI')
 
             platformDistance_km = za.calculateplatformDistance_km(0, oPlatform.flightPath, threat.location)
 

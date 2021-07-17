@@ -118,9 +118,12 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
                                             (common.THREAT_PW_US, float),
                                             (common.THREAT_DUTY_CYCLE, float),
                                             (common.THREAT_CPI, int),
+                                            (common.THREAT_CPI_REAL, int),
                                             (common.THREAT_CPI_AT_INTERVAL, int),
                                             (common.THREAT_PROB_DETECTION, float),
+                                            (common.THREAT_PROB_DETECTION_REAL, float),
                                             (common.THREAT_PROB_FALSE_ALARM, float),
+                                            (common.THREAT_PROB_FALSE_ALARM_REAL, float),
                                             (common.THREAT_PROB_DETECTION_MIN, float),
                                             (common.THREAT_PROB_DETECTION_CUMULATIVE, int)
                                         ], order='C')
@@ -142,10 +145,13 @@ def convertEmitterJsonToArray(emitterList, emitterSize):
             emitters[emmiterIndex][modeIndex][common.THREAT_PW_US] = modeNode[common.THREAT_PW_US]
             emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE] = radarmath.calculateDutyCycle(modeNode[common.THREAT_PW_US], modeNode[common.THREAT_PRI_US])
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI] = modeNode[common.THREAT_CPI]
+            emitters[emmiterIndex][modeIndex][common.THREAT_CPI_REAL] = modeNode[common.THREAT_CPI_REAL] if common.THREAT_CPI_REAL in modeNode else modeNode[common.THREAT_CPI]
             emitters[emmiterIndex][modeIndex][common.THREAT_CPI_AT_INTERVAL] = modeNode[common.THREAT_CPI_AT_INTERVAL]
             emitters[emmiterIndex][modeIndex][common.THREAT_AVGPOWER_KW] = radarmath.convertPeakPowerToAvgPower(emitters[emmiterIndex][modeIndex][common.THREAT_PEAKPOWER_KW], emitters[emmiterIndex][modeIndex][common.THREAT_DUTY_CYCLE])
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION] = modeNode[common.THREAT_PROB_DETECTION]
+            emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION_REAL] = modeNode[common.THREAT_PROB_DETECTION_REAL] if common.THREAT_PROB_DETECTION_REAL in modeNode else modeNode[common.THREAT_PROB_DETECTION]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_FALSE_ALARM] = modeNode[common.THREAT_PROB_FALSE_ALARM]
+            emitters[emmiterIndex][modeIndex][common.THREAT_PROB_FALSE_ALARM_REAL] = modeNode[common.THREAT_PROB_FALSE_ALARM_REAL] if common.THREAT_PROB_FALSE_ALARM_REAL in modeNode else modeNode[common.THREAT_PROB_FALSE_ALARM]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION_MIN] = modeNode[common.THREAT_PROB_DETECTION_MIN]
             emitters[emmiterIndex][modeIndex][common.THREAT_PROB_DETECTION_CUMULATIVE] = modeNode[common.THREAT_PROB_DETECTION_CUMULATIVE]
     return emitters
