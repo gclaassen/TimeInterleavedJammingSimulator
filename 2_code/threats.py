@@ -183,7 +183,7 @@ def initListThreatPulseLib(threatItem, jammer):
                 jammingEnvelope = threatPulseLib[common.INTERVAL_LIB_PRI_US] * jammer.jammer_bin_size_pri
                 jammingBound_us = (jammingEnvelope)/2 if jammingEnvelope > threatPulseLib[common.INTERVAL_LIB_PW_US] else threatPulseLib[common.INTERVAL_LIB_PW_US]*0.75
                 threatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - threatPulseLib[common.INTERVAL_LIB_PW_US]/2
-    if common.ARG_JAMMINGWINDOWEXPERIMENTAL:
+    elif common.ARG_JAMMINGWINDOWEXPERIMENTAL:
             threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 1 # rising edge 1 us before pulse
             threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0.1 # falling edge 100ns after pulse
     else:
