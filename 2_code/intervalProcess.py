@@ -186,11 +186,14 @@ def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jamme
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
         if common.ARG_JAMMINGBINPRI:
             if jammerEnvelopeSizeToPRI == 0:
-                jammingBound_us = 0
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0
             else:
                 jammingEnvelope = pri * jammerEnvelopeSizeToPRI
                 jammingBound_us = (jammingEnvelope)/2 if jammingEnvelope > pw else pw*0.75
                 threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
+        if common.ARG_JAMMINGWINDOWEXPERIMENTAL:
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 1 # rising edge 1 us before pulse
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0.1 # falling edge 100ns after pulse
         else:
             if common.ARG_CUTPULSEATEND:
                 jammingEnvelopeStart = pw * jammerEnvelopeSizeToPW
@@ -200,8 +203,7 @@ def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jamme
                 threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingEnvelopeStop
             else:
                 if jammerEnvelopeSizeToPW == 0:
-                    jammingBound_us = 0
-                    threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
+                    threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0
                 else:
                     jammingEnvelope = pw * jammerEnvelopeSizeToPW
                     jammingBound_us = (jammingEnvelope)/2
@@ -278,7 +280,7 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
     # update times and increase pulse total
     for idx in range(npArrThreatPulseLib.__len__()):
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US] # Tstart = Tend + PRI
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US] - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tstart = Tend + PRI
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW
 
@@ -336,7 +338,7 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
             inCoincidence = True
 
         # 6. update all of the pulses Tstart
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PRI_US]
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PRI_US]  - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
 
         # 7. update all of the pulses Tend
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
@@ -586,7 +588,6 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
 
         threat.lDetectionsInIntervalLog[intervalIdx] = totalDetection
         threat.lTotalCPIsInIntervalLog[intervalIdx] = len(lPdPerCPI)
-
         threat.lIntervalModeChangeLog[intervalIdx + 1] = threat.m_mode_current_ID
 
 

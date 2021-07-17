@@ -75,6 +75,8 @@ RESULTRANGELOG = 'rangeLog'
 RESULTLETHALRANGELOG = 'lethalrangeLog'
 RESULTCOINCIDENCEPERCENTAGELOG = 'coincidenePercLog'
 RESULTJAMMINGLOG = 'resultJammingLog'
+DETECTIONSLOG = 'decetionsLog'
+CPILOG = 'cpiLog'
 
 RESULTFILEEXT = '.npy'
 
@@ -129,6 +131,10 @@ Rws_colors=['#008000', '#D11919']
 sb.heatmap(Rws, cmap=Rws_colors, square=True, linewidth=0.1, linecolor='w', ax=ax5, vmin=0, vmax=1, yticklabels=yticklabels)
 colorbar = ax5.collections[0].colorbar
 colorbar.set_ticks([0, 1])
+
+detections = np.load(folder_selected+'/'+DETECTIONSLOG+RESULTFILEEXT)
+
+cpiTotals = np.load(folder_selected+'/'+CPILOG+RESULTFILEEXT)
 
 coincidences_avg = np.round(np.average(coincidences, axis=1), decimals=3)
 coincidences_med = np.round(np.median(coincidences, axis=1), decimals=3)

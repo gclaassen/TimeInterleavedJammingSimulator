@@ -178,11 +178,14 @@ def initListThreatPulseLib(threatItem, jammer):
     threatPulseLib[common.INTERVAL_LIB_PW_US] = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
     if common.ARG_JAMMINGBINPRI: # TODO: move to seperate function as this is called twice
             if jammer.jammer_bin_size_pri == 0:
-                jammingBound_us = 0
+                threatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 0
             else:
                 jammingEnvelope = threatPulseLib[common.INTERVAL_LIB_PRI_US] * jammer.jammer_bin_size_pri
                 jammingBound_us = (jammingEnvelope)/2 if jammingEnvelope > threatPulseLib[common.INTERVAL_LIB_PW_US] else threatPulseLib[common.INTERVAL_LIB_PW_US]*0.75
                 threatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - threatPulseLib[common.INTERVAL_LIB_PW_US]/2
+    if common.ARG_JAMMINGWINDOWEXPERIMENTAL:
+            threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 1 # rising edge 1 us before pulse
+            threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0.1 # falling edge 100ns after pulse
     else:
         if common.ARG_CUTPULSEATEND:
             jammingEnvelopeStart = threatPulseLib[common.INTERVAL_LIB_PW_US] * jammer.jammer_bin_size_pw
@@ -192,8 +195,7 @@ def initListThreatPulseLib(threatItem, jammer):
             threatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingEnvelopStop - threatPulseLib[common.INTERVAL_LIB_PW_US]/2
         else:
             if jammer.jammer_bin_size_pw == 0:
-                jammingBound_us = 0
-                threatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - threatPulseLib[common.INTERVAL_LIB_PW_US]/2
+                threatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 0
             else:
                 jammingEnvelope = threatPulseLib[common.INTERVAL_LIB_PW_US] * jammer.jammer_bin_size_pw
                 jammingBound_us = (jammingEnvelope)/2

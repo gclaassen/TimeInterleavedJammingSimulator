@@ -28,10 +28,11 @@ def argumentExtraction(argv):
     Wj = 0
     choosePRIJamming = False
     cutPulseAtEnd = False
+    experimentalWindowSize = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hvpc:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvpce:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -44,10 +45,13 @@ def argumentExtraction(argv):
             logging.info('Visualization set to True')
         elif opt in ("-p", "--PRIBin"):
             choosePRIJamming = True
-            logging.info('PRI bin size selected')
+            logging.info('Jamming window: PRI bin size selected')
         elif opt in ("-c", "--cutPulseAtEnd"):
             cutPulseAtEnd = True
-            logging.info('PRI bin size selected')
+            logging.info('Jamming window: PW cut at end selected')
+        elif opt in ("-e", "--experimentalWindowSize"):
+            experimentalWindowSize = True
+            logging.info('Jamming window: Experimental window size')
         elif opt in ("-i", "--intermediaryDirectory"):
             interFile = arg + '/'
             logging.info('Intermediary File: {0}'.format(interFile))
@@ -64,7 +68,7 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
@@ -72,6 +76,7 @@ def helpPrints():
     logging.info('-v:\tvisualize\n')
     logging.info('-p:\tselect jamming window to PRI\n')
     logging.info('-c:\tCut pulse at end\n')
+    logging.info('-e:\tJamming window experimental\n')
     logging.info('-i:\tintermediary directory\n')
     logging.info('-m:\tmode weight\n')
     logging.info('-z:\zone assessment weight\n')
@@ -82,7 +87,7 @@ def main(argv):
     doViz = False
     interFile = None
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
