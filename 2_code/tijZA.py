@@ -58,7 +58,8 @@ def calculateZoneAssessmentValue(Rc_km, Rm_km, Rb_km):
 
     if(Rdelta_km > 0):
         if (Rc_km < Rb_km):
-            ZA = 1
+            # ZA = 1
+            ZA = 0
         elif (Rc_km > Rm_km):
             ZA = 0
         else:
