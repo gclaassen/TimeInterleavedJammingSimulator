@@ -22,7 +22,7 @@
             "frequency_MHz": 9000,
             "pulse_width_us": 0.337,
             "pri_us": 503.337,
-            "cpi": 128,
+            "cpi": 96,
             "cpi_before_interval": 35,
             "Pd": 0.5,
             "Pfa": 1e-6,
@@ -52,7 +52,7 @@
             "frequency_MHz": 9000,
             "pulse_width_us": 0.337,
             "pri_us": 503.337,
-            "cpi": 128,
+            "cpi": 160,
             "cpi_before_interval": 31,
             "Pd": 0.9,
             "Pfa": 1e-6,
@@ -83,8 +83,8 @@
       "ws_range_km": 75,
       "start_mode": 2,
       "location": {
-        "X_coord": -75000,
-        "Y_coord": 50000,
+        "X_coord": -100000,
+        "Y_coord": 30000,
         "Z_coord": 0
       },
       "emitters": {
@@ -99,7 +99,7 @@
             "frequency_MHz": 4700,
             "pulse_width_us": 0.313,
             "pri_us": 407.313,
-            "cpi": 64,
+            "cpi": 96,
             "cpi_before_interval": 54,
             "Pd": 0.5,
             "Pfa": 1e-6,
