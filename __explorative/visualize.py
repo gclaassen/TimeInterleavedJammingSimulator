@@ -109,7 +109,7 @@ def calculateStats(folder_selected):
     modes = np.load(folder_selected+'/'+RESULTMODESLOG+RESULTFILEEXT)
     lethalRange = np.load(folder_selected+'/'+RESULTLETHALRANGELOG+RESULTFILEEXT)
 
-    for idx, radar in enumerate(modes):
+    for radarIdx, radar in enumerate(modes):
         # count the total times the mode is active over the scenario
         unique, counts = np.unique(radar, return_counts=True)
         
@@ -118,19 +118,19 @@ def calculateStats(folder_selected):
         # count the total times a mode is in lethal range
         countModes = np.zeros((4), dtype=int)
 
-        lrIdx = np.where(lethalRange[idx] == 1)
-        if lrIdx[0].size > 0:
-            for modeIdx in range(0, lrIdx[0].size):
-                if(radar[modeIdx] == 0):
+        listLrIdx = np.where(lethalRange[radarIdx] == 1)
+        if listLrIdx[0].size > 0:
+            for __, lrIdx in enumerate(listLrIdx[0]):
+                if(radar[lrIdx] == 0):
                     countModes[0] = countModes[0] + 1
-                elif(radar[modeIdx] == 1):
+                elif(radar[lrIdx] == 1):
                     countModes[1] = countModes[1] + 1
-                elif(radar[modeIdx] == 2):
+                elif(radar[lrIdx] == 2):
                     countModes[2] = countModes[2] + 1
-                elif(radar[modeIdx] == 3):
+                elif(radar[lrIdx] == 3):
                     countModes[3] = countModes[3] + 1
         
-        print("Radar {0}".format(idx + 1))
+        print("Radar {0}".format(radarIdx + 1))
         print("{0}".format(counts))
         print("{0} \n\n".format(countModes))
 
