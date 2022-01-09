@@ -29,4 +29,8 @@ def threatValueCalculation(mode, ZA, inLethalRange, JCP):
     else:
         None
 
+    if (common.IGNOREBURNTHROUGH is True and ZA == 1):
+        ZA = 0
+        JCP = 0
+
     return (common.MA_MODE_WEIGHT * modeVal) + (common.MA_ZA_WEIGHT * ZA) + (common.MA_LETHALRANGE_WEIGHT * inLethalRange) + (common.MA_INTERMITTENTJAMMING_WEIGHT * JCP)

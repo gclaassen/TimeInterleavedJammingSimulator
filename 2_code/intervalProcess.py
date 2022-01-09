@@ -6,7 +6,7 @@ import time
 import logging
 from tabulate import tabulate
 import util
-from dataclasses import dataclass, astuple, asdict
+from dataclasses import dataclass, field
 import tijZA as za
 import tijMA as ma
 import tijTR as tr
@@ -33,6 +33,8 @@ class cCoincidence:
     pulse_number: int = 0
     coincidence_number: int = 0
     timeOfCoincidence_us: float = 0
+    timeEndOfCoincidence_us: float = 0
+    pulsesOverlapping: list = field(default_factory=list)
 
 
 def intervalsInFlight(numIntervalLength_us, numFlightTime_us):
@@ -244,6 +246,7 @@ def intervalCoincidenceCalculator(olThreats, oChannel, lCoincidenceLib, lAllCoin
     npArrThreatPulseLib = np.array(arrThreatPulseLib)
 
     pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoincidencePerThreat)
+    listNonOverlappingPulsesInCoincidence(lCoincidenceLib)
 
     logging.info("Stats:\ttotal coincidences: %d\n", lCoincidenceLib.__len__())
 
@@ -308,7 +311,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
                                                          int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
                                                          npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
                                                          int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
-                                                         npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START] ))
+                                                         npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START],
+                                                         npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_STOP]
+                                                         ))
                     lAllCoincidencePerThreat[coincidenceRadarIdx].append(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
             else:
                 Tend = np.max(npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP])
@@ -328,7 +333,9 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
                                                int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_RADAR_ID]),
                                                npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER],
                                                int(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_COINCIDENCE_NUMBER]),
-                                               npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START]) )
+                                               npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_START],
+                                               npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_NOISE_PULSE_STOP]
+                                               ))
                 lAllCoincidencePerThreat[coincidenceRadarIdx].append(npArrThreatPulseLib[coincidenceRadarIdx, common.INTERVAL_LIB_PULSE_NUMBER])
             if(inCoincidence == True):
                 lCoincidenceLib[-1].extend(lTempCoinc)
@@ -349,6 +356,15 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_NUMBER] += 1
+
+def listNonOverlappingPulsesInCoincidence(lCoincidenceLib):
+    for __, oCoincList in enumerate(lCoincidenceLib):
+        for coincPulseIdx, coincPulse in enumerate(oCoincList):
+            for checkPulseOverlapIdx, checkPulseOverlap in enumerate(oCoincList):
+                if(coincPulseIdx != checkPulseOverlapIdx):
+                    inCoincidence = not(coincPulse.timeEndOfCoincidence_us < checkPulseOverlap.timeOfCoincidence_us or checkPulseOverlap.timeEndOfCoincidence_us < coincPulse.timeOfCoincidence_us)
+                    if inCoincidence == True:
+                        coincPulse.pulsesOverlapping.append(checkPulseOverlapIdx)
 
 def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalIdx):
 
@@ -492,18 +508,27 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
 
         maxRankRadarId = max(dictRank, key=dictRank.get)
 
-        # check to see of multiple of same radar in coincidence
-        maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
-        dictMaxRankRadar = {}
-        for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
-            if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
-                dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
+        dictMaxRankRadar = selectPriorityPulse(olThreats, coincidence, maxRankRadarId, __loggingTijData)
 
-        for priorityRadarKey in dictMaxRankRadar:
-            priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
-            olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
-            __loggingTijData[priorityRadarKey][0] = ">>>>>"
+        listCoincPulsesNotOverlapping = selectNonOverlappingPulses(coincidence, dictMaxRankRadar)
 
+        while(len(listCoincPulsesNotOverlapping) > 0):
+            maxRankRadarId = getHighestPriorityNonOverlappingPulse(listCoincPulsesNotOverlapping, dictRank)
+            dictMaxRankRadar = selectPriorityNonOverlappingPulse(olThreats, coincidence, maxRankRadarId, listCoincPulsesNotOverlapping, __loggingTijData)
+            # remove pulses from non overlapping list
+            removeSelectedNonOverlappingPulsesFromList(listCoincPulsesNotOverlapping, dictMaxRankRadar)
+
+        # # check ma values
+        # # choose largest one
+        # # look for same in the non overlapping list
+        # # remove from coinc list and repeat
+        # for __, coincPulseNumber in enumerate(listCoincPulsesNotOverlapping):
+        #     priorityPulseIdx = np.max(np.where(olThreats[coincidence[coincPulseNumber].radar_idx].lIntervalCoincidences == coincidence[coincPulseNumber].pulse_number))
+        #     olThreats[coincidence[coincPulseNumber].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[coincPulseNumber].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+        #     __loggingTijData[coincPulseNumber][0] = ">>>>>"
+
+
+        # clear
         dictMaxRankRadar.clear()
         dictRank.clear()
 
@@ -530,6 +555,68 @@ def coincidenceSweeper(lCoincidenceLib, olThreats, oPlatform, oJammer, intervalI
 
         __coincBar.update(1)
     pass
+
+def selectPriorityPulse(olThreats, coincidence, maxRankRadarId, __loggingTijData):
+    # check to see of multiple of same radar in coincidence
+    maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
+    dictMaxRankRadar = {}
+    for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
+        if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
+            dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
+
+    for priorityRadarKey in dictMaxRankRadar:
+        priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
+        olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+        __loggingTijData[priorityRadarKey][0] = ">>>>>"
+
+    return dictMaxRankRadar
+
+def selectPriorityNonOverlappingPulse(olThreats, coincidence, maxRankRadarId, listCoincPulsesNotOverlapping, __loggingTijData):
+    # check to see of multiple of same radar in coincidence
+    maxRankRadarIdx = coincidence[maxRankRadarId].radar_idx
+    dictMaxRankRadar = {}
+    for maxRadarInCoincidenceIdx, maxRadarInCoincidence in enumerate(coincidence):
+        if(maxRankRadarIdx == maxRadarInCoincidence.radar_idx):
+            if(maxRadarInCoincidenceIdx in listCoincPulsesNotOverlapping):
+                dictMaxRankRadar[maxRadarInCoincidenceIdx] = maxRadarInCoincidence
+
+    for priorityRadarKey in dictMaxRankRadar:
+        priorityPulseIdx = np.max(np.where(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences == dictMaxRankRadar[priorityRadarKey].pulse_number))
+        olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences = np.delete(olThreats[coincidence[maxRankRadarId].radar_idx].lIntervalCoincidences, priorityPulseIdx)
+        __loggingTijData[priorityRadarKey][0] = ">>>>>"
+
+    return dictMaxRankRadar
+
+
+def getHighestPriorityNonOverlappingPulse(listCoincPulsesNotOverlapping, dictRank):
+    highPriorityNonOverlappingPulse = listCoincPulsesNotOverlapping[0]
+    for pulseNumberIdx in range(1, len(listCoincPulsesNotOverlapping)):
+        if(dictRank[listCoincPulsesNotOverlapping[pulseNumberIdx]] >= dictRank[highPriorityNonOverlappingPulse]):
+            highPriorityNonOverlappingPulse = listCoincPulsesNotOverlapping[pulseNumberIdx]
+    return highPriorityNonOverlappingPulse
+
+def selectNonOverlappingPulses(coincidence, dictMaxRankRadar):
+    listAllOverlappingRadarIdxOfMaxRankPulse = []
+    for priorityRadarKey in dictMaxRankRadar:
+        listAllOverlappingRadarIdxOfMaxRankPulse.append(priorityRadarKey)
+        listAllOverlappingRadarIdxOfMaxRankPulse.extend(dictMaxRankRadar[priorityRadarKey].pulsesOverlapping)
+    listAllOverlappingRadarIdxOfMaxRankPulse = list(dict.fromkeys(listAllOverlappingRadarIdxOfMaxRankPulse))
+
+    listAllCoincidencePulseNumbers = [*range(0,len(coincidence),1)]
+
+    listCoincPulsesNotOverlapping = list(set(listAllOverlappingRadarIdxOfMaxRankPulse).symmetric_difference(set(listAllCoincidencePulseNumbers)))
+
+    return listCoincPulsesNotOverlapping
+
+def removeSelectedNonOverlappingPulsesFromList(listCoincPulsesNotOverlapping, dictMaxRankRadar):
+    for priorityRadarKey in dictMaxRankRadar:
+        if(len(listCoincPulsesNotOverlapping)>0):
+            listCoincPulsesNotOverlapping.remove(priorityRadarKey)
+            for __, overlappingPulse in enumerate(dictMaxRankRadar[priorityRadarKey].pulsesOverlapping):
+                if(len(listCoincPulsesNotOverlapping)>0):
+                    if(overlappingPulse in listCoincPulsesNotOverlapping):
+                        listCoincPulsesNotOverlapping.remove(overlappingPulse)
+
 
 def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
     # print("Evaluate jamming effect on threat radar...")

@@ -29,10 +29,11 @@ def argumentExtraction(argv):
     choosePRIJamming = False
     cutPulseAtEnd = False
     experimentalWindowSize = False
+    ignoreBurnthrough = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hvpce:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvpceb:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "ignoreBurnthrough" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
         return None
@@ -45,6 +46,8 @@ def argumentExtraction(argv):
             logging.info('Visualization set to True')
         elif opt in ("-p", "--PRIBin"):
             choosePRIJamming = True
+        elif opt in ("-b", "--ignoreBurnthrough"):
+            ignoreBurnthrough = True
             logging.info('Jamming window: PRI bin size selected')
         elif opt in ("-c", "--cutPulseAtEnd"):
             cutPulseAtEnd = True
@@ -68,7 +71,7 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, ignoreBurnthrough, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
@@ -87,7 +90,7 @@ def main(argv):
     doViz = False
     interFile = None
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, common.IGNOREBURNTHROUGH, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
