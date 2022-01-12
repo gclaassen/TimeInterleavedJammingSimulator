@@ -30,13 +30,14 @@ def argumentExtraction(argv):
     cutPulseAtEnd = False
     experimentalWindowSize = False
     ignoreBurnthrough = False
+    selectOnlyHighestPulsesInCoinc = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hvpceb:i:m:z:l:j:", ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "ignoreBurnthrough" "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvpcetb:i:m:z:l:j:", 
+            ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "selectOnlyHighestPulsesInCoinc", "ignoreBurnthrough", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
-        return None
     for opt, arg in opts:
         if opt == '-h':
             helpPrints()
@@ -48,7 +49,10 @@ def argumentExtraction(argv):
             choosePRIJamming = True
         elif opt in ("-b", "--ignoreBurnthrough"):
             ignoreBurnthrough = True
-            logging.info('Jamming window: PRI bin size selected')
+            logging.info('Ignore radars in burnthrough')
+        elif opt in ("-t", "--selectOnlyHighestPulsesInCoinc"):
+            selectOnlyHighestPulsesInCoinc = True
+            logging.info('Iterate in coincidence and select highest priority non overlapping pulses')
         elif opt in ("-c", "--cutPulseAtEnd"):
             cutPulseAtEnd = True
             logging.info('Jamming window: PW cut at end selected')
@@ -71,7 +75,7 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, ignoreBurnthrough, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, ignoreBurnthrough, selectOnlyHighestPulsesInCoinc, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
@@ -85,12 +89,14 @@ def helpPrints():
     logging.info('-z:\zone assessment weight\n')
     logging.info('-l:\lethal range weight\n')
     logging.info('-j:\intermittent jamming weight\n')
+    logging.info('-b:\ignore the radar pulses in burnthrough\n')
+    logging.info('-t:\Iterate in coincidence and select highest priority non overlapping pulses otherwise all the pulses of the same radar in coincidence will be selected first before checking the overlap pulses.\n')
 
 def main(argv):
     doViz = False
     interFile = None
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, common.IGNOREBURNTHROUGH, doViz] = argumentExtraction(argv)
+    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, common.IGNOREBURNTHROUGH, common.SELECTHIGHESTITERATE, doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
