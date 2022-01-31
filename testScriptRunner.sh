@@ -13,7 +13,7 @@ echo "Running Test 4/21: TT_0PRI_IJonly"
 python 2_code/main.py -i TT_0PRI_IJonly -m 0.0 -z 0.0 -l 0.0 -j 1.0 -t
 
 echo "Running Test 5/21: TT_0PRI_IJhighest"
-python 2_code/main.py -i TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t
+python 2_code/main.py -i TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -t
 
 echo "Running Test 6/21: TT_10PRI"
 python 2_code/main.py -i TT_10PRI -m 0.15 -z 0.05 -l 0.1 -j 0.7 -p -t

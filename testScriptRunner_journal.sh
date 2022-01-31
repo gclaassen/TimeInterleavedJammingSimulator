@@ -13,13 +13,16 @@
 # python 2_code/main.py -i TT_0PRI_IJonly -m 0.0 -z 0.0 -l 0.0 -j 1.0 -t
 
 echo "Running Test 9/18: Journal_TT_0PRI_IJhighest"
-python 2_code/main.py -i Journal_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t
+python 2_code/main.py -i Journal_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -t
 
 echo "Running Test 10/18: JournalRandomStart_TT_0PRI_IJhighest"
-python 2_code/main.py -i JournalRandomStart_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t -r
+python 2_code/main.py -i JournalRandomStart_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -t -r
 
 echo "Running Test DEBUG: TT_0175PW_cutem"
 python 2_code/main.py -i TT_0175PW_cutem -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c
+
+echo "Running Test DEBUG: TT_0PRI_IJhighest"
+python 2_code/main.py -i TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -t
 
 # echo "Running Test 11/18: TT_10PRI"
 # python 2_code/main.py -i TT_10PRI -m 0.15 -z 0.05 -l 0.1 -j 0.7 -p -t
