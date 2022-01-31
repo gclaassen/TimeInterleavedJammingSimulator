@@ -12,6 +12,7 @@ import tijMA as ma
 import tijTR as tr
 import mathRadar as radarmath
 from tqdm import tqdm
+import random
 
 class cInterval:
     intervals_total: int = 0
@@ -186,6 +187,7 @@ def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jamme
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PRI_US] = pri
         pw = threatItem.m_emitter_current[common.THREAT_PW_US] # pw
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PW_US] = pw
+
         if common.ARG_JAMMINGBINPRI:
             if jammerEnvelopeSizeToPRI == 0:
                 threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0
@@ -283,7 +285,11 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
     # update times and increase pulse total
     for idx in range(npArrThreatPulseLib.__len__()):
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US] - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tstart = Tend + PRI
+
+        if common.ARG_RANDOMSTART:
+            npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + random.uniform(0.0, npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US])  - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tstart = Tend + rand(PRI) start the pulse between 0 and the PRI
+        else:
+            npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PRI_US] - npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tstart = Tend + PRI
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW
 
@@ -675,7 +681,7 @@ def threatEvaluation(intervalIdx, olThreats, oPlatform, oJammer):
                 threat.m_mode_current_Name = common.dictModes[threat.m_mode_current_ID]
                 threat.m_firstIntervalForMode = True
 
-        elif (totalDetection == 0):
+        elif (totalDetection < threat.m_emitter_current[common.THREAT_PROB_DETECTION_CUMULATIVE]):
             if(threat.lModesForEmitter.index(threat.m_mode_current_ID) > 0):
                 threat.m_mode_current_ID = threat.lModesForEmitter[threat.lModesForEmitter.index(threat.m_mode_current_ID) - 1]
                 threat.m_emitter_current = threat.m_emitters[0][threat.lModesForEmitter.index(threat.m_mode_current_ID)]

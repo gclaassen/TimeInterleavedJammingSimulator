@@ -4,6 +4,7 @@ import math
 import mathRadar as radarmath
 import logging
 import util
+import random
 
 class cThreat:
     # Radar Parameters

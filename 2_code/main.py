@@ -31,11 +31,12 @@ def argumentExtraction(argv):
     experimentalWindowSize = False
     ignoreBurnthrough = False
     selectOnlyHighestPulsesInCoinc = False
+    randomPulseStart = False
 
     try:
         [opts, argv] = getopt.getopt(
-            argv, "hvpcetb:i:m:z:l:j:", 
-            ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "selectOnlyHighestPulsesInCoinc", "ignoreBurnthrough", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
+            argv, "hvpcetrb:i:m:z:l:j:",
+            ["help", "visualize", "PRIBin", "cutPulseAtEnd", "experimentalWindowSize", "selectOnlyHighestPulsesInCoinc", "randomPulseStart",  "ignoreBurnthrough", "intermediaryDirectory=", "modeWeight=", "zoneWeight=", "lethalrangeWeight=", "intermittentJammingWeight="])
     except getopt.GetoptError:
         helpPrints()
     for opt, arg in opts:
@@ -50,6 +51,9 @@ def argumentExtraction(argv):
         elif opt in ("-b", "--ignoreBurnthrough"):
             ignoreBurnthrough = True
             logging.info('Ignore radars in burnthrough')
+        elif opt in ("-r", "--randomPulseStart"):
+            randomPulseStart = True
+            logging.info('Start random pulse start')
         elif opt in ("-t", "--selectOnlyHighestPulsesInCoinc"):
             selectOnlyHighestPulsesInCoinc = True
             logging.info('Iterate in coincidence and select highest priority non overlapping pulses')
@@ -75,7 +79,7 @@ def argumentExtraction(argv):
             Wj = float(arg)
             logging.info('Intermittent jamming weight: {0}'.format(arg))
 
-    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, ignoreBurnthrough, selectOnlyHighestPulsesInCoinc, setViz]
+    return [interFile, Wm, Wz, Wl, Wj, choosePRIJamming, cutPulseAtEnd, experimentalWindowSize, ignoreBurnthrough, selectOnlyHighestPulsesInCoinc, randomPulseStart, setViz]
 
 def helpPrints():
     logging.info('\npyTIJ.py <arguments> \n')
@@ -96,7 +100,18 @@ def main(argv):
     doViz = False
     interFile = None
 
-    [interFile, common.MA_MODE_WEIGHT, common.MA_ZA_WEIGHT, common.MA_LETHALRANGE_WEIGHT, common.MA_INTERMITTENTJAMMING_WEIGHT, common.ARG_JAMMINGBINPRI, common.ARG_CUTPULSEATEND, common.ARG_JAMMINGWINDOWEXPERIMENTAL, common.IGNOREBURNTHROUGH, common.SELECTHIGHESTITERATE, doViz] = argumentExtraction(argv)
+    [interFile,
+    common.MA_MODE_WEIGHT,
+    common.MA_ZA_WEIGHT,
+    common.MA_LETHALRANGE_WEIGHT,
+    common.MA_INTERMITTENTJAMMING_WEIGHT,
+    common.ARG_JAMMINGBINPRI,
+    common.ARG_CUTPULSEATEND,
+    common.ARG_JAMMINGWINDOWEXPERIMENTAL,
+    common.IGNOREBURNTHROUGH,
+    common.SELECTHIGHESTITERATE,
+    common.ARG_RANDOMSTART,
+    doViz] = argumentExtraction(argv)
 
     # Initialize
     [oPlatform, oJammer, olThreats] = initEnvironment(interFile)
