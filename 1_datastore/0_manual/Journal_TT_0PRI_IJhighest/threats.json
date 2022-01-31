@@ -1179,7 +1179,7 @@
             "pri_us": 1003,
             "cpi": 128,
             "cpi_before_interval": 12,
-            "Pd": 0.5,
+            "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.5,
             "Pd_cumulative": 1
@@ -1194,7 +1194,7 @@
             "pri_us": 752,
             "cpi": 128,
             "cpi_before_interval": 15,
-            "Pd": 0.5,
+            "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.3,
             "Pd_cumulative": 1
@@ -1209,7 +1209,7 @@
             "pri_us": 501.55,
             "cpi": 128,
             "cpi_before_interval": 18,
-            "Pd": 0.5,
+            "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.2,
             "Pd_cumulative": 1
@@ -1224,7 +1224,7 @@
             "pri_us": 252.1,
             "cpi": 128,
             "cpi_before_interval": 9,
-            "Pd": 0.5,
+            "Pd": 0.9,
             "Pfa": 1e-6,
             "Pd_min": 0.1,
             "Pd_cumulative": 1
