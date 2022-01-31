@@ -16,7 +16,7 @@ echo "Running Test 9/18: Journal_TT_0PRI_IJhighest"
 python 2_code/main.py -i Journal_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t
 
 echo "Running Test 10/18: JournalRandomStart_TT_0PRI_IJhighest"
-python 2_code/main.py -i Journal_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t -r
+python 2_code/main.py -i JournalRandomStart_TT_0PRI_IJhighest -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c -t -r
 
 echo "Running Test DEBUG: TT_0175PW_cutem"
 python 2_code/main.py -i TT_0175PW_cutem -m 0.15 -z 0.05 -l 0.1 -j 0.7 -c
