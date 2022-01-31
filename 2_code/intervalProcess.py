@@ -194,16 +194,17 @@ def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jamme
             else:
                 jammingEnvelope = pri * jammerEnvelopeSizeToPRI
                 jammingBound_us = (jammingEnvelope)/2 if jammingEnvelope > pw else pw*0.75
-                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = -(jammingBound_us - pw/2)
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
         elif common.ARG_JAMMINGWINDOWEXPERIMENTAL:
-                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = 1 # rising edge 1 us before pulse
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = -1 # rising edge 1 us before pulse
                 threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = 0.1 # falling edge 100ns after pulse
         else:
             if common.ARG_CUTPULSEATEND:
                 jammingEnvelopeStart = pw * jammerEnvelopeSizeToPW
                 jammingBound_us = (jammingEnvelopeStart)/2
                 jammingEnvelopeStop = pw * 0.05 # cover pulse fall time is 5% of pulse width
-                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = jammingBound_us - pw/2
+                threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = -(jammingBound_us - pw/2)
                 threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingEnvelopeStop
             else:
                 if jammerEnvelopeSizeToPW == 0:
@@ -211,7 +212,8 @@ def updateThreatsForInterval(olThreats, oChannel, jammerEnvelopeSizeToPRI, jamme
                 else:
                     jammingEnvelope = pw * jammerEnvelopeSizeToPW
                     jammingBound_us = (jammingEnvelope)/2
-                    threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
+                    threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_START_ENVELOPE] = -(jammingBound_us - pw/2)
+                    threatItem.oThreatPulseLib[common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] = jammingBound_us - pw/2
 
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_COINCIDENCE_NUMBER] = 0
         threatItem.oThreatPulseLib[common.INTERVAL_LIB_PULSE_NUMBER] = 1 # always start at pulse 1 otherwise if 0 we will get division by zero
@@ -293,7 +295,7 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[idx, common.INTERVAL_LIB_PW_US] # Tend = Tstart + PW
 
-        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] - (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE]) # shift start left for jamming bins
+        npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_START] + (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_START_ENVELOPE]) # shift start left for jamming bins
 
         npArrThreatPulseLib[idx, common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[idx, common.INTERVAL_LIB_PULSE_STOP] + (npArrThreatPulseLib[idx, common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE]) # shift end right for jamming bins
 
@@ -356,7 +358,7 @@ def pulseCoincidenceAssessor(npArrThreatPulseLib, lCoincidenceLib, lAllCoinciden
         # 7. update all of the pulses Tend
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PW_US]
 
-        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] - npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_START_ENVELOPE] # shift start left for jamming bins
+        npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_START] = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_START] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_START_ENVELOPE] # shift start left for jamming bins
 
         npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_NOISE_PULSE_STOP]  = npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_LIB_PULSE_STOP] + npArrThreatPulseLib[TCoincidenceIdx[0], common.INTERVAL_JAMMING_BIN_STOP_ENVELOPE] # shift end right for jamming bins
 
