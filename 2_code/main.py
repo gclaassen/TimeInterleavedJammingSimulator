@@ -94,6 +94,7 @@ def helpPrints():
     logging.info('-l:\lethal range weight\n')
     logging.info('-j:\intermittent jamming weight\n')
     logging.info('-b:\ignore the radar pulses in burnthrough\n')
+    logging.info('-r:\the starting pulses for each radar at each interval starts at random time between 0 and the PRI')
     logging.info('-t:\Iterate in coincidence and select highest priority non overlapping pulses otherwise all the pulses of the same radar in coincidence will be selected first before checking the overlap pulses.\n')
 
 def main(argv):
