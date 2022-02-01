@@ -39,6 +39,9 @@ The simulation consist of platform, jammer, and threat parameters and characteri
 | -z      | The zone assessment weight                       | -z 0.05        |
 | -l      | The lethal range weight                          | -l 0.10        |
 | -j      | The jamming percentage weight                    | -j 0.7         |
+| -b      | Ignore the radar pulses in burnthrough           | -b             |
+| -r      | The starting pulses for each radar at each interval starts at random time between 0 and the PRI | -r             |
+| -t      | Iterate in coincidence and select highest priority non overlapping pulses otherwise all the pulses of the same radar in coincidence will be selected first before checking the overlap pulses.                    | -t             |
 
 
 # Requirements
