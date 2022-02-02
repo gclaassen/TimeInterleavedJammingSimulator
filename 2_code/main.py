@@ -4,7 +4,7 @@ import pltf as platform
 import jammer
 import common
 import jsonParser
-# import visualize
+import visualize
 import numpy as np
 import intervalProcess as interval
 import logging
@@ -119,6 +119,10 @@ def main(argv):
 
     initThreatsForTij(olThreats, oJammer)
 
+    #! visualize the world
+    if doViz:
+        visualize.topview(oPlatform, olThreats)
+
     #! Single jamming channel
     interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])
     # save data
@@ -127,11 +131,6 @@ def main(argv):
     #! TODO: Multiple jamming channels
     #     logging.info("Number of processors: %s", mp.Pool(mp.cpu_count()))
     # retList = mp.Pool(oChannel.__len__()).map(interval.intervalProcessor, [oPlatform, oJammer, olThreats, oJammer.oChannel])
-
-    #! visualize the world
-    # if doViz:
-        # visualize.worldview(cPlatform, cThreatLibrary)
-        # visualize.topview(oPlatform, olThreats)
 
     pass
 
