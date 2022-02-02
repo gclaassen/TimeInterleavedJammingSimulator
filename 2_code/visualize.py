@@ -33,7 +33,7 @@ def topview(pf, th):
                 # plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color=modeColor, s=thNode.location[common.THREAT_RANGE_KM], alpha=0.5)
                 # ax.add_artist(plt.Circle((thNode.location[common.XCOORD], thNode.location[common.YCOORD]), thNode.location[common.THREAT_RANGE_KM], color=modeColor, linewidth=3,  linestyle='dashed', fill=False))
         plt.scatter(thNode.location[common.XCOORD], thNode.location[common.YCOORD], color = 'r', marker = 'x', linewidth=3, s = 50)
-        ax.annotate(thNode.radar_id, (thNode.location[common.XCOORD], thNode.location[common.YCOORD]+300))
+        ax.annotate(thNode.m_radar_id, (thNode.location[common.XCOORD], thNode.location[common.YCOORD]+300))
                 # ax.annotate(thNode.radar_name, (thNode.location[common.XCOORD]+500, thNode.location[common.YCOORD]+200))
 
     ax.set_xlabel('X coordinate [m]')

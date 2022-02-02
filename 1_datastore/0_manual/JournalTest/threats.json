@@ -6,7 +6,7 @@
       "ws_range_km": 50,
       "start_mode": 2,
       "location": {
-        "X_coord": -100000,
+        "X_coord": -30000,
         "Y_coord": 30000,
         "Z_coord": 0
       },
@@ -83,8 +83,8 @@
       "ws_range_km": 75,
       "start_mode": 2,
       "location": {
-        "X_coord": -75000,
-        "Y_coord": 50000,
+        "X_coord": -55000,
+        "Y_coord": 20000,
         "Z_coord": 0
       },
       "emitters": {
@@ -391,8 +391,8 @@
       "ws_range_km": 100,
       "start_mode": 2,
       "location": {
-        "X_coord": 95000,
-        "Y_coord": 8000,
+        "X_coord": 50000,
+        "Y_coord": 50000,
         "Z_coord": 0
       },
       "emitters": {
@@ -930,7 +930,7 @@
       "ws_range_km": 80,
       "start_mode": 2,
       "location": {
-        "X_coord": 65500,
+        "X_coord": 40000,
         "Y_coord": -25000,
         "Z_coord": 0
       },
