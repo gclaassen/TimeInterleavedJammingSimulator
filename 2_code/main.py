@@ -4,7 +4,7 @@ import pltf as platform
 import jammer
 import common
 import jsonParser
-import visualize
+# import visualize
 import numpy as np
 import intervalProcess as interval
 import logging
@@ -120,8 +120,8 @@ def main(argv):
     initThreatsForTij(olThreats, oJammer)
 
     #! visualize the world
-    if doViz:
-        visualize.topview(oPlatform, olThreats)
+    # if doViz:
+        # visualize.topview(oPlatform, olThreats)
 
     #! Single jamming channel
     interval.intervalProcessorSingleChannel(oPlatform, oJammer, olThreats, oJammer.oChannel[0])

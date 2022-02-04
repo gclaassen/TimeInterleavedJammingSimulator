@@ -65,7 +65,7 @@ The simulation consist of platform, jammer, and threat parameters and characteri
 - tqdm *
 
 > *install required
-> pip install numpy scipy matplotlib matplotlib-label-lines spectrum numba tabulate tqdm
+> pip install numpy scipy matplotlib matplotlib-label-lines spectrum tabulate tqdm
 
 ## PC
 - OS: Windows 10 64 bit
