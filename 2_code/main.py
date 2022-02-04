@@ -1,10 +1,13 @@
-import os, getopt, sys, traceback
+import os
+import getopt
+import sys 
+import traceback
 import threats
 import pltf as platform
 import jammer
 import common
 import jsonParser
-# import visualize
+import visualize
 import numpy as np
 import intervalProcess as interval
 import logging
@@ -47,6 +50,7 @@ def argumentExtraction(argv):
             setViz = True
             logging.info('Visualization set to True')
         elif opt in ("-p", "--PRIBin"):
+            logging.info('Jamming window is 10% of PRI')
             choosePRIJamming = True
         elif opt in ("-b", "--ignoreBurnthrough"):
             ignoreBurnthrough = True
