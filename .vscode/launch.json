@@ -8,7 +8,7 @@
         "type": "python",
         "request": "launch",
         "program": "2_code/main.py",
-        "args": ["-i", "JournalTest", "-m", "0.15", "-z", "0.05", "-l", "0.1", "-j", "0.7", "-c", "-r", "-v"],
+        "args": ["-i", "JournalRandomStart_TT_0PRI", "-m", "0.5", "-z", "0.5", "-l", "0.0", "-j", "0.0", "-p", "-t"],
         "console": "integratedTerminal"
     }]
 }
