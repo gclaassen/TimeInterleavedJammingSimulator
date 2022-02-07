@@ -155,6 +155,8 @@ def main():
 
     testName = os.path.basename(folder_selected)
 
+    print("Test: {0}".format(folder_selected))
+
     calculateStats(folder_selected)
 
     plotCoincidenceRate(folder_selected, testName)
